@@ -24,12 +24,16 @@ public protocol TableUpdateNotifyable {
 	/// callbacks without mutating self.
 	private class Storage {
 		var value: Value
-		var onChangeCallbacks = [() -> Void]()
+		var onChangeCallbacks = [(Value) -> Void]()
 		init(initialValue: Value) { self.value = initialValue }
 	}
 	private var storage: Storage
 	
 	public func onChange(_ callback: @escaping () -> Void) {
+		storage.onChangeCallbacks.append({ _ in callback() })
+	}
+	
+	public func onChange(_ callback: @escaping (Value) -> Void) {
 		storage.onChangeCallbacks.append(callback)
 	}
 	
@@ -37,7 +41,7 @@ public protocol TableUpdateNotifyable {
 		get { self.storage.value }
 		nonmutating set {
 			self.storage.value = newValue
-			storage.onChangeCallbacks.forEach { $0() }
+			storage.onChangeCallbacks.forEach { $0(newValue) }
 		}
 	}
 	

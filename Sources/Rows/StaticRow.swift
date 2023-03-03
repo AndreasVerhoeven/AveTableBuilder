@@ -73,5 +73,30 @@ extension Row {
 			}
 			super.init(item: item)
 		}
+		
+		/// Creates a static row from a pre existing cell
+		public init(cell: Cell, updates: @escaping ConfigurationHandler) {
+			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
+				guard let cell = cell as? Cell else { return }
+				updates(container, cell, animated)
+			})
+			item.reuseIdentifierShouldIncludeId = true
+			item.cellProvider = { container, tableView, indexPath, reuseIdentifier in
+				return cell
+			}
+			super.init(item: item)
+		}
+		
+		/// Creates a static row from a pre existing cell
+		public init(cell: Cell) {
+			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
+				// does nothing
+			})
+			item.reuseIdentifierShouldIncludeId = true
+			item.cellProvider = { container, tableView, indexPath, reuseIdentifier in
+				return cell
+			}
+			super.init(item: item)
+		}
 	}
 }

@@ -243,6 +243,38 @@ A `Row` is the most basic of rows. There are several ways to create and configur
 	Row(text: "Text", subtitle: "Subtitle", image: someImage, cellClass: MyCustomCell.self)
 ```
 
+
+#### Row.Static
+
+If you have a row that uses a cell that is never re-used, you can use `Row.Static`:
+
+```
+	// this always uses someExistingCell for this row
+	Row.Static(cell: self.someExistingCell)
+	
+	// same, but now with a configuration handler that is called on each update
+	Row.Static(cell: self.someExistingCell) { `self`, cell animated in
+	
+	}
+	
+	// a cell that is always the same
+	Row.Static { `self`, cell, animated in 
+		// configure the cell here
+	}
+	
+	// a cell that is always the same, with an initial and update handler
+	Row.Static { `self`, cell in 
+		// initial configuration
+	} updates: { `self`, cell, animated in
+		// updates
+	}
+	
+	// a cell of a specific class that is always the same
+	Row.Static(cellClass: MyCustomCell.self) { `self`, cell, animated in
+		// updates
+	}
+```
+
 #### Row.Switch
 
 A row that has a switch as accessory
@@ -427,6 +459,49 @@ TableBuilder comes with a few convenience configuration modifiers that you can a
 	.contextMenuProvider { `self`, point, cell in
 		// return the context menu provider for this cell
 	}
+```
+
+### State & Bindings
+
+In order to automatically update the table view when values changes, you can mark fields with the `@TableState` property wrapper:
+
+```
+	@TableState var myVariable = true
+```
+
+You can then use this TableState variable in the body of your TableBuilder. Use `self.$myVariable` (notice the `$`) to pass it as a binding.
+Bindings provide a two-way update between a Row/Section and a TableState variable:
+
+```
+	// This row's toggle switch will automatically reflect the value of myVariable,
+	// but ALSO, when the switch is toggled in the cell, myVariable will be updated automatically.
+	Row.Switch(text: "Bla", binding: self.$myVariable)
+``` 
+
+#### Registering TableState's
+
+To make everything work, your `TableStates` need to be registered with the TableBuilder you are using. By default, the TableBuilder
+will automatically register any TableState that is a field of the container you use. If you want to use other TableStates, call
+`TableBuilder.registerUpdater()` or `TableBuilder.registerUpdaters(in:)`.
+
+
+#### Monitoring changes:
+
+Because `TableState` is a propertywrapper with custom backing, you cannot use `didSet {}` to monitor the variable for changes, unfortunately. If you want
+to monitor state changes of your TableState variables, you can use the following (notice the underscore prefix):
+```
+	@TableState var myVariable = true
+	
+	/// will be called with the new value of the state
+	_myVariable.onChange { newValue in
+		print(newValue)
+	}
+
+	// will just be called when the value changes
+	_myVariable.onChange {
+		print("Changed")
+	}
+}
 ```
 
 

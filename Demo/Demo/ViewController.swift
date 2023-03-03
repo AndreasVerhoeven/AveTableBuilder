@@ -16,6 +16,7 @@ enum Topping: String, CaseIterable {
 }
 
 class ViewController: UITableViewController {
+	// this is the state that we keep which makes the TableBuilder update itself when changed.
 	@TableState var includeDrinks = false
 	@TableState var selectedToppings = Set<Topping>()
 	@TableState var numberOfCocaColas = 0
@@ -122,6 +123,11 @@ class ViewController: UITableViewController {
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		// monitor changes to our state
+		_includeDrinks.onChange { newValue in
+			print("IncludeDrinks changed to: \(newValue)")
+		}
 		
 		tableView.backgroundColor = .systemBackground
 		builder.update(animated: false) // fire up the builder

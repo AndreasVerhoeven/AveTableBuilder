@@ -160,7 +160,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	
 	/// Scans an object for `TableState` and makes sure that when those states
 	/// change, the tableview is updated.
-	func registerUpdaters<T: AnyObject>(in container: T) {
+	public func registerUpdaters<T: AnyObject>(in container: T) {
 		for child in Mirror(reflecting: container).children {
 			if let item = child.value as? TableUpdateNotifyable {
 				registerUpdater(item)
