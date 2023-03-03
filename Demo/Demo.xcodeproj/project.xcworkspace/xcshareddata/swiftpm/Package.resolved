@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "autolayoutconvenience",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AndreasVerhoeven/AutoLayoutConvenience",
+      "state" : {
+        "branch" : "main",
+        "revision" : "f521399b578a4ea6d14fc5d7d41983c46453559f"
+      }
+    },
+    {
+      "identity" : "avedatasource",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AndreasVerhoeven/AveDataSource",
+      "state" : {
+        "branch" : "master",
+        "revision" : "86d628cf539c8a1f2346f9a0a78f389c6b9a2836"
+      }
+    },
+    {
+      "identity" : "avefonthelpers",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AndreasVerhoeven/AveFontHelpers",
+      "state" : {
+        "branch" : "master",
+        "revision" : "c5507fe674845f9db855e870ab091dc0b935e398"
+      }
+    },
+    {
+      "identity" : "uikitanimations",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AndreasVerhoeven/UIKitAnimations",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a03d0d878452a50e0a13f3228ee768f68db1cd97"
+      }
+    }
+  ],
+  "version" : 2
+}
