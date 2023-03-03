@@ -11,7 +11,7 @@ import UIKitAnimations
 
 extension Section {
 	public class Stylished: TableContent<ContainerType> {
-		init(@TableContentBuilder<ContainerType> builder: () -> TableContentBuilder<ContainerType>.Collection) {
+		public init(@TableContentBuilder<ContainerType> builder: () -> TableContentBuilder<ContainerType>.Collection) {
 			let section = Section.Group(builder: builder).stylished()
 			super.init(items: section.items)
 		}
