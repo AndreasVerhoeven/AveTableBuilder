@@ -51,6 +51,9 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public typealias DataSourceType = TableViewDataSource<SectionInfo<ContainerType>, RowInfo<ContainerType>>
 	public let dataSource: DataSourceType
 	
+	public typealias StateChangesCallback = () -> Void
+	private(set) var stateChangeCallbacks = [StateChangesCallback]()
+	
 	/// Creates a TableBuilder:
 	///
 	/// Parameters:
@@ -168,7 +171,10 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	
 	/// Registers an item that, when changed, should update the tableview
 	public func registerUpdater<T: TableUpdateNotifyable>(_ item: T) {
-		item.onChange { [weak self] in self?.update(animated: true) }
+		item.onChange { [weak self] in
+			self?.stateChangeCallbacks.forEach { $0() }
+			self?.update(animated: true)
+		}
 	}
 	
 	/// Scans an object for `TableState` and makes sure that when those states
@@ -179,6 +185,11 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 				registerUpdater(item)
 			}
 		}
+	}
+	
+	/// Callback will be called when any of the registered `TableState`s variables changes.
+	public func onStateChange(_ callback: @escaping StateChangesCallback) {
+		stateChangeCallbacks.append(callback)
 	}
 	
 	// MARK: - UITableViewDelegate
