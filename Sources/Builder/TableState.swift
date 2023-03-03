@@ -58,10 +58,13 @@ public protocol TableUpdateNotifyable {
 
 /// Can be used to bind to a value. Used by `TableState`. Nonmutating setter, so can be used
 /// in nonmutating contexts.
-@propertyWrapper public struct TableBinding<Value> {
+@propertyWrapper public struct TableBinding<Value>: TableUpdateNotifyable {
 	public var wrappedValue: Value {
 		get { return getValue() }
-		nonmutating set { setValue(newValue) }
+		nonmutating set {
+			setValue(newValue)
+			storage.onChangeCallbacks.forEach { $0(newValue) }
+		}
 	}
 	
 	public let getValue: () -> Value
@@ -73,4 +76,19 @@ public protocol TableUpdateNotifyable {
 	}
 	
 	public var projectedValue: Self { self }
+	
+	/// We store our value and callbacks in a class, so we can update bindings and
+	/// callbacks without mutating self.
+	private class Storage {
+		var onChangeCallbacks = [(Value) -> Void]()
+	}
+	private var storage = Storage()
+	
+	public func onChange(_ callback: @escaping () -> Void) {
+		storage.onChangeCallbacks.append({ _ in callback() })
+	}
+	
+	public func onChange(_ callback: @escaping (Value) -> Void) {
+		storage.onChangeCallbacks.append(callback)
+	}
 }
