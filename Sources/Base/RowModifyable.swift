@@ -19,7 +19,7 @@ public protocol RowModifyable {
 
 extension RowModifyable {
 	/// Configures
-	@discardableResult func configure<Cell: UITableViewCell>(
+	@discardableResult public func configure<Cell: UITableViewCell>(
 		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,
 		modifying: RowConfiguration,
 		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
@@ -32,7 +32,7 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult func preConfigure<Cell: UITableViewCell>(
+	@discardableResult public func preConfigure<Cell: UITableViewCell>(
 		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,
 		modifying: RowConfiguration,
 		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
@@ -46,80 +46,80 @@ extension RowModifyable {
 	}
 	
 	
-	@discardableResult func backgroundColor( _ color: UIColor) -> Self {
+	@discardableResult public func backgroundColor( _ color: UIColor) -> Self {
 		preConfigure(modifying: [.backgroundColor]) { container, cell, animated in
 			cell.backgroundColor = color
 		}
 	}
 	
-	@discardableResult func accessory( _ accessoryType: UITableViewCell.AccessoryType) -> Self {
+	@discardableResult public func accessory( _ accessoryType: UITableViewCell.AccessoryType) -> Self {
 		preConfigure(modifying: [.accessory]) { container, cell, animated in
 			cell.accessoryType = accessoryType
 		}
 	}
 	
-	@discardableResult func textFont( _ font: UIFont) -> Self {
+	@discardableResult public func textFont( _ font: UIFont) -> Self {
 		preConfigure(modifying: [.textFont]) { container, cell, animated in
 			cell.textLabel?.font = font
 		}
 	}
 	
-	@discardableResult func detailTextFont( _ font: UIFont) -> Self {
+	@discardableResult public func detailTextFont( _ font: UIFont) -> Self {
 		preConfigure(modifying: [.detailTextFont]) { container, cell, animated in
 			cell.detailTextLabel?.font = font
 		}
 	}
 	
-	@discardableResult func textColor( _ color: UIColor) -> Self {
+	@discardableResult public func textColor( _ color: UIColor) -> Self {
 		preConfigure(modifying: [.textColor]) { container, cell, animated in
 			cell.textLabel?.textColor = color
 		}
 	}
 	
-	@discardableResult func detailTextColor( _ color: UIColor) -> Self {
+	@discardableResult public func detailTextColor( _ color: UIColor) -> Self {
 		preConfigure(modifying: [.detailTextColor]) { container, cell, animated in
 			cell.detailTextLabel?.textColor = color
 		}
 	}
 	
-	@discardableResult func textAlignment( _ alignment: NSTextAlignment) -> Self {
+	@discardableResult public func textAlignment( _ alignment: NSTextAlignment) -> Self {
 		preConfigure(modifying: [.textAlignment]) { container, cell, animated in
 			cell.textLabel?.textAlignment = alignment
 		}
 	}
 	
-	@discardableResult func detailTextAlignment( _ alignment: NSTextAlignment) -> Self {
+	@discardableResult public func detailTextAlignment( _ alignment: NSTextAlignment) -> Self {
 		preConfigure(modifying: [.detailTextAlignment]) { container, cell, animated in
 			cell.detailTextLabel?.textAlignment = alignment
 		}
 	}
 	
-	@discardableResult func imageTintColor( _ color: UIColor) -> Self {
+	@discardableResult public func imageTintColor( _ color: UIColor) -> Self {
 		preConfigure(modifying: [.imageTintColor]) { container, cell, animated in
 			cell.imageView?.tintColor = color
 		}
 	}
 	
-	@discardableResult func numberOfLines(_ value: Int) -> Self {
+	@discardableResult public func numberOfLines(_ value: Int) -> Self {
 		preConfigure(modifying: [.numberOfLines]) { container, cell, animated in
 			cell.textLabel?.numberOfLines = value
 			cell.detailTextLabel?.numberOfLines = value
 		}
 	}
 	
-	@discardableResult func onSelect(_ handler: @escaping RowInfo<ContainerType>.SelectionHandler) -> Self {
+	@discardableResult public func onSelect(_ handler: @escaping RowInfo<ContainerType>.SelectionHandler) -> Self {
 		modifyRows { item in
 			item.addingSelectionHandler(handler)
 		}
 	}
 	
-	@discardableResult func onSelect(toggle binding: TableBinding<Bool>) -> Self {
+	@discardableResult public func onSelect(toggle binding: TableBinding<Bool>) -> Self {
 		onSelect { container in
 			binding.wrappedValue.toggle()
 		}
 	}
 	
-	@discardableResult func checked(_ isChecked: Bool) -> Self {
+	@discardableResult public func checked(_ isChecked: Bool) -> Self {
 		preConfigure(modifying: [.accessory]) { container, cell, animated in
 			let newAccessoryType: UITableViewCell.AccessoryType = isChecked ? .checkmark : .none
 			guard cell.accessoryType != newAccessoryType else { return }
@@ -151,7 +151,7 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult func leadingSwipeActions(_ handler: RowInfo<ContainerType>.SwipeActionsProvider?) -> Self {
+	@discardableResult public func leadingSwipeActions(_ handler: RowInfo<ContainerType>.SwipeActionsProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
 			guard item.leadingSwipeActionsProvider == nil else { return item }
@@ -161,7 +161,7 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult func trailingSwipeActions(_ handler: RowInfo<ContainerType>.SwipeActionsProvider?) -> Self {
+	@discardableResult public func trailingSwipeActions(_ handler: RowInfo<ContainerType>.SwipeActionsProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
 			guard item.trailingSwipeActionsProvider == nil else { return item }
@@ -171,7 +171,7 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult func contextMenuProvider(_ handler: RowInfo<ContainerType>.ContextMenuProvider?) -> Self {
+	@discardableResult public func contextMenuProvider(_ handler: RowInfo<ContainerType>.ContextMenuProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
 			guard item.contextMenuProvider == nil else { return item }
