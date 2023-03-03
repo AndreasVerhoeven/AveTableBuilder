@@ -46,6 +46,8 @@
 		49A6F79A26508AAB002EB98D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A6F79926508AAB002EB98D /* ViewController.swift */; };
 		49A6F79F26508AAC002EB98D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49A6F79E26508AAC002EB98D /* Assets.xcassets */; };
 		49A6F7A226508AAC002EB98D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49A6F7A026508AAC002EB98D /* LaunchScreen.storyboard */; };
+		49A736F529B27F86005A2CE9 /* SingleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F429B27F86005A2CE9 /* SingleSelection.swift */; };
+		49A736F729B28082005A2CE9 /* SingleSelectionSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +88,8 @@
 		49A6F79E26508AAC002EB98D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49A6F7A126508AAC002EB98D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49A6F7A326508AAC002EB98D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49A736F429B27F86005A2CE9 /* SingleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelection.swift; sourceTree = "<group>"; };
+		49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +124,7 @@
 			children = (
 				497C789C29B1EFD9006EF4A3 /* SectionForEach.swift */,
 				497C789D29B1EFD9006EF4A3 /* MultiSelectionSection.swift */,
+				49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */,
 				497C789E29B1EFD9006EF4A3 /* SectionInfo.swift */,
 				497C789F29B1EFD9006EF4A3 /* StylishedSection.swift */,
 				497C78A029B1EFD9006EF4A3 /* TableContent.swift */,
@@ -137,6 +142,7 @@
 			children = (
 				497C78A829B1EFD9006EF4A3 /* RowForEach.swift */,
 				497C78A929B1EFD9006EF4A3 /* MultiSelection.swift */,
+				49A736F429B27F86005A2CE9 /* SingleSelection.swift */,
 				497C78AA29B1EFD9006EF4A3 /* RowCollection.swift */,
 				497C78AB29B1EFD9006EF4A3 /* SectionContent.swift */,
 				497C78AC29B1EFD9006EF4A3 /* RowInfo.swift */,
@@ -300,6 +306,7 @@
 				49A6F79A26508AAB002EB98D /* ViewController.swift in Sources */,
 				497C78D329B1EFD9006EF4A3 /* TableItemReference.swift in Sources */,
 				497C78BF29B1EFD9006EF4A3 /* SectionInfo.swift in Sources */,
+				49A736F729B28082005A2CE9 /* SingleSelectionSection.swift in Sources */,
 				49A6F79626508AAB002EB98D /* AppDelegate.swift in Sources */,
 				497C78D129B1EFD9006EF4A3 /* SwitchRow.swift in Sources */,
 				497C78CE29B1EFD9006EF4A3 /* SectionContentBuilder.swift in Sources */,
@@ -314,6 +321,7 @@
 				497C78DC29B1F2B3006EF4A3 /* StepperRow.swift in Sources */,
 				497C78CD29B1EFD9006EF4A3 /* ActionRow.swift in Sources */,
 				49A6F79826508AAB002EB98D /* SceneDelegate.swift in Sources */,
+				49A736F529B27F86005A2CE9 /* SingleSelection.swift in Sources */,
 				497C78C729B1EFD9006EF4A3 /* SectionWrapper.swift in Sources */,
 				497C78D929B1EFD9006EF4A3 /* TableBuilderContent.swift in Sources */,
 				497C78CB29B1EFD9006EF4A3 /* SectionContent.swift in Sources */,
