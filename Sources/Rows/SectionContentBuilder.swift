@@ -17,31 +17,31 @@ import Foundation
 	public typealias ContentType = SectionContent<ContainerType>
 	public typealias Collection = RowCollection<ContainerType>
 	
-	static func buildExpression(_ expression: ContentType) -> Collection {
+	public static func buildExpression(_ expression: ContentType) -> Collection {
 		Collection(expression, id: .empty)
 	}
 	
-	static func buildBlock(_ components: ContentType...) -> Collection {
+	public static func buildBlock(_ components: ContentType...) -> Collection {
 		Collection(components)
 	}
 	
-	static func buildOptional(_ component: Collection?) -> Collection {
+	public static func buildOptional(_ component: Collection?) -> Collection {
 		Collection(component, id: .kind(.optional))
 	}
 	
-	static func buildEither(first component: Collection) -> Collection {
+	public static func buildEither(first component: Collection) -> Collection {
 		Collection(component, id: .kind(.eitherFirst))
 	}
 	
-	static func buildEither(second component: Collection) -> Collection {
+	public static func buildEither(second component: Collection) -> Collection {
 		Collection(component, id: .kind(.eitherSecond))
 	}
 	
-	static func buildArray(_ components: [Collection]) -> Collection {
+	public static func buildArray(_ components: [Collection]) -> Collection {
 		Collection(components)
 	}
 	
-	static func buildLimitedAvailability(_ component: Collection) -> Collection {
+	public static func buildLimitedAvailability(_ component: Collection) -> Collection {
 		Collection(component, id: .kind(.limitedAvailability))
 	}
 }
