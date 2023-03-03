@@ -139,6 +139,8 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func update(animated: Bool) {
 		guard let container else { return }
 		
+		let reallyAnimated = (animated && dataSource.tableView.window != nil)
+		
 		var snapshot = DataSourceType.SnapshotType()
 		for item in updater(container).items {
 			item.rowInfos.forEach { row in
@@ -148,9 +150,9 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			snapshot.addItems(item.rowInfos, for: item.sectionInfo)
 		}
 		
-		dataSource.apply(snapshot, animated: animated)
+		dataSource.apply(snapshot, animated: reallyAnimated)
 		
-		if animated == true {
+		if reallyAnimated == true {
 			DispatchQueue.main.async { [weak self] in
 				self?.dataSource.tableView.performBatchUpdates { }
 			}
