@@ -180,4 +180,12 @@ extension RowModifyable {
 			return newItem
 		}
 	}
+	
+	@discardableResult public func noAnimatedContentChanges() -> Self {
+		return modifyRows { item in
+			var newItem = item
+			newItem.animatedContentUpdates = false
+			return newItem
+		}
+	}
 }

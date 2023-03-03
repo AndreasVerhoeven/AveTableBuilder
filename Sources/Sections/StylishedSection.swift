@@ -7,6 +7,7 @@
 
 import UIKit
 import AutoLayoutConvenience
+import UIKitAnimations
 
 extension Section {
 	public class Stylished: TableContent<ContainerType> {
@@ -15,6 +16,10 @@ extension Section {
 			super.init(items: section.items)
 		}
 	}
+}
+
+public protocol ButtonHaveableHeader {
+	func setButton(title: String?, animated: Bool, callback: (() -> Void)?)
 }
 
 public class StylishedCustomHeader: UITableViewHeaderFooterView {
@@ -48,6 +53,17 @@ public class StylishedCustomHeader: UITableViewHeaderFooterView {
 	@available(*, unavailable)
 	public required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+}
+
+extension StylishedCustomHeader: ButtonHaveableHeader {
+	public func setButton(title: String?, animated: Bool, callback: (() -> Void)? = nil) {
+		buttonCallback = callback
+		button.setIsHidden(title == nil, animated: animated)
+		if let title {
+			button.titleLabel?.setText(title, animated: animated)
+			button.setTitle(title, for: .normal)
+		}
 	}
 }
 

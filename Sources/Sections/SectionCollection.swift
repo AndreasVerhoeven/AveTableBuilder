@@ -9,7 +9,7 @@ import Foundation
 
 /// This is a Collection of Sections used in `@TableContentBuilder`: it's the result of
 /// every transformation.
-public class SectionCollection<ContainerType>: TableContent<ContainerType> {
+public class SectionCollection<ContainerType: AnyObject>: TableContent<ContainerType> {
 	public typealias InnerItem = SectionInfoWithRows<ContainerType>
 	public typealias BaseItem = TableContent<ContainerType>
 	

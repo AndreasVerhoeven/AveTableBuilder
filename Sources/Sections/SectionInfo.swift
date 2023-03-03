@@ -20,7 +20,7 @@ public struct SectionInfo<ContainerType>: IdentifiableTableItem {
 	public var footer: String?
 	
 	public typealias HeaderFooterProvider = (_ `self`: ContainerType, _ tableView: UITableView,  _ section: Int) -> UITableViewHeaderFooterView
-	public typealias HeaderFooterUpdater = ( _ `self`: ContainerType, _ view: UIView, _ text: String?, _ animated: Bool) -> Void
+	public typealias HeaderFooterUpdater = ( _ `self`: ContainerType, _ view: UITableViewHeaderFooterView, _ text: String?, _ animated: Bool) -> Void
 	
 	/// optional callback that provides a header view for this section
 	public var headerViewProvider: HeaderFooterProvider?
@@ -33,4 +33,33 @@ public struct SectionInfo<ContainerType>: IdentifiableTableItem {
 	
 	/// callbacks that update the footer view for this section
 	public var footerUpdaters = [HeaderFooterUpdater]()
+	
+	/// Storage for TableContent subclasses, to pass data from init to separate callbacks.
+	/// This can be accessed using Self.currentSectionInfo?.storage.
+	/// Self.currentSectionInfo is only set during callbacks initiated from SectionInfos.
+	public var storage: [StorageKey: Any] {
+		get { internalStorage.items }
+		nonmutating set { internalStorage.items = newValue }
+	}
+	
+	/// key type for storage
+	public struct StorageKey: RawRepresentable, Hashable {
+		public var rawValue: String
+		
+		public init(rawValue: String) {
+			self.rawValue = rawValue
+		}
+	}
+	
+	public init(header: String? = nil, footer: String? = nil) {
+		self.header = header
+		self.footer = footer
+	}
+	
+	/// a class storage, so we are non mutating
+	private class Storage {
+		var items = [StorageKey: Any]()
+	}
+	
+	private var internalStorage = Storage()
 }

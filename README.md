@@ -162,7 +162,10 @@ If you want to iterate over a collection to create sections, use `Section.ForEac
 #### Section.MultiSelection
 
 If you have a collection where each item can be picked using checkmarks, use a Section.MultiSelection. It'll automatically manages
-the selection for you:
+the selection for you. 
+
+If the section header class conforms to ButtonHavableHeader, a button title will be set to select/deselect all items. You can override
+the button title with `.selectionButtonTitles(selectAll: String, deselectAll: String)` 
 
 ```
 	let items = ["A", "B", "C"]
@@ -170,6 +173,10 @@ the selection for you:
 	Section.MultiSelection(collection, binding: $selection) { element in
 		Row(text: element)
 	}
+	
+	Section.MultiSelection(collection, binding: $selection) { element in
+		Row(text: element)
+	}.selectionButtonTitles(selectAll: "All of It", deselectAll: "None of It")
 ```
 
 
@@ -417,6 +424,8 @@ TableBuilder comes with a few convenience configuration modifiers that you can a
 ##### Content
 
 ```
+	.noAnimatedContentChanges() // rows configuration handlers will always be called with animated == false  
+	
 	.backgroundColor(.red) // sets a background color to the row
 	.accessory(.disclosureIndicator) // sets an accessory to the row
 	
@@ -523,6 +532,14 @@ When creating custom sections you have two options: inherit from `Section` or fr
 
 When inheriting from `TableContent` you need to supply `SectionInfoWithRows`s yourself.
 
+
+### Preserving data between inits and later modifier methods.
+
+Occassionally, you want pass data from an init() method to a modifier method. However, classes are directly turned into RowInfo/SectionInfo objects. This is where storage comes in:
+
+you can store data with `.store(key:data:)`, which can be retrieved later in RowInfo/SectionInfo callbacks with `Self.retrieve(key:as:)`. Data stored will only be available in callbacks.
+   
+
 #### How does it work?
 
 Every content modifier essentially adds another configuration handler to a row: new handlers are added at the front. When a cell is configured, all its configuration handlers are called in order, so outside modifiers are applied first, then inner ones.
@@ -580,7 +597,6 @@ If the user configures their own cells, we add a `.manual` `knownModification`, 
 	   // configure cell here
 	}
 ``` 
-	
 
 ### Why classes and not structs?
 

@@ -13,7 +13,7 @@ import Foundation
 ///
 /// The `SectionCollection` in turn holds a linear list of `SectionInfoWithRows`, which in
 /// turn is used in `TableBuilder` to create a snapshot and configure cells.
-@resultBuilder public struct TableContentBuilder<ContainerType> {
+@resultBuilder public struct TableContentBuilder<ContainerType: AnyObject> {
 	public typealias ContentType = TableContent<ContainerType>
 	public typealias Collection = SectionCollection<ContainerType>
 	

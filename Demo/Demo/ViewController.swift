@@ -75,11 +75,11 @@ class ViewController: UITableViewController {
 			// when you select something, the variable is updated and vice-versa.
 			Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
 				Row(text: topping.rawValue.capitalized)
-			}
+			}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items")
 			
 			if self.selectedToppings.count > 0 || self.hasDrinks {
 				Section {
-					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0)
+					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
 					
 					// an action show renders as a "button". The callback is triggered when the user selects the row.
 					// Note that `self` is passed in as a parameter, as to not create retain cycles.

@@ -42,6 +42,25 @@ public struct RowInfo<ContainerType>: IdentifiableTableItem {
 	/// references to items
 	public var reference = [TableItemReference]()
 	
+	/// true if we want animated content updates
+	public var animatedContentUpdates = true
+	
+	/// Storage for SectionContent subclasses, to pass data from init to separate callbacks.
+	/// This can be accessed using store() and Section.retrieve().
+	public var storage: [StorageKey: Any] {
+		get { internalStorage.items }
+		nonmutating set { internalStorage.items = newValue }
+	}
+	
+	/// key type for storage
+	public struct StorageKey: RawRepresentable, Hashable {
+		public var rawValue: String
+		
+		public init(rawValue: String) {
+			self.rawValue = rawValue
+		}
+	}
+	
 	public init<Cell: UITableViewCell>(
 		cellClass: Cell.Type = UITableViewCell.self,
 		style: UITableViewCell.CellStyle = .default,
@@ -69,6 +88,13 @@ public struct RowInfo<ContainerType>: IdentifiableTableItem {
 		}
 		return reuseIdentifier
 	}
+	
+	/// private storage, a class, so that we are nonmutating
+	private class Storage {
+		var items = [StorageKey: Any]()
+	}
+	
+	private var internalStorage = Storage()
 }
 
 extension RowInfo {

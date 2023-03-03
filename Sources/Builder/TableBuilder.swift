@@ -64,15 +64,25 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	) {
 		self.container = container
 		self.updater = updater
-		self.dataSource = DataSourceType(tableView: tableView, cellProvider: { [weak container] tableView, item, indexPath in
-			guard let container else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
-			return item.cellProvider(container, tableView, indexPath, item.reuseIdentifier)
+		self.dataSource = DataSourceType(tableView: tableView, cellProvider: {  tableView, item, indexPath in
+			return UITableViewCell()
 		})
 		
-		self.dataSource.cellUpdater = { [weak container] tableView, cell, item, indexPath, animated in
-			guard let container else { return }
+		super.init()
+		
+		dataSource.cellProvider = { [weak container, weak self] tableView, item, indexPath in
+			guard let self, let container else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
+			return self.perform(with: item) {
+				return item.cellProvider(container, tableView, indexPath, item.reuseIdentifier)
+			}
+		}
+		
+		self.dataSource.cellUpdater = { [weak container, weak self] tableView, cell, item, indexPath, animated in
+			guard let self, let container else { return }
 			cell.selectionStyle = item.selectionHandlers.isEmpty ? .none : .default
-			item.configurationHandlers.forEach { $0(container, cell, animated) }
+			self.perform(with: item) {
+				item.configurationHandlers.forEach { $0(container, cell, animated && item.animatedContentUpdates) }
+			}
 		}
 		
 		self.dataSource.headerTitleProvider = { tableView, section, index in
@@ -82,30 +92,33 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			return section.footerViewProvider == nil ? section.footer : nil
 		}
 		
-		self.dataSource.headerViewUpdater = { [weak container] tableView, view, section, index, animated in
-			guard let container else { return }
+		self.dataSource.headerViewUpdater = { [weak container, weak self] tableView, view, section, index, animated in
+			guard let self, let container else { return }
 			if section.headerViewProvider == nil {
 				let text = tableView.style != .plain ? section.header?.uppercased() : section.header
 				(view as? UITableViewHeaderFooterView)?.textLabel?.setText(text, animated: animated)
 				view.setNeedsLayout()
 				view.invalidateIntrinsicContentSize()
-			} else {
-				section.headerUpdaters.forEach { $0(container, view, section.header, animated) }
+			} else if let view = view as? UITableViewHeaderFooterView {
+				self.perform(with: section) {
+					section.headerUpdaters.forEach { $0(container, view, section.header, animated) }
+				}
 			}
 		}
 		
-		self.dataSource.footerViewUpdater = { [weak container] tableView, view, section, index, animated in
-			guard let container else { return }
+		self.dataSource.footerViewUpdater = { [weak container, weak self] tableView, view, section, index, animated in
+			guard let self, let container else { return }
 			if section.footerViewProvider == nil {
 				(view as? UITableViewHeaderFooterView)?.textLabel?.setText(section.footer, animated: animated)
 				view.setNeedsLayout()
 				view.invalidateIntrinsicContentSize()
-			} else {
-				section.footerUpdaters.forEach { $0(container, view, section.footer, animated) }
+			} else if let view = view as? UITableViewHeaderFooterView {
+				self.perform(with: section) {
+					section.footerUpdaters.forEach { $0(container, view, section.footer, animated) }
+				}
 			}
 		}
 		
-		super.init()
 		tableView.delegate = self
 		self.registerUpdaters(in: container)
 		update(animated: false)
@@ -172,41 +185,95 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		guard let container else { return nil }
 		guard let item = dataSource.currentSnapshot.sectionOrNil(at: section) else { return nil }
-		guard let view = item.headerViewProvider?(container, tableView, section) else { return nil }
-		dataSource.headerViewUpdater?(tableView, view, item, section, false)
-		return view
+		return self.perform(with: item) {
+			guard let view = item.headerViewProvider?(container, tableView, section) else { return nil }
+			dataSource.headerViewUpdater?(tableView, view, item, section, false)
+			return view
+		}
 	}
 	
 	public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 		guard let container else { return nil }
 		guard let item = dataSource.currentSnapshot.sectionOrNil(at: section) else { return nil }
-		guard let view = item.footerViewProvider?(container, tableView, section) else { return nil }
-		dataSource.footerViewUpdater?(tableView, view, item, section, false)
-		return view
+		return self.perform(with: item) {
+			guard let view = item.footerViewProvider?(container, tableView, section) else { return nil }
+			dataSource.footerViewUpdater?(tableView, view, item, section, false)
+			return view
+		}
 	}
 	
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		guard let container else { return }
 		guard let item = dataSource.item(at: indexPath) else { return }
-		item.selectionHandlers.forEach { $0(container) }
+		return perform(with: item) {
+			item.selectionHandlers.forEach { $0(container) }
+		}
 	}
 	
 	public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return item.leadingSwipeActionsProvider?(container)
+		return perform(with: item) {
+			return item.leadingSwipeActionsProvider?(container)
+		}
 	}
 	
 	public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return item.trailingSwipeActionsProvider?(container)
+		return perform(with: item) {
+			return item.trailingSwipeActionsProvider?(container)
+		}
 	}
 	
 	public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return item.contextMenuProvider?(container, point, tableView.cellForRow(at: indexPath))
+		return perform(with: item) {
+			item.contextMenuProvider?(container, point, tableView.cellForRow(at: indexPath))
+		}
+	}
+}
+
+
+fileprivate enum TableBuilderStaticStorage {
+	static var currentSectionInfos = [Any]()
+	static var currentRowInfos = [Any]()
+}
+
+extension TableBuilder {
+	fileprivate static var currentRowInfo: RowInfo<ContainerType>? {
+		return TableBuilderStaticStorage.currentRowInfos.last as? RowInfo<ContainerType>
+	}
+	
+	fileprivate static var currentSectionInfo: SectionInfo<ContainerType>? {
+		return TableBuilderStaticStorage.currentSectionInfos.last as? SectionInfo<ContainerType>
+	}
+	
+	private func perform<T>(with item: RowInfo<ContainerType>, callback: () -> T) -> T {
+		TableBuilderStaticStorage.currentRowInfos.append(item)
+		let result = callback()
+		TableBuilderStaticStorage.currentRowInfos.removeLast()
+		return result
+	}
+	
+	private func perform<T>(with item: SectionInfo<ContainerType>, callback: () -> T) -> T {
+		TableBuilderStaticStorage.currentSectionInfos.append(item)
+		let result = callback()
+		TableBuilderStaticStorage.currentSectionInfos.removeLast()
+		return result
+	}
+}
+
+extension TableContent {
+	public static var currentSectionInfo: SectionInfo<ContainerType>? {
+		TableBuilder<ContainerType>.currentSectionInfo
+	}
+}
+
+extension SectionContent {
+	public static var currentRowInfo: RowInfo<ContainerType>? {
+		TableBuilder<ContainerType>.currentRowInfo
 	}
 }

@@ -10,7 +10,7 @@ import Foundation
 
 /// This is a Collection of Rows used in `@SectionTableBuilder`: it's the result of
 /// every transformation.
-public class RowCollection<ContainerType>: SectionContent<ContainerType> {
+public class RowCollection<ContainerType: AnyObject>: SectionContent<ContainerType> {
 	public typealias InnerItem = RowInfo<ContainerType>
 	public typealias BaseItem = SectionContent<ContainerType>
 	
