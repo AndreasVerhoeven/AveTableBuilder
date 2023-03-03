@@ -15,7 +15,6 @@ This is a library that makes creating "static" table views much easier. With Ave
 	Section("Second Section") {
 		Row(text: "Another Row").textColor(.red)
 	}
-}
 ``` 
 
 ## Example:
