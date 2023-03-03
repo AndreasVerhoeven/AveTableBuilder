@@ -119,6 +119,12 @@ extension RowModifyable {
 		}
 	}
 	
+	@discardableResult public func onSelect<T>(set binding: TableBinding<T>, to value: T) -> Self {
+		onSelect { container in
+			binding.wrappedValue = value
+		}
+	}
+	
 	@discardableResult public func checked(_ isChecked: Bool) -> Self {
 		preConfigure(modifying: [.accessory]) { container, cell, animated in
 			let newAccessoryType: UITableViewCell.AccessoryType = isChecked ? .checkmark : .none
