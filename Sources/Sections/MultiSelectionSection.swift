@@ -10,9 +10,9 @@ import UIKit
 extension Section {
 	/// Creates a section that shows rows for every item in a Collection. The rows, in turn, can be selected/deselected by tapping on them. A binding
 	/// to a `Set<Collection.Element>`  reflects what is selected.
-	class MultiSelection: TableContent<ContainerType> {
+	public class MultiSelection: TableContent<ContainerType> {
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
-		convenience init<Collection: RandomAccessCollection>(
+		public convenience init<Collection: RandomAccessCollection>(
 			_ header: String? = nil,
 			footer: String? = nil,
 			data: Collection,
@@ -23,7 +23,7 @@ extension Section {
 		}
 		
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
-		init<Collection: RandomAccessCollection, ID: Hashable>(
+		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ header: String? = nil,
 			footer: String? = nil,
 			data: Collection,

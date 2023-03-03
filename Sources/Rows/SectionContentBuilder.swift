@@ -13,9 +13,9 @@ import Foundation
 ///
 /// The `RowCollection` in turn holds a linear list of `RowInfo`, which in
 /// turn is used in `TableBuilder` to create a snapshot and configure cells.
-@resultBuilder struct SectionContentBuilder<ContainerType> {
-	typealias ContentType = SectionContent<ContainerType>
-	typealias Collection = RowCollection<ContainerType>
+@resultBuilder public struct SectionContentBuilder<ContainerType> {
+	public typealias ContentType = SectionContent<ContainerType>
+	public typealias Collection = RowCollection<ContainerType>
 	
 	static func buildExpression(_ expression: ContentType) -> Collection {
 		Collection(expression, id: .empty)

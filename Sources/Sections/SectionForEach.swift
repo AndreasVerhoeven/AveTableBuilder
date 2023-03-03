@@ -9,9 +9,9 @@ import Foundation
 
 extension Section {
 	/// This creates multiple sections by iterating over a collection.
-	class ForEach: TableContent<ContainerType> {
+	public class ForEach: TableContent<ContainerType> {
 		/// Shows the created Rows for each item in the collection. The items must be unique.
-		convenience init<Collection: RandomAccessCollection>(
+		public convenience init<Collection: RandomAccessCollection>(
 			_ data: Collection,
 			@TableContentBuilder<ContainerType> builder: (Collection.Element) -> TableContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
@@ -19,7 +19,7 @@ extension Section {
 		}
 		
 		/// Shows the created Rows for each items in the collection, the items must be identified by a unique field
-		init<Collection: RandomAccessCollection, ID: Hashable>(
+		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
 			identifiedBy: KeyPath<Collection.Element, ID>,
 			@TableContentBuilder<ContainerType> builder: (Collection.Element) -> TableContentBuilder<ContainerType>.Collection

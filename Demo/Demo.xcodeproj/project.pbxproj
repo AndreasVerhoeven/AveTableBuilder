@@ -19,7 +19,6 @@
 		497C78C229B1EFD9006EF4A3 /* SectionCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A129B1EFD9006EF4A3 /* SectionCollection.swift */; };
 		497C78C329B1EFD9006EF4A3 /* SectionInfoWithRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A229B1EFD9006EF4A3 /* SectionInfoWithRows.swift */; };
 		497C78C429B1EFD9006EF4A3 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A329B1EFD9006EF4A3 /* Section.swift */; };
-		497C78C529B1EFD9006EF4A3 /* Section+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A429B1EFD9006EF4A3 /* Section+UIKit.swift */; };
 		497C78C629B1EFD9006EF4A3 /* TableContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A529B1EFD9006EF4A3 /* TableContentBuilder.swift */; };
 		497C78C729B1EFD9006EF4A3 /* SectionWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A629B1EFD9006EF4A3 /* SectionWrapper.swift */; };
 		497C78C829B1EFD9006EF4A3 /* RowForEach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78A829B1EFD9006EF4A3 /* RowForEach.swift */; };
@@ -58,7 +57,6 @@
 		497C78A129B1EFD9006EF4A3 /* SectionCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionCollection.swift; sourceTree = "<group>"; };
 		497C78A229B1EFD9006EF4A3 /* SectionInfoWithRows.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionInfoWithRows.swift; sourceTree = "<group>"; };
 		497C78A329B1EFD9006EF4A3 /* Section.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
-		497C78A429B1EFD9006EF4A3 /* Section+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Section+UIKit.swift"; sourceTree = "<group>"; };
 		497C78A529B1EFD9006EF4A3 /* TableContentBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableContentBuilder.swift; sourceTree = "<group>"; };
 		497C78A629B1EFD9006EF4A3 /* SectionWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionWrapper.swift; sourceTree = "<group>"; };
 		497C78A829B1EFD9006EF4A3 /* RowForEach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowForEach.swift; sourceTree = "<group>"; };
@@ -128,7 +126,6 @@
 				497C78A129B1EFD9006EF4A3 /* SectionCollection.swift */,
 				497C78A229B1EFD9006EF4A3 /* SectionInfoWithRows.swift */,
 				497C78A329B1EFD9006EF4A3 /* Section.swift */,
-				497C78A429B1EFD9006EF4A3 /* Section+UIKit.swift */,
 				497C78A529B1EFD9006EF4A3 /* TableContentBuilder.swift */,
 				497C78A629B1EFD9006EF4A3 /* SectionWrapper.swift */,
 			);
@@ -297,7 +294,6 @@
 				497C78C229B1EFD9006EF4A3 /* SectionCollection.swift in Sources */,
 				497C78BE29B1EFD9006EF4A3 /* MultiSelectionSection.swift in Sources */,
 				497C78D429B1EFD9006EF4A3 /* ReuseIdentifier.swift in Sources */,
-				497C78C529B1EFD9006EF4A3 /* Section+UIKit.swift in Sources */,
 				497C78D629B1EFD9006EF4A3 /* ConfigurationItem.swift in Sources */,
 				497C78D229B1EFD9006EF4A3 /* RowWrapper.swift in Sources */,
 				497C78C429B1EFD9006EF4A3 /* Section.swift in Sources */,

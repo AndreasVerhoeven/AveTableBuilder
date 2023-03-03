@@ -10,9 +10,9 @@ import Foundation
 extension Row {
 	/// Creates a list of rows that shows rows for every item in a Collection. The rows, in turn, can be selected/deselected by tapping on them. A binding
 	/// to a `Set<Collection.Element>`  reflects what is selected.
-	class MultiSelection: SectionContent<ContainerType> {
+	public class MultiSelection: SectionContent<ContainerType> {
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
-		convenience init<Collection: RandomAccessCollection>(
+		public convenience init<Collection: RandomAccessCollection>(
 			_ data: Collection,
 			binding: TableBinding<Set<Collection.Element>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
@@ -21,7 +21,7 @@ extension Row {
 		}
 		
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
-		init<Collection: RandomAccessCollection, ID: Hashable>(
+		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
 			identifiedBy: KeyPath<Collection.Element, ID>,
 			binding: TableBinding<Set<ID>>,

@@ -17,43 +17,43 @@ public struct RowConfiguration {
 		}
 		
 		// cell config
-		static let backgroundColor = Self(rawValue: "_backgroundColor")
-		static let accessory = Self(rawValue: "_accessory")
+		public static let backgroundColor = Self(rawValue: "_backgroundColor")
+		public static let accessory = Self(rawValue: "_accessory")
 		
 		// content
-		static let image = Self(rawValue: "_image")
-		static let text = Self(rawValue: "_text")
-		static let detailText = Self(rawValue: "_detailText")
-		static let accessoryText = Self(rawValue: "_accessoryText")
+		public static let image = Self(rawValue: "_image")
+		public static let text = Self(rawValue: "_text")
+		public static let detailText = Self(rawValue: "_detailText")
+		public static let accessoryText = Self(rawValue: "_accessoryText")
 		
 		// content configuration
-		static let textFont = Self(rawValue: "_textFont")
-		static let detailTextFont = Self(rawValue: "_detailTextFont")
-		static let accessoryTextFont = Self(rawValue: "_accessoryTextFont")
+		public static let textFont = Self(rawValue: "_textFont")
+		public static let detailTextFont = Self(rawValue: "_detailTextFont")
+		public static let accessoryTextFont = Self(rawValue: "_accessoryTextFont")
 		
-		static let textColor = Self(rawValue: "_textColor")
-		static let detailTextColor = Self(rawValue: "_detailTextColor")
-		static let accessoryTextColor = Self(rawValue: "_accessoryTextColor")
+		public static let textColor = Self(rawValue: "_textColor")
+		public static let detailTextColor = Self(rawValue: "_detailTextColor")
+		public static let accessoryTextColor = Self(rawValue: "_accessoryTextColor")
 		
-		static let textAlignment = Self(rawValue: "_textAlignment")
-		static let detailTextAlignment = Self(rawValue: "_detailTextAlignment")
-		static let accessoryTextAlignment = Self(rawValue: "_accessoryTextAlignment")
+		public static let textAlignment = Self(rawValue: "_textAlignment")
+		public static let detailTextAlignment = Self(rawValue: "_detailTextAlignment")
+		public static let accessoryTextAlignment = Self(rawValue: "_accessoryTextAlignment")
 		
-		static let imageTintColor = Self(rawValue: "_imageTintColor")
-		static let numberOfLines = Self(rawValue: "_numberOfLines")
+		public static let imageTintColor = Self(rawValue: "_imageTintColor")
+		public static let numberOfLines = Self(rawValue: "_numberOfLines")
 		
 		// indicates that this row is manually configured: it's up
 		// to the programmer to make things consistent
-		static let manual = Self(rawValue: "_manual")
+		public static let manual = Self(rawValue: "_manual")
 		
 		// custom items for convenience
-		static let custom1 = Self(rawValue: "_custom1")
-		static let custom2 = Self(rawValue: "_custom2")
-		static let custom3 = Self(rawValue: "_custom3")
-		static let custom4 = Self(rawValue: "_custom4")
-		static let custom5 = Self(rawValue: "_custom5")
+		public static let custom1 = Self(rawValue: "_custom1")
+		public static let custom2 = Self(rawValue: "_custom2")
+		public static let custom3 = Self(rawValue: "_custom3")
+		public static let custom4 = Self(rawValue: "_custom4")
+		public static let custom5 = Self(rawValue: "_custom5")
 		
-		static func custom(_ name: String) -> Self {
+		public static func custom(_ name: String) -> Self {
 			Self(rawValue: name)
 		}
 	}

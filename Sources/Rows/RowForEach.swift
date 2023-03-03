@@ -9,9 +9,9 @@ import Foundation
 
 extension Row {
 	/// This creates multiple rows by iterating over a collection.
-	class ForEach: SectionContent<ContainerType> {
+	public class ForEach: SectionContent<ContainerType> {
 		/// Shows the created Rows for each item in the collection. The items must be unique.
-		convenience init<Collection: RandomAccessCollection>(
+		public convenience init<Collection: RandomAccessCollection>(
 			_ data: Collection,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
@@ -19,7 +19,7 @@ extension Row {
 		}
 		
 		/// Shows the created Rows for each items in the collection, the items must be identified by a unique field
-		init<Collection: RandomAccessCollection, ID: Hashable>(
+		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
 			identifiedBy: KeyPath<Collection.Element, ID>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
