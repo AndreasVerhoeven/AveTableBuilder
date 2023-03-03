@@ -21,7 +21,7 @@ This is a library that makes creating "static" table views much easier. With Ave
 
 This shows a demo of a simple "pizza order" table view. This is all there is to automatically populate and update the table view. No other code is necessary. 
 
-![Demo Video](https://user-images.githubusercontent.com/168214/222715181-977e34c6-d81a-4881-b458-996fb53d65f3.gif)
+![Demo Video](https://user-images.githubusercontent.com/168214/222716512-919f67e4-46c0-4672-9237-26d0e2bf330c.gif)
 
 ```
 class ViewController: UITableViewController {
