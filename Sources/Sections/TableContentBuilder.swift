@@ -13,9 +13,9 @@ import Foundation
 ///
 /// The `SectionCollection` in turn holds a linear list of `SectionInfoWithRows`, which in
 /// turn is used in `TableBuilder` to create a snapshot and configure cells.
-@resultBuilder struct TableContentBuilder<ContainerType> {
-	typealias ContentType = TableContent<ContainerType>
-	typealias Collection = SectionCollection<ContainerType>
+@resultBuilder public struct TableContentBuilder<ContainerType> {
+	public typealias ContentType = TableContent<ContainerType>
+	public typealias Collection = SectionCollection<ContainerType>
 	
 	static func buildExpression(_ expression: ContentType) -> Collection {
 		Collection(expression, id: .empty)

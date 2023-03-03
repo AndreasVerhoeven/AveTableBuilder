@@ -39,7 +39,7 @@ import AveDataSource
 /// 				}
 /// 		}
 /// ```
-final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UITableViewDelegate {
+public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UITableViewDelegate {
 	
 	/// our container, weakly retained. Passed to all escaping closures
 	private(set) weak var container: ContainerType?
@@ -48,8 +48,8 @@ final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UI
 	public let updater: (ContainerType) -> TableContentBuilder<ContainerType>.Collection
 	
 	/// We use a TableViewDataSource to do diffing for us and update the table view.
-	typealias DataSourceType = TableViewDataSource<SectionInfo<ContainerType>, RowInfo<ContainerType>>
-	let dataSource: DataSourceType
+	public typealias DataSourceType = TableViewDataSource<SectionInfo<ContainerType>, RowInfo<ContainerType>>
+	public let dataSource: DataSourceType
 	
 	/// Creates a TableBuilder:
 	///
@@ -57,7 +57,7 @@ final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UI
 	///	- tableView: the table view to show contents in. its datasource and delegate will be replaced.
 	///	- container: the container we are in. This will be retained weakly and will be passed to every escaping closure. We will also scan for `@TableState`s in the container.
 	///	- updater: the @resultsBuilder that creates sections.
-	init(
+	public init(
 		tableView: UITableView,
 		container: ContainerType,
 		@TableContentBuilder<ContainerType> updater: @escaping (ContainerType) -> TableContentBuilder<ContainerType>.Collection
@@ -112,7 +112,7 @@ final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UI
 	}
 	
 	/// Creates a TableBuilder from a UITableViewController, the controller being the container also.
-	convenience init(
+	public convenience init(
 		controller: ContainerType,
 		@TableContentBuilder<ContainerType> updater: @escaping (ContainerType) -> TableContentBuilder<ContainerType>.Collection
 	) where ContainerType: UITableViewController {
