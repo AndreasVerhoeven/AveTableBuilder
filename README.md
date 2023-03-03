@@ -18,6 +18,70 @@ This is a library that makes creating "static" table views much easier. With Ave
 }
 ``` 
 
+## Example:
+
+This shows a demo of a simple "pizza order" table view. This is all there is to automatically populate and update the table view. No other code is necessary. 
+
+![Demo Video](https://user-images.githubusercontent.com/168214/222715181-977e34c6-d81a-4881-b458-996fb53d65f3.gif)
+
+```
+class ViewController: UITableViewController {
+	@TableState var includeDrinks = false
+	@TableState var selectedToppings = Set<Topping>()
+	@TableState var numberOfCocaColas = 0
+	@TableState var numberOfBeers = 0
+	
+	lazy var builder = TableBuilder(controller: self) { `self` in
+		Section.Stylished {
+			Section {
+				Row { `self`, cell, animated in
+					cell.textLabel?.text = "Pizza Order"
+					cell.textLabel?.font = .preferredFont(forTextStyle: .title3)
+					cell.textLabel?.textAlignment = .center
+				}
+				
+				Row(text: "Welcome to the pizza builder! Select what you want and we will make it happen")
+					.numberOfLines(0)
+					.textAlignment(.center)
+					.textFont(.from(.ios.footnote))
+				
+				Row(text: "Visit our website").onSelect { `self` in
+					UIApplication.shared.open(URL(string: "https://www.aveapps.com")!)
+				}
+				.textAlignment(.center)
+				.textColor(.systemBlue)
+				.backgroundColor(.secondarySystemBackground)
+			}
+			.backgroundColor(.systemRed)
+			.textColor(.white)
+			
+			Section("Drinks") {
+				Row.Switch(text: "Include Drinks", binding: self.$includeDrinks)
+				
+				if self.includeDrinks == true {
+					Row.Stepper(text: "Coca-Cola", binding: self.$numberOfCocaColas)
+					Row.Stepper(text: "Beer", binding: self.$numberOfBeers)
+				}
+			}
+			
+			Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
+				Row(text: topping.rawValue.capitalized)
+			}
+			
+			if self.selectedToppings.count > 0 || self.hadDrinks {
+				Section {
+					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0)
+					
+					Row.Action(text: "Complete Order") { `self` in
+						self.completeOrder()
+					}
+				}
+			}
+		}
+	}
+}
+```
+
 ## HowTo:
 
 ### TableBuilder

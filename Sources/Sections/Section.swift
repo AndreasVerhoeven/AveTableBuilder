@@ -10,7 +10,7 @@ import AveFontHelpers
 
 /// This is the most straight-forward implementation of TableContent: it represents a single section
 /// with rows
-class Section<ContainerType>: TableContent<ContainerType> {
+class Section<ContainerType: AnyObject>: TableContent<ContainerType> {
 	/// Creates a section with optional header, optional footer and rows (thru a @resultsBuilder).
 	init(
 		_ header: String? = nil,

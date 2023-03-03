@@ -11,7 +11,6 @@ enum Topping: String, CaseIterable {
 	case olives
 	case cheese
 	case eggplant
-	case zucchini
 	case mushrooms
 	case chilis
 }
@@ -31,7 +30,7 @@ class ViewController: UITableViewController {
 				// this is a row that is manually configurred
 				Row { `self`, cell, animated in
 					cell.textLabel?.text = "Pizza Order"
-					cell.textLabel?.font = .preferredFont(forTextStyle: .largeTitle)
+					cell.textLabel?.font = .preferredFont(forTextStyle: .title3)
 					cell.textLabel?.textAlignment = .center
 				}
 				
@@ -77,16 +76,41 @@ class ViewController: UITableViewController {
 				Row(text: topping.rawValue.capitalized)
 			}
 			
-			if self.selectedToppings.count > 0 || self.numberOfCocaColas > 0 || self.numberOfCocaColas > 0 {
+			if self.selectedToppings.count > 0 || self.hasDrinks {
 				Section {
+					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0)
+					
 					// an action show renders as a "button". The callback is triggered when the user selects the row.
 					// Note that `self` is passed in as a parameter, as to not create retain cycles.
 					Row.Action(text: "Complete Order") { `self` in
 						self.completeOrder()
-					}.textFont(.from(.ios.headline.medium))
+					}.textFont(.from(.ios.headline.medium)).numberOfLines(0)
 				}
 			}
 		}
+	}
+	
+	private var hasDrinks: Bool {
+		return includeDrinks && (numberOfCocaColas > 0 || numberOfBeers > 0)
+	}
+	
+	private func orderSummary() -> String {
+		var items = [String]()
+		if selectedToppings.isEmpty == false {
+			items += selectedToppings.map(\.rawValue.capitalized).sorted()
+		}
+		
+		if includeDrinks {
+			if numberOfCocaColas > 0 {
+				items += ["Coca Cola \(numberOfCocaColas)x"]
+			}
+			
+			if numberOfBeers > 0 {
+				items += ["Beers: \(numberOfBeers)x"]
+			}
+		}
+		
+		return items.map{ "- \($0)" }.joined(separator: "\n")
 	}
 	
 	private func completeOrder() {
