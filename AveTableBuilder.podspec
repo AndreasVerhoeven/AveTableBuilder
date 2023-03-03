@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
     s.swift_versions = ['5.7']
     s.ios.deployment_target = '13.0'
-    s.source_files = 'Sources/*.swift'
+    s.source_files = 'Sources/*/*.swift'
     
     s.dependency 'AutoLayoutConvenience'
     s.dependency 'AveDataSource'
