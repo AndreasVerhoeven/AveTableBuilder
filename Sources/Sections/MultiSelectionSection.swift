@@ -10,7 +10,7 @@ import UIKit
 extension Section {
 	/// Creates a section that shows rows for every item in a Collection. The rows, in turn, can be selected/deselected by tapping on them. A binding
 	/// to a `Set<Collection.Element>`  reflects what is selected.
-	public class MultiSelection: TableContent<ContainerType> {
+	open class MultiSelection: TableContent<ContainerType> {
 		private enum ButtonStatus {
 			case hidden, selectAll, deselectAll
 		}

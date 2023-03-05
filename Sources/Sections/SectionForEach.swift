@@ -9,7 +9,7 @@ import Foundation
 
 extension Section {
 	/// This creates multiple sections by iterating over a collection.
-	public class ForEach: TableContent<ContainerType> {
+	open class ForEach: TableContent<ContainerType> {
 		/// Shows the created Rows for each item in the collection. The items must be unique.
 		public convenience init<Collection: RandomAccessCollection>(
 			_ data: Collection,

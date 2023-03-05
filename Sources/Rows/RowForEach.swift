@@ -9,7 +9,7 @@ import Foundation
 
 extension Row {
 	/// This creates multiple rows by iterating over a collection.
-	public class ForEach: SectionContent<ContainerType> {
+	open class ForEach: SectionContent<ContainerType> {
 		/// Shows the created Rows for each item in the collection. The items must be unique.
 		public convenience init<Collection: RandomAccessCollection>(
 			_ data: Collection,

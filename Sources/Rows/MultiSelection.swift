@@ -10,7 +10,7 @@ import Foundation
 extension Row {
 	/// Creates a list of rows that shows rows for every item in a Collection. The rows, in turn, can be selected/deselected by tapping on them. A binding
 	/// to a `Set<Collection.Element>`  reflects what is selected.
-	public class MultiSelection: SectionContent<ContainerType> {
+	open class MultiSelection: SectionContent<ContainerType> {
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
 		public convenience init<Collection: RandomAccessCollection>(
 			_ data: Collection,

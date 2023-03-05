@@ -11,7 +11,7 @@ import Foundation
 /// items out of them with identifiers.
 /// We can't use protocols and generics, because the swift compiler sadly crashes a lot when
 /// combining @resultBuilders with nested generics, so we need to use a class hierarchy.
-public class TableBuilderContent<ContainerType, Item: IdentifiableTableItem> {
+open class TableBuilderContent<ContainerType, Item: IdentifiableTableItem> {
 	public var items = [Item]()
 	
 	public init(items: [Item] = [Item]()) {

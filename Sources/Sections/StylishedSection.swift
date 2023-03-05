@@ -10,7 +10,7 @@ import AutoLayoutConvenience
 import UIKitAnimations
 
 extension Section {
-	public class Stylished: TableContent<ContainerType> {
+	open class Stylished: TableContent<ContainerType> {
 		public init(@TableContentBuilder<ContainerType> builder: () -> TableContentBuilder<ContainerType>.Collection) {
 			let section = Section.Group(builder: builder).stylished()
 			super.init(items: section.items)
@@ -22,7 +22,7 @@ public protocol ButtonHaveableHeader {
 	func setButton(title: String?, animated: Bool, callback: (() -> Void)?)
 }
 
-public class StylishedCustomHeader: UITableViewHeaderFooterView {
+open class StylishedCustomHeader: UITableViewHeaderFooterView {
 	public let label = UILabel(font: .ios.headline.rounded)
 	public let button = UIButton(font: .ios.headline.rounded, type: .system)
 	

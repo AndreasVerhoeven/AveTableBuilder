@@ -9,7 +9,7 @@ import UIKit
 
 extension Row {
 	// A row that signifies an action
-	public class Action: Row<ContainerType, Action.Cell> {
+	open class Action: Row<ContainerType, Action.Cell> {
 		public class Cell: UITableViewCell {
 			
 			public override func tintColorDidChange() {

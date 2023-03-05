@@ -9,7 +9,7 @@ import UIKit
 
 extension Row {
 	// A row with a switch
-	public class Switch: Row<ContainerType, Switch.Cell> {
+	open class Switch: Row<ContainerType, Switch.Cell> {
 		public class Cell: UITableViewCell {
 			public let switchControl = UISwitch()
 			

@@ -27,7 +27,7 @@ fileprivate enum StaticRowStorage {
 }
 
 extension Row {
-	public class Static: SectionContent<ContainerType> {
+	open class Static: SectionContent<ContainerType> {
 		/// Creates a static row that is always the same cell that is not reused.
 		public init(
 			cellClass: Cell.Type = Cell.self,

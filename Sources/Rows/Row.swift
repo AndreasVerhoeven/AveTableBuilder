@@ -9,7 +9,7 @@ import UIKit
 
 /// This is the most straight-forward implementation of TableContent: it represents a single section
 /// with rows
-public class Row<ContainerType: AnyObject, Cell: UITableViewCell>: SectionContent<ContainerType> {
+open class Row<ContainerType: AnyObject, Cell: UITableViewCell>: SectionContent<ContainerType> {
 	public typealias ConfigurationHandler = ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 	
 	/// Creates a row with a given cell class, cell style and a configuration handler. For reuse purposes, also specify which configurable cell items

@@ -11,7 +11,7 @@ import AveFontHelpers
 
 extension Row {
 	// A row with a switch
-	public class Stepper: Row<ContainerType, Stepper.Cell> {
+	open class Stepper: Row<ContainerType, Stepper.Cell> {
 		public class Cell: UITableViewCell {
 			public let stepper = UIStepper()
 			public let label = UILabel(font: .from(.ios.body), color: .secondaryLabel)

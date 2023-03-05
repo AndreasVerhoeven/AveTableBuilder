@@ -10,7 +10,7 @@ import Foundation
 /// This is a temporary object that is constructed for the sole purpose to get `SectionInfoWithRows`'s out of it.
 /// We can't use protocols and generics, because the swift compiler sadly crashes a lot when
 /// combining @resultBuilders with nested generics.
-public class TableContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, SectionInfoWithRows<ContainerType>> {
+open class TableContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, SectionInfoWithRows<ContainerType>> {
 	
 	/// stores a piece of information that can be retrieved later in async SectionInfo callback.
 	public func store(_ key: SectionInfo<ContainerType>.StorageKey, value: Any?) {
