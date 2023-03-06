@@ -29,6 +29,8 @@ class ViewController: UITableViewController {
 	@TableState var numberOfBeers = 0
 	@TableState var extra: Extra?
 	
+	@TableState var start: Date?
+	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
@@ -146,7 +148,6 @@ class ViewController: UITableViewController {
 			print("IncludeDrinks changed to: \(newValue)")
 		}
 		
-		tableView.backgroundColor = .systemBackground
 		builder.update(animated: false) // fire up the builder
 	}
 }

@@ -70,7 +70,16 @@ extension StylishedCustomHeader: ButtonHaveableHeader {
 
 extension TableContent {
 	public func stylished() -> Self {
-		return self.stylishedHeader().backgroundColor(.secondarySystemBackground)
+		_ = self.stylishedHeader().backgroundColor(.secondarySystemBackground)
+		
+		items = items.map { item in
+			var newItem = item
+			newItem.sectionInfo.firstAddedCallbacks.append({ container, tableView in
+				tableView.backgroundColor = .systemBackground
+			})
+			return newItem
+		}
+		return self
 	}
 	
 	public func stylishedHeader() -> Self {

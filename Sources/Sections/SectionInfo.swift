@@ -21,6 +21,7 @@ public struct SectionInfo<ContainerType>: IdentifiableTableItem {
 	
 	public typealias HeaderFooterProvider = (_ `self`: ContainerType, _ tableView: UITableView,  _ section: Int) -> UITableViewHeaderFooterView
 	public typealias HeaderFooterUpdater = ( _ `self`: ContainerType, _ view: UITableViewHeaderFooterView, _ text: String?, _ animated: Bool) -> Void
+	public typealias InitializationCallbacks = ( _ `self`: ContainerType, _ tableView: UITableView) -> Void
 	
 	/// optional callback that provides a header view for this section
 	public var headerViewProvider: HeaderFooterProvider?
@@ -33,6 +34,9 @@ public struct SectionInfo<ContainerType>: IdentifiableTableItem {
 	
 	/// callbacks that update the footer view for this section
 	public var footerUpdaters = [HeaderFooterUpdater]()
+	
+	/// callbacks that are invoked when the section is first added to the table view
+	public var firstAddedCallbacks = [InitializationCallbacks]()
 	
 	/// Storage for TableContent subclasses, to pass data from init to separate callbacks.
 	/// This can be accessed using Self.currentSectionInfo?.storage.

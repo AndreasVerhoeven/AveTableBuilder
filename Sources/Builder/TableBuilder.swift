@@ -54,6 +54,8 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public typealias StateChangesCallback = () -> Void
 	private(set) var stateChangeCallbacks = [StateChangesCallback]()
 	
+	private var seenSections = Set<TableItemIdentifier>()
+	
 	/// Creates a TableBuilder:
 	///
 	/// Parameters:
@@ -145,8 +147,13 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		for item in updater(container).items {
 			item.rowInfos.forEach { row in
 				row.reference.forEach { $0.wrappedValue = row.id }
-				//print(row.id)
 			}
+			
+			if seenSections.contains(item.sectionInfo.id) == false {
+				seenSections.insert(item.sectionInfo.id)
+				item.sectionInfo.firstAddedCallbacks.forEach { $0(container, dataSource.tableView) }
+			}
+			
 			snapshot.addItems(item.rowInfos, for: item.sectionInfo)
 		}
 		
@@ -314,5 +321,19 @@ extension SectionContent {
 	public static var currentCell: UITableViewCell? {
 		guard let currentTableView, let currentIndexPath else { return nil }
 		return currentTableView.cellForRow(at: currentIndexPath)
+	}
+	
+	public static var closestViewController: UIViewController? {
+		return currentTableView?.closestViewController
+	}
+}
+
+extension UIResponder {
+	fileprivate var closestViewController: UIViewController? {
+		var responder: UIResponder? = self
+		while responder != nil && (responder is UIViewController) == false {
+			responder = responder?.next
+		}
+		return responder as? UIViewController
 	}
 }
