@@ -31,6 +31,8 @@ class ViewController: UITableViewController {
 	
 	@TableState var start: Date?
 	
+	@TableState var x = Set<String>()
+	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers

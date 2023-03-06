@@ -58,7 +58,39 @@ extension Section {
 			selectionButtonTitles(selectAll: "Select All", deselectAll: "Deselect All")
 		}
 		
-		@discardableResult func selectionButtonTitles(selectAll: String, deselectAll: String) -> Self {
+		/// Creates selectable Rows that mirror the inverted selection status of the given binding. Selected rows will have a checkmark accessory.
+		public init<Collection: RandomAccessCollection, ID: Hashable>(
+			_ header: String? = nil,
+			footer: String? = nil,
+			data: Collection,
+			identifiedBy: KeyPath<Collection.Element, ID>,
+			invertedBinding binding: TableBinding<Set<ID>>,
+			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
+		) where Collection.Element: Hashable {
+			let section = Section(header, footer: footer) {
+				Row.MultiSelection(data, identifiedBy: identifiedBy, invertedBinding: binding, builder: builder)
+			}
+			
+			if data.count <= 1 {
+				section.store(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
+			} else if binding.wrappedValue.count == 0 {
+				section.store(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
+				section.store(.multiSelectionCallback, value: {
+					binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
+				})
+			} else {
+				section.store(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
+				section.store(.multiSelectionCallback, value: {
+					binding.wrappedValue = Set()
+				})
+			}
+			
+			super.init(items: section.items)
+			
+			selectionButtonTitles(selectAll: "Select All", deselectAll: "Deselect All")
+		}
+		
+		@discardableResult public func selectionButtonTitles(selectAll: String, deselectAll: String) -> Self {
 			items = items.map { item in
 				var newItem = item
 				newItem.sectionInfo.headerUpdaters.append({ container, view, text, animated in
