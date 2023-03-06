@@ -7,6 +7,7 @@
 
 import UIKit
 
+// A controller that shows a table view with the contents of a passed in builder.
 public class TableBuilderController<T: AnyObject>: UITableViewController {
 	let contents: (T) -> TableContentBuilder<T>.Collection
 	let container: T
@@ -41,7 +42,6 @@ public class TableBuilderController<T: AnyObject>: UITableViewController {
 		super.viewDidLoad()
 		
 		self.title = title
-		tableView.backgroundColor = .systemBackground
 		builder.update(animated: false)
 	}
 }

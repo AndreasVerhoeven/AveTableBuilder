@@ -15,43 +15,52 @@ enum Topping: String, CaseIterable {
 	case chilis
 }
 
+enum Extra: String, CaseIterable {
+	case mozarellaSticks
+	case chiliCheeseNuggets
+	case garlicBread
+}
+
 class ViewController: UITableViewController {
 	// this is the state that we keep which makes the TableBuilder update itself when changed.
 	@TableState var includeDrinks = false
 	@TableState var selectedToppings = Set<Topping>()
 	@TableState var numberOfCocaColas = 0
 	@TableState var numberOfBeers = 0
+	@TableState var extra: Extra?
 	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
 			// Our first section: no title and two rows
-			Section {
-				// this is a row that is manually configurred
-				Row { `self`, cell, animated in
-					cell.textLabel?.text = "Pizza Order"
-					cell.textLabel?.font = .preferredFont(forTextStyle: .title3)
-					cell.textLabel?.textAlignment = .center
+			if self.selectedToppings.count == 0 && !self.hasDrinks {
+				Section {
+					// this is a row that is manually configurred
+					Row { `self`, cell, animated in
+						cell.textLabel?.text = "Pizza Order"
+						cell.textLabel?.font = .preferredFont(forTextStyle: .title3)
+						cell.textLabel?.textAlignment = .center
+					}
+					
+					// this is a row that uses the build in configuration helpers
+					Row(text: "Welcome to the pizza builder! Select what you want and we will make it happen")
+						.numberOfLines(0)
+						.textAlignment(.center)
+						.textFont(.from(.ios.footnote))
+					
+					// This is a row that has an `onSelect` handler: when cells have an onSelect handler,
+					// their `selectionStyle` will be set to default.
+					// Note that `self` is passed in as an argument, so that we do not create retain cycles.
+					Row(text: "Visit our website").onSelect { `self` in
+						UIApplication.shared.open(URL(string: "https://www.aveapps.com")!)
+					}.textAlignment(.center).textColor(.systemBlue).backgroundColor(.secondarySystemBackground)
 				}
-				
-				// this is a row that uses the build in configuration helpers
-				Row(text: "Welcome to the pizza builder! Select what you want and we will make it happen")
-					.numberOfLines(0)
-					.textAlignment(.center)
-					.textFont(.from(.ios.footnote))
-				
-				// This is a row that has an `onSelect` handler: when cells have an onSelect handler,
-				// their `selectionStyle` will be set to default.
-				// Note that `self` is passed in as an argument, so that we do not create retain cycles.
-				Row(text: "Visit our website").onSelect { `self` in
-					UIApplication.shared.open(URL(string: "https://www.aveapps.com")!)
-				}.textAlignment(.center).textColor(.systemBlue).backgroundColor(.secondarySystemBackground)
+				.backgroundColor(.systemRed) // we can also apply a background color to all cells at once
+				.textColor(.white) // also text colors!
+								   // Note that properties are applied outside-in: properties deeper will override properties
+								   // on the outside
 			}
-			.backgroundColor(.systemRed) // we can also apply a background color to all cells at once
-			.textColor(.white) // also text colors!
-			// Note that properties are applied outside-in: properties deeper will override properties
-			// on the outside
 			
 			// Just a section with a header
 			Section("Drinks") {
@@ -68,6 +77,10 @@ class ViewController: UITableViewController {
 					Row.Stepper(text: "Coca-Cola", binding: self.$numberOfCocaColas)
 					Row.Stepper(text: "Beer", binding: self.$numberOfBeers)
 				}
+			}
+			
+			Section("Extra's") {
+				Row(text: "Snack").inlineOptions(Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
 			}
 			
 			// this is a special kind of setting that shows all items in a Collection and then makes sure
@@ -109,6 +122,10 @@ class ViewController: UITableViewController {
 			if numberOfBeers > 0 {
 				items += ["Beers: \(numberOfBeers)x"]
 			}
+		}
+		
+		if let snack = extra {
+			items += ["Free Snack: \(snack.rawValue)"]
 		}
 		
 		return items.map{ "- \($0)" }.joined(separator: "\n")

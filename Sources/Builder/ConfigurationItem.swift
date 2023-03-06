@@ -19,6 +19,7 @@ public struct RowConfiguration {
 		// cell config
 		public static let backgroundColor = Self(rawValue: "_backgroundColor")
 		public static let accessory = Self(rawValue: "_accessory")
+		public static let accessoryView = Self(rawValue: "_accessoryView")
 		
 		// content
 		public static let image = Self(rawValue: "_image")
@@ -41,6 +42,9 @@ public struct RowConfiguration {
 		
 		public static let imageTintColor = Self(rawValue: "_imageTintColor")
 		public static let numberOfLines = Self(rawValue: "_numberOfLines")
+		
+		// other
+		public static let menu = Self(rawValue: "_menu")
 		
 		// indicates that this row is manually configured: it's up
 		// to the programmer to make things consistent

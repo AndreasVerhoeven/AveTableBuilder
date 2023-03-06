@@ -49,6 +49,7 @@
 		49A736F529B27F86005A2CE9 /* SingleSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F429B27F86005A2CE9 /* SingleSelection.swift */; };
 		49A736F729B28082005A2CE9 /* SingleSelectionSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */; };
 		49A736F929B28554005A2CE9 /* TableBuilderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F829B28554005A2CE9 /* TableBuilderController.swift */; };
+		49A7370529B66D7E005A2CE9 /* RowModifyable+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +93,7 @@
 		49A736F429B27F86005A2CE9 /* SingleSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelection.swift; sourceTree = "<group>"; };
 		49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionSection.swift; sourceTree = "<group>"; };
 		49A736F829B28554005A2CE9 /* TableBuilderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderController.swift; sourceTree = "<group>"; };
+		49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowModifyable+Menu.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +180,7 @@
 			children = (
 				497C78BB29B1EFD9006EF4A3 /* TableBuilderContent.swift */,
 				497C78BC29B1EFD9006EF4A3 /* RowModifyable.swift */,
+				49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 				497C78C729B1EFD9006EF4A3 /* SectionWrapper.swift in Sources */,
 				497C78D929B1EFD9006EF4A3 /* TableBuilderContent.swift in Sources */,
 				49A736F929B28554005A2CE9 /* TableBuilderController.swift in Sources */,
+				49A7370529B66D7E005A2CE9 /* RowModifyable+Menu.swift in Sources */,
 				497C78CB29B1EFD9006EF4A3 /* SectionContent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -470,6 +474,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P4CZV2X6XB;
 				INFOPLIST_FILE = Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -489,6 +494,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P4CZV2X6XB;
 				INFOPLIST_FILE = Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

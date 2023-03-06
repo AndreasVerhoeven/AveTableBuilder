@@ -10,14 +10,14 @@ import UIKit
 /// Base protocol for modifying rows. By this being a protocol, we can have our modification methods
 /// apply to both sections and rows.
 public protocol RowModifyable {
-	associatedtype ContainerType
+	associatedtype ContainerType: AnyObject
 	typealias RowInfoType = RowInfo<ContainerType>
 	
 	/// Modify all RowInfos by applying the given callback to each RowInfo to replace the old RowInfo.
 	func modifyRows(_ callback: (RowInfoType) -> RowInfoType) -> Self
 }
 
-extension RowModifyable {
+extension RowModifyable {	
 	/// Configures
 	@discardableResult public func configure<Cell: UITableViewCell>(
 		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,

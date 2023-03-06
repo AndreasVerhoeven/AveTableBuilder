@@ -219,7 +219,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		tableView.deselectRow(at: indexPath, animated: true)
 		guard let container else { return }
 		guard let item = dataSource.item(at: indexPath) else { return }
-		return perform(with: item) {
+		return perform(in: tableView, indexPath: indexPath, with: item) {
 			item.selectionHandlers.forEach { $0(container) }
 		}
 	}
@@ -227,7 +227,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return perform(with: item) {
+		return perform(in: tableView, indexPath: indexPath, with: item) {
 			return item.leadingSwipeActionsProvider?(container)
 		}
 	}
@@ -235,7 +235,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return perform(with: item) {
+		return perform(in: tableView, indexPath: indexPath, with: item) {
 			return item.trailingSwipeActionsProvider?(container)
 		}
 	}
@@ -243,7 +243,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return perform(with: item) {
+		return perform(in: tableView, indexPath: indexPath, with: item) {
 			item.contextMenuProvider?(container, point, tableView.cellForRow(at: indexPath))
 		}
 	}
@@ -253,6 +253,10 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 fileprivate enum TableBuilderStaticStorage {
 	static var currentSectionInfos = [Any]()
 	static var currentRowInfos = [Any]()
+	
+	static var currentTableViews = [UITableView]()
+	static var currentIndexPath = [IndexPath]()
+	static var currentCells = [UITableViewCell]()
 }
 
 extension TableBuilder {
@@ -277,6 +281,15 @@ extension TableBuilder {
 		TableBuilderStaticStorage.currentSectionInfos.removeLast()
 		return result
 	}
+	
+	private func perform<T>(in tableView: UITableView, indexPath: IndexPath, with item: RowInfo<ContainerType>, callback: () -> T) -> T {
+		TableBuilderStaticStorage.currentTableViews.append(tableView)
+		TableBuilderStaticStorage.currentIndexPath.append(indexPath)
+		let result = perform(with: item, callback: callback)
+		TableBuilderStaticStorage.currentIndexPath.removeLast()
+		TableBuilderStaticStorage.currentTableViews.removeLast()
+		return result
+	}
 }
 
 extension TableContent {
@@ -288,5 +301,18 @@ extension TableContent {
 extension SectionContent {
 	public static var currentRowInfo: RowInfo<ContainerType>? {
 		TableBuilder<ContainerType>.currentRowInfo
+	}
+	
+	public static var currentTableView: UITableView? {
+		TableBuilderStaticStorage.currentTableViews.last
+	}
+	
+	public static var currentIndexPath: IndexPath? {
+		TableBuilderStaticStorage.currentIndexPath.last
+	}
+	
+	public static var currentCell: UITableViewCell? {
+		guard let currentTableView, let currentIndexPath else { return nil }
+		return currentTableView.cellForRow(at: currentIndexPath)
 	}
 }

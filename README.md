@@ -92,17 +92,17 @@ You create a `TableBuilder` that you give a `container`, `tableView` and an upda
  - the updater needs to supply Sections and rows
 
 ```
-   lazy var builder = TableBuilder(container: self, tableView: self.tableView) { `self` in
-      // contents goes here
-   }
-   
-   builder.update(animated: false) // start building
+lazy var builder = TableBuilder(container: self, tableView: self.tableView) { `self` in
+  // contents goes here
+}
+
+builder.update(animated: false) // start building
 ```
 
 If you are in a `UITableViewController`, there's a convenience init to set the container and tableView at the same time:
 
 ```
-	lazy var builder = TableBuilder(controller: self) { `self` in }
+lazy var builder = TableBuilder(controller: self) { `self` in }
 ```  
 
 
@@ -111,16 +111,16 @@ If you are in a `UITableViewController`, there's a convenience init to set the c
 In the update callback, you define Sections:
 
 ```
-   Section {}
-   Section("OptionalHeader") {}
-   Section("OptionalHeader", footer: "OptionalFooter") {}
-   
-   // section with a custom header
-   Section {
-   
-   }.header(MyHeaderClass.self) { `self`, headerView, headerText, animated in
-		headerView.label.setText(headerText, animated: animated)
-   }
+Section {}
+Section("OptionalHeader") {}
+Section("OptionalHeader", footer: "OptionalFooter") {}
+
+// section with a custom header
+Section {
+
+}.header(MyHeaderClass.self) { `self`, headerView, headerText, animated in
+	headerView.label.setText(headerText, animated: animated)
+}
 ```
 
 #### Section.Group
@@ -128,16 +128,16 @@ In the update callback, you define Sections:
 If you want to group multiple sections to apply a property to all its sections inside of it, you can wrap them in `Section.Group`:
 
 ```
-    // all three sections will get the same custom header applied
-	Section.Group {
+// all three sections will get the same custom header applied
+Section.Group {
+
+	Section("First") {}
+	Section("Second") {}
+	Section("Third") {}
 	
-		Section("First") {}
-		Section("Second") {}
-		Section("Third") {}
-		
-	}.header(MyHeaderClass.self) { `self`, headerView, headerText, animated in
-		headerView.label.setText(headerText, animated: animated)
-   }
+}.header(MyHeaderClass.self) { `self`, headerView, headerText, animated in
+	headerView.label.setText(headerText, animated: animated)
+}
 ```
 
 #### Section.ForEach
@@ -145,17 +145,17 @@ If you want to group multiple sections to apply a property to all its sections i
 If you want to iterate over a collection to create sections, use `Section.ForEach`:
 
 ```
-    // this creates three sections, one for each element.
-    // the elements need to be unique, since they are used to identify the section
-    let items = ["A", "B", "C"]
-	Section.ForEach(items) { element in
-	    Section(item) {}
-	}
-	
-	// if your elements are uniquely identified by a field, use the version which takes a specific `identifiedBy` field
-	Section.ForEach(collection, identifiedBy: \.id) { element in
-		Section(item) {}
-	}
+// this creates three sections, one for each element.
+// the elements need to be unique, since they are used to identify the section
+let items = ["A", "B", "C"]
+Section.ForEach(items) { element in
+	Section(item) {}
+}
+
+// if your elements are uniquely identified by a field, use the version which takes a specific `identifiedBy` field
+Section.ForEach(collection, identifiedBy: \.id) { element in
+	Section(item) {}
+}
 ```
 
 
@@ -168,15 +168,15 @@ If the section header class conforms to ButtonHavableHeader, a button title will
 the button title with `.selectionButtonTitles(selectAll: String, deselectAll: String)` 
 
 ```
-	let items = ["A", "B", "C"]
-	@TableState selection = Set<String>()
-	Section.MultiSelection(collection, binding: $selection) { element in
-		Row(text: element)
-	}
-	
-	Section.MultiSelection(collection, binding: $selection) { element in
-		Row(text: element)
-	}.selectionButtonTitles(selectAll: "All of It", deselectAll: "None of It")
+let items = ["A", "B", "C"]
+@TableState selection = Set<String>()
+Section.MultiSelection(collection, binding: $selection) { element in
+	Row(text: element)
+}
+
+Section.MultiSelection(collection, binding: $selection) { element in
+	Row(text: element)
+}.selectionButtonTitles(selectAll: "All of It", deselectAll: "None of It")
 ```
 
 
@@ -185,10 +185,10 @@ the button title with `.selectionButtonTitles(selectAll: String, deselectAll: St
 This is a wrapper section that you can use to apply a stylished look: cells use a custom background color and headers use a bigger font:
 
 ```
-	Section.Stylished {
-		Section("First") {}
-		Section("Second") {}
-	}
+Section.Stylished {
+	Section("First") {}
+	Section("Second") {}
+}
 ```
 
 ### Rows:
@@ -196,9 +196,9 @@ This is a wrapper section that you can use to apply a stylished look: cells use 
 Each section contains zero or more rows:
 
 ```
-	Section {
-		Row(text: "X")
-	}
+Section {
+	Row(text: "X")
+}
 ```
 
 #### Row
@@ -208,46 +208,46 @@ A `Row` is the most basic of rows. There are several ways to create and configur
 ##### Configure the row yourself
 
 ```
-	Row { `self`, cell, animated in
-		// this method is called every time this row needs to be configured. Apply your own configuration
-		cell.textLabel?.setText("Some Text", animated: animated)
-	}
-	
-	// rows with different `modifying` lists will never reuse the same cells,
-	// once that do have the same lists will.
-	Row(modifying: [.custom("MyConfiguration)]) { `self`, cell, animated in
-		// configure here
-	}
-	
-	Row(cellClass: MyCustomCell.self) { `self`, cell, animated in
-	 // configure
-	}
-	
-	Row(cellClass: MyCustomCell.self, style: .value1) { `self`, cell, animated in
-	 // configure
-	}
+Row { `self`, cell, animated in
+	// this method is called every time this row needs to be configured. Apply your own configuration
+	cell.textLabel?.setText("Some Text", animated: animated)
+}
+
+// rows with different `modifying` lists will never reuse the same cells,
+// once that do have the same lists will.
+Row(modifying: [.custom("MyConfiguration)]) { `self`, cell, animated in
+	// configure here
+}
+
+Row(cellClass: MyCustomCell.self) { `self`, cell, animated in
+ // configure
+}
+
+Row(cellClass: MyCustomCell.self, style: .value1) { `self`, cell, animated in
+ // configure
+}
 ```
 
 #### Use one of the convenience inits:
 
 ```
-	// .default cells with a text and optional image
-	Row(text: "Text")
-	Row(text: "Text", image: someImage)
-	Row(text: "Text", cellClass: MyCustomCell.self)
-	Row(text: "Text", image: someImage, cellClass: MyCustomCell.self)
-	
-	// .value1 cells with a text, value text and optional image
-	Row(text: "Text", value: "ValueText")
-	Row(text: "Text", value: "ValueText", image: someImage)
-	Row(text: "Text", value: "ValueText", cellClass: MyCustomCell.self)
-	Row(text: "Text", value: "ValueText", image: someImage, cellClass: MyCustomCell.self)
-	
-	// subTitle cells with a text, subtitle and an optional image
-	Row(text: "Text", subtitle: "Subtitle")
-	Row(text: "Text", subtitle: "Subtitle", image: someImage)
-	Row(text: "Text", subtitle: "Subtitle", cellClass: MyCustomCell.self)
-	Row(text: "Text", subtitle: "Subtitle", image: someImage, cellClass: MyCustomCell.self)
+// .default cells with a text and optional image
+Row(text: "Text")
+Row(text: "Text", image: someImage)
+Row(text: "Text", cellClass: MyCustomCell.self)
+Row(text: "Text", image: someImage, cellClass: MyCustomCell.self)
+
+// .value1 cells with a text, value text and optional image
+Row(text: "Text", value: "ValueText")
+Row(text: "Text", value: "ValueText", image: someImage)
+Row(text: "Text", value: "ValueText", cellClass: MyCustomCell.self)
+Row(text: "Text", value: "ValueText", image: someImage, cellClass: MyCustomCell.self)
+
+// subTitle cells with a text, subtitle and an optional image
+Row(text: "Text", subtitle: "Subtitle")
+Row(text: "Text", subtitle: "Subtitle", image: someImage)
+Row(text: "Text", subtitle: "Subtitle", cellClass: MyCustomCell.self)
+Row(text: "Text", subtitle: "Subtitle", image: someImage, cellClass: MyCustomCell.self)
 ```
 
 
@@ -256,30 +256,30 @@ A `Row` is the most basic of rows. There are several ways to create and configur
 If you have a row that uses a cell that is never re-used, you can use `Row.Static`:
 
 ```
-	// this always uses someExistingCell for this row
-	Row.Static(cell: self.someExistingCell)
-	
-	// same, but now with a configuration handler that is called on each update
-	Row.Static(cell: self.someExistingCell) { `self`, cell animated in
-	
-	}
-	
-	// a cell that is always the same
-	Row.Static { `self`, cell, animated in 
-		// configure the cell here
-	}
-	
-	// a cell that is always the same, with an initial and update handler
-	Row.Static { `self`, cell in 
-		// initial configuration
-	} updates: { `self`, cell, animated in
-		// updates
-	}
-	
-	// a cell of a specific class that is always the same
-	Row.Static(cellClass: MyCustomCell.self) { `self`, cell, animated in
-		// updates
-	}
+// this always uses someExistingCell for this row
+Row.Static(cell: self.someExistingCell)
+
+// same, but now with a configuration handler that is called on each update
+Row.Static(cell: self.someExistingCell) { `self`, cell animated in
+
+}
+
+// a cell that is always the same
+Row.Static { `self`, cell, animated in 
+	// configure the cell here
+}
+
+// a cell that is always the same, with an initial and update handler
+Row.Static { `self`, cell in 
+	// initial configuration
+} updates: { `self`, cell, animated in
+	// updates
+}
+
+// a cell of a specific class that is always the same
+Row.Static(cellClass: MyCustomCell.self) { `self`, cell, animated in
+	// updates
+}
 ```
 
 #### Row.Switch
@@ -287,13 +287,13 @@ If you have a row that uses a cell that is never re-used, you can use `Row.Stati
 A row that has a switch as accessory
 
 ```
-	@TableState var someVariable = true
-	Row.Switch(text: "Text", binding: self.$someVariable) // someVariable and the switch reflect each other
-	Row.Switch(text: "Text", image: someImage, binding: self.$someVariable)
-	
-	Row.Switch(text: "Text", isOn: someBoolean) { `self`, isOn in
-		// do something with the new state here
-	}
+@TableState var someVariable = true
+Row.Switch(text: "Text", binding: self.$someVariable) // someVariable and the switch reflect each other
+Row.Switch(text: "Text", image: someImage, binding: self.$someVariable)
+
+Row.Switch(text: "Text", isOn: someBoolean) { `self`, isOn in
+	// do something with the new state here
+}
 ```
 
 
@@ -302,9 +302,9 @@ A row that has a switch as accessory
 A row that shows a stepper with a label
 
 ```
-	@TableState var value = 0
-	
-	Row.Stepper(text: "Text", binding self.$value) // value and the stepper reflect each other
+@TableState var value = 0
+
+Row.Stepper(text: "Text", binding self.$value) // value and the stepper reflect each other
 	
 ```
 
@@ -314,9 +314,9 @@ A row that shows a stepper with a label
 A row that shows up as an actionable row, with tint colored label and centered text:
 
 ```
-	Row.Action(text: "Perform my Action") { `self` in
-		// do something
-	}
+Row.Action(text: "Perform my Action") { `self` in
+	// do something
+}
 ```
 
 ### Row.Group
@@ -324,14 +324,14 @@ A row that shows up as an actionable row, with tint colored label and centered t
 If you want to group multiple rows to apply a property to all its rows inside of it, you can wrap them in `Row.Group`:
 
 ```
-    // all three rows will have a red background color
-	Row.Group {
+// all three rows will have a red background color
+Row.Group {
+
+	Row("First") {}
+	Row("Second") {}
+	Row("Third") {}
 	
-		Row("First") {}
-		Row("Second") {}
-		Row("Third") {}
-		
-	} 
+} 
 ```
 
 #### Row.ForEach
@@ -339,17 +339,17 @@ If you want to group multiple rows to apply a property to all its rows inside of
 If you want to iterate over a collection to create row, use `Row.ForEach`:
 
 ```
-    // this creates three rows, one for each element.
-    // the elements need to be unique, since they are used to identify the section
-    let items = ["A", "B", "C"]
-	Row.ForEach(items) { element in
-	    Row(text: element)
-	}
-	
-	// if your elements are uniquely identified by a field, use the version which takes a specific `identifiedBy` field
-	Row.ForEach(collection, identifiedBy: \.id) { element in
-		Row(text: element)
-	}
+// this creates three rows, one for each element.
+// the elements need to be unique, since they are used to identify the section
+let items = ["A", "B", "C"]
+Row.ForEach(items) { element in
+	Row(text: element)
+}
+
+// if your elements are uniquely identified by a field, use the version which takes a specific `identifiedBy` field
+Row.ForEach(collection, identifiedBy: \.id) { element in
+	Row(text: element)
+}
 ```
 
 
@@ -359,11 +359,11 @@ If you have a collection where each item can be picked using checkmarks, use Row
 the selection for you:
 
 ```
-	let items = ["A", "B", "C"]
-	@TableState selection = Set<String>()
-	Row.MultiSelection(collection, binding: $selection) { element in
-		Row(text: element)
-	}
+let items = ["A", "B", "C"]
+@TableState selection = Set<String>()
+Row.MultiSelection(collection, binding: $selection) { element in
+	Row(text: element)
+}
 ```
 
 
@@ -381,14 +381,14 @@ TableBuilder comes with a few convenience configuration modifiers that you can a
  modifiers are "applied" inside out: the property or modifier that is configured deepest in the hierarchy "wins":
  
  ```
-	Section {
-		Row(text: "Row").backgroundColor(.red) // this row will be red
-		Row(text: "Other") // this row will be green
-		
-		Row { `self`, cell, animated in
-			// background color will be set to green here, but you can override it
-		}
-	}.backgroundColor(.green)
+Section {
+	Row(text: "Row").backgroundColor(.red) // this row will be red
+	Row(text: "Other") // this row will be green
+	
+	Row { `self`, cell, animated in
+		// background color will be set to green here, but you can override it
+	}
+}.backgroundColor(.green)
 ```
 
 #### The modifiers:
@@ -397,77 +397,112 @@ TableBuilder comes with a few convenience configuration modifiers that you can a
 	Calls a configuration handler for a row that is added at the end of the configuration: it will be performed after every other configuration is done.
 
 ````
-	// adds a configuration handler to a row
-	.configure { `self`, cell, animated in /* configure cell here */ }
-	
-	// adds a configuration handler and tells what the handler is modifying for re-use purposes
-	.configure(modifying: [.custom1]) { `self`, cell, animated in /* configure cell here */ }
-	
-	// adds a configuration handler that only works for cells of the given type
-	.configure(cellOfType: MyCustomCell.self, modifying: []) { `self`, cell, animated in /* configure cell here */ }
+// adds a configuration handler to a row
+.configure { `self`, cell, animated in /* configure cell here */ }
+
+// adds a configuration handler and tells what the handler is modifying for re-use purposes
+.configure(modifying: [.custom1]) { `self`, cell, animated in /* configure cell here */ }
+
+// adds a configuration handler that only works for cells of the given type
+.configure(cellOfType: MyCustomCell.self, modifying: []) { `self`, cell, animated in /* configure cell here */ }
 ````
 
 ##### .preConfigure()
 	Calls a configuration handler for a row that is added at the front of the configuration: it will be performed before every other configuration is done.
 
 ````
-	// adds a configuration handler to a row
-	.preConfigure { `self`, cell, animated in /* configure cell here */ }
-	
-	// adds a configuration handler and tells what the handler is modifying for re-use purposes
-	.preConfigure(modifying: [.custom1]) { `self`, cell, animated in /* configure cell here */ }
-	
-	// adds a configuration handler that only works for cells of the given type
-	.preConfigure(cellOfType: MyCustomCell.self) { `self`, cell, animated in /* configure cell here */ }
+// adds a configuration handler to a row
+.preConfigure { `self`, cell, animated in /* configure cell here */ }
+
+// adds a configuration handler and tells what the handler is modifying for re-use purposes
+.preConfigure(modifying: [.custom1]) { `self`, cell, animated in /* configure cell here */ }
+
+// adds a configuration handler that only works for cells of the given type
+.preConfigure(cellOfType: MyCustomCell.self) { `self`, cell, animated in /* configure cell here */ }
 ````
 
 ##### Content
 
 ```
-	.noAnimatedContentChanges() // rows configuration handlers will always be called with animated == false  
-	
-	.backgroundColor(.red) // sets a background color to the row
-	.accessory(.disclosureIndicator) // sets an accessory to the row
-	
-	.textFont(preferredFont(forTextStyle: .title1)) // sets the textLabel's font
-	.detailTextFont(preferredFont(forTextStyle: .title1)) // sets the detailTextLabel's font
-	
-	.textColor(.blue) // sets the textLabel's textColor
-	.detailTextColor(.blue) // sets the detailTextLabel's textColor
-	
-	.textAlignment(.center) // sets the textLabel's alignment
-	.detailTextAlignment(.center) // sets the detailTextLabel's alignment
-	
-	.numberOfLines(0) // sets the numberOfLines for both labels
-	
-	.imageTintColor(.green) // sets the imageView's tintColor
-	
-	.checked(true) // checkmarks the cell
-	.checked(false) // removes the checkmark from the cell
+.noAnimatedContentChanges() // rows configuration handlers will always be called with animated == false  
+
+.backgroundColor(.red) // sets a background color to the row
+.accessory(.disclosureIndicator) // sets an accessory to the row
+
+.textFont(preferredFont(forTextStyle: .title1)) // sets the textLabel's font
+.detailTextFont(preferredFont(forTextStyle: .title1)) // sets the detailTextLabel's font
+
+.textColor(.blue) // sets the textLabel's textColor
+.detailTextColor(.blue) // sets the detailTextLabel's textColor
+
+.textAlignment(.center) // sets the textLabel's alignment
+.detailTextAlignment(.center) // sets the detailTextLabel's alignment
+
+.numberOfLines(0) // sets the numberOfLines for both labels
+
+.imageTintColor(.green) // sets the imageView's tintColor
+
+.checked(true) // checkmarks the cell
+.checked(false) // removes the checkmark from the cell
  ```
  
  
  #### Handlers
  
  ```
-	// called when the row is selected
-	.onSelect { `self` in
-	}
-	
-	// toggles a @TableState variable when the row is selected
-	.onSelect(toggle: self.$someBooleanStateVariable)
-	
-	.leadingSwipeActions {  `self` in
-		// return the leading swipe actions for this cell
-	}
-	
-	.trailingSwipeActions {  `self` in
-		// return the trailing swipe actions for this cell
-	}
-	
-	.contextMenuProvider { `self`, point, cell in
-		// return the context menu provider for this cell
-	}
+// called when the row is selected
+.onSelect { `self` in
+}
+
+// toggles a @TableState variable when the row is selected
+.onSelect(toggle: self.$someBooleanStateVariable)
+
+.leadingSwipeActions {  `self` in
+	// return the leading swipe actions for this cell
+}
+
+.trailingSwipeActions {  `self` in
+	// return the trailing swipe actions for this cell
+}
+
+.contextMenuProvider { `self`, point, cell in
+	// return the context menu provider for this cell
+}
+```
+
+
+#### Menu
+
+You can show menus from rows: the cell will get a menu button the right hand side with an optional title.
+This can also be used to show inline pickers.
+
+```
+// show a static menu
+Row(text: "Text").menu(title: "Action", self.someUIMenu)
+
+// show a dynamically created menu
+Row(text: "Text").menu(title: "Action") { `self` in
+	return UIMenu(title: "", children: [])
+}
+
+```
+
+
+#### Inline Pickers
+
+You can also let the user pick an option with an inline menu:
+```
+// the last closure provides a string of the selecred option
+@TableState var option = 0
+Row(text: "Text").inlineOptions([0, 1, 2], binding: self.$option) { String($0) }
+
+// Same as above, but the `0` option is shown separately in the menu. Can be used for custom options.
+@TableState var option = 0
+Row(text: "Text").inlineOptions([0, 1, 2], binding: self.$option, showSeparately: [0]) { String($0) } 
+
+// nil is also an option
+@TableState var option: Int?
+Row(text: "Text").inlineOptions([0, 1, 2], binding: self.$option) { $0.flatMap(String) ?? "None" }
 ```
 
 ### State & Bindings
@@ -482,9 +517,9 @@ You can then use this TableState variable in the body of your TableBuilder. Use 
 Bindings provide a two-way update between a Row/Section and a TableState variable:
 
 ```
-	// This row's toggle switch will automatically reflect the value of myVariable,
-	// but ALSO, when the switch is toggled in the cell, myVariable will be updated automatically.
-	Row.Switch(text: "Bla", binding: self.$myVariable)
+// This row's toggle switch will automatically reflect the value of myVariable,
+// but ALSO, when the switch is toggled in the cell, myVariable will be updated automatically.
+Row.Switch(text: "Bla", binding: self.$myVariable)
 ``` 
 
 #### Registering TableState's
@@ -499,17 +534,16 @@ will automatically register any TableState that is a field of the container you 
 Because `TableState` is a propertywrapper with custom backing, you cannot use `didSet {}` to monitor the variable for changes, unfortunately. If you want
 to monitor state changes of your TableState variables, you can use the following (notice the underscore prefix):
 ```
-	@TableState var myVariable = true
-	
-	/// will be called with the new value of the state
-	_myVariable.onChange { newValue in
-		print(newValue)
-	}
+@TableState var myVariable = true
 
-	// will just be called when the value changes
-	_myVariable.onChange {
-		print("Changed")
-	}
+/// will be called with the new value of the state
+_myVariable.onChange { newValue in
+	print(newValue)
+}
+
+// will just be called when the value changes
+_myVariable.onChange {
+	print("Changed")
 }
 ```
 
@@ -581,21 +615,21 @@ Whenever you call `backgroundColor`, we add a `.backgroundColor` to the `knownMo
 If the user configures their own cells, we add a `.manual` `knownModification`, but it's then up to the user to always configure the cell correctly. Users can introduce their own `knownModification`s to group cells into groups by setting the `modifying:` property:
 
 ```
-    // these two rows will have the same ReuseIdentifier and thus 
-    // will reuse each others cells
-	Row(modifying: .custom("MyCategory")) { `self`, cell, animated in
-	   // configure cell here
-	}
-	
-	
-	Row(modifying: .custom("MyCategory")) { `self`, cell, animated in
-	   // configure cell here
-	}
-	
-	// this cell will never reuse cells from the previous two rows
-	Row { `self`, cell, animated in
-	   // configure cell here
-	}
+// these two rows will have the same ReuseIdentifier and thus 
+// will reuse each others cells
+Row(modifying: .custom("MyCategory")) { `self`, cell, animated in
+   // configure cell here
+}
+
+
+Row(modifying: .custom("MyCategory")) { `self`, cell, animated in
+   // configure cell here
+}
+
+// this cell will never reuse cells from the previous two rows
+Row { `self`, cell, animated in
+   // configure cell here
+}
 ``` 
 
 ### Why classes and not structs?
