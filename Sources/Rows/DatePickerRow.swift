@@ -161,12 +161,13 @@ fileprivate final class DatePickerViewController: UIViewController {
 	var dismissCallback: Callback?
 	var configurationCallback: ConfigurationCallback?
 	
-	static func show(configurationCallback: ConfigurationCallback,
+	static func show(configurationCallback: @escaping ConfigurationCallback,
 					 changedCallback: Callback?,
 					 dismissCallback: Callback?,
 					 in viewController: UIViewController,
 					 from source: Any?) {
 		let controller = DatePickerViewController()
+		controller.configurationCallback = configurationCallback
 		controller.datePickerChangedCallback = changedCallback
 		controller.dismissCallback = dismissCallback
 		
