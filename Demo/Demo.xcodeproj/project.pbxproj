@@ -50,7 +50,7 @@
 		49A736F729B28082005A2CE9 /* SingleSelectionSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */; };
 		49A736F929B28554005A2CE9 /* TableBuilderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F829B28554005A2CE9 /* TableBuilderController.swift */; };
 		49A7370529B66D7E005A2CE9 /* RowModifyable+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */; };
-		49A7370729B67C9B005A2CE9 /* RowModifyable+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370629B67C9B005A2CE9 /* RowModifyable+Date.swift */; };
+		49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,7 +95,7 @@
 		49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionSection.swift; sourceTree = "<group>"; };
 		49A736F829B28554005A2CE9 /* TableBuilderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderController.swift; sourceTree = "<group>"; };
 		49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowModifyable+Menu.swift"; sourceTree = "<group>"; };
-		49A7370629B67C9B005A2CE9 /* RowModifyable+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowModifyable+Date.swift"; sourceTree = "<group>"; };
+		49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +158,7 @@
 				497C78B029B1EFD9006EF4A3 /* Row.swift */,
 				497C78B129B1EFD9006EF4A3 /* SwitchRow.swift */,
 				497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */,
+				49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */,
 				497C78B229B1EFD9006EF4A3 /* RowWrapper.swift */,
 			);
 			path = Rows;
@@ -183,7 +184,6 @@
 				497C78BB29B1EFD9006EF4A3 /* TableBuilderContent.swift */,
 				497C78BC29B1EFD9006EF4A3 /* RowModifyable.swift */,
 				49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */,
-				49A7370629B67C9B005A2CE9 /* RowModifyable+Date.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -325,7 +325,7 @@
 				497C78CC29B1EFD9006EF4A3 /* RowInfo.swift in Sources */,
 				497C78C029B1EFD9006EF4A3 /* StylishedSection.swift in Sources */,
 				497C78D029B1EFD9006EF4A3 /* Row.swift in Sources */,
-				49A7370729B67C9B005A2CE9 /* RowModifyable+Date.swift in Sources */,
+				49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */,
 				497C78C329B1EFD9006EF4A3 /* SectionInfoWithRows.swift in Sources */,
 				497C78D529B1EFD9006EF4A3 /* TableIdentifier.swift in Sources */,
 				497C78DC29B1F2B3006EF4A3 /* StepperRow.swift in Sources */,
