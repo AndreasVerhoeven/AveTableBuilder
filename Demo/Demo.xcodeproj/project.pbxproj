@@ -51,6 +51,7 @@
 		49A736F929B28554005A2CE9 /* TableBuilderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A736F829B28554005A2CE9 /* TableBuilderController.swift */; };
 		49A7370529B66D7E005A2CE9 /* RowModifyable+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */; };
 		49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */; };
+		49A7371829B762AC005A2CE9 /* TableBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7371729B762AC005A2CE9 /* TableBinding.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +97,7 @@
 		49A736F829B28554005A2CE9 /* TableBuilderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderController.swift; sourceTree = "<group>"; };
 		49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowModifyable+Menu.swift"; sourceTree = "<group>"; };
 		49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerRow.swift; sourceTree = "<group>"; };
+		49A7371729B762AC005A2CE9 /* TableBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBinding.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +174,7 @@
 				497C78B629B1EFD9006EF4A3 /* TableIdentifier.swift */,
 				497C78B729B1EFD9006EF4A3 /* ConfigurationItem.swift */,
 				497C78B829B1EFD9006EF4A3 /* TableState.swift */,
+				49A7371729B762AC005A2CE9 /* TableBinding.swift */,
 				497C78B929B1EFD9006EF4A3 /* TableBuilder.swift */,
 				49A736F829B28554005A2CE9 /* TableBuilderController.swift */,
 			);
@@ -328,6 +331,7 @@
 				49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */,
 				497C78C329B1EFD9006EF4A3 /* SectionInfoWithRows.swift in Sources */,
 				497C78D529B1EFD9006EF4A3 /* TableIdentifier.swift in Sources */,
+				49A7371829B762AC005A2CE9 /* TableBinding.swift in Sources */,
 				497C78DC29B1F2B3006EF4A3 /* StepperRow.swift in Sources */,
 				497C78CD29B1EFD9006EF4A3 /* ActionRow.swift in Sources */,
 				49A6F79826508AAB002EB98D /* SceneDelegate.swift in Sources */,
