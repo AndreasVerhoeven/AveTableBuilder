@@ -59,7 +59,7 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 extension StylishedCustomHeader: ButtonHaveableHeader {
 	public func setButton(title: String?, animated: Bool, callback: (() -> Void)? = nil) {
 		buttonCallback = callback
-		button.setIsHidden(title == nil, animated: animated)
+		button.isHidden = (title == nil)
 		if let title {
 			button.titleLabel?.setText(title, animated: animated)
 			button.setTitle(title, for: .normal)
