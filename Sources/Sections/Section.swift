@@ -36,10 +36,10 @@ extension TableContent {
 				let identifier = "Header.\(NSStringFromClass(headerClass))"
 				return (tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) as? HeaderClass) ?? HeaderClass.init(reuseIdentifier: identifier)
 			}
-			item.sectionInfo.headerUpdaters.append({ container, view, text, animated in
+			item.sectionInfo.headerUpdaters.insert({ container, view, text, animated in
 				guard let view = view as? HeaderClass else { return }
 				updater(container, view, text, animated)
-			})
+			}, at: 0)
 			return item
 		}
 		return self

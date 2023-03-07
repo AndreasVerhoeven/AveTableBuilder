@@ -548,6 +548,25 @@ _myVariable.onChange {
 ```
 
 
+##### Bindings:
+
+You can transform bindings using the transformed method om the binding. There are also two build int transforms for Bool and Set:
+```
+@TableState var myBoolean = true
+@TableState var myInteger = 0
+@TableState var mySet = Set<String>()
+var fullList = ["A", "B", "C"]
+
+// myBoolean will be true when the switch is off and off when the switch is on
+Row.Switch(text: "Inverted", binding: self.$myBoolean.inverted)
+
+// mySet will keep track of what is deselected now
+Row.MultiSelection(self.fullList, binding: self.$mySet.inverted(with: self.fullList)) {
+}
+
+```
+
+
 ### Creating Custom Rows:
 
 When creating custom rows you have two options: inherit from `Row` or from `SectionContent`.

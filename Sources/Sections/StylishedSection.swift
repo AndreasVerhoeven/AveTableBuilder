@@ -84,6 +84,7 @@ extension TableContent {
 	
 	public func stylishedHeader() -> Self {
 		return header(StylishedCustomHeader.self) { container, view, text, animated in
+			view.button.isHidden = true
 			view.label.setText(text, animated: animated)
 		}
 	}
