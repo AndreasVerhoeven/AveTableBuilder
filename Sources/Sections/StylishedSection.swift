@@ -41,7 +41,7 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 		contentView.addSubview(
 			.horizontallyStacked(
 				label.disallowHorizontalGrowing(),
-				button.disallowHorizontalShrinking(),
+				button.prefersExactSize(),
 				alignment: .lastBaseline,
 				spacing: UIStackView.spacingUseDefault
 			),
