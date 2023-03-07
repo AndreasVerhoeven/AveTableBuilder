@@ -49,6 +49,18 @@ extension TableBinding {
 	public func transformed(_ transform: @escaping (Value) -> Value) -> Self {
 		Self(getValue: { transform(self.wrappedValue) }, setValue: { self.wrappedValue = transform($0) })
 	}
+	
+	/// Returns a binding where wrappedValue is transformed from and to a value, e.g.
+	/// `TableBinding<Int>.transformed(from: { $0 == 10 }, to: { $0 ? 10 : 0 })`
+	/// converts an integer to a boolean binding: if the integer is 10, then the value is true, if the value is true, then the integer will be 10, otherwise 0
+	public func transformed<ReturnValue>(from: @escaping (Value) -> ReturnValue, to: @escaping (ReturnValue) -> Value) -> TableBinding<ReturnValue> {
+		TableBinding<ReturnValue>(getValue: { from(self.wrappedValue) }, setValue: { self.wrappedValue = to($0) })
+	}
+	
+	/// Converts any Equatable TableBinding to a true/false binding. E.g. `self.$integer.boolean(trueValue: 10, falseValue: 0)`
+	public func boolean(trueValue: Value, falseValue: Value) -> TableBinding<Bool> where Value: Equatable {
+		transformed(from: { $0 == trueValue }, to: { $0 ? trueValue : falseValue })
+	}
 }
 
 extension TableBinding where Value == Bool {
