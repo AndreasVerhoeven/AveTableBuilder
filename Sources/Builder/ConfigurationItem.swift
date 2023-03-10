@@ -44,6 +44,8 @@ public struct RowConfiguration {
 		
 		public static let imageTintColor = Self(rawValue: "_imageTintColor")
 		public static let numberOfLines = Self(rawValue: "_numberOfLines")
+		public static let numberOfTextLines = Self(rawValue: "numberOfTextLines")
+		public static let numberOfDetailLines = Self(rawValue: "numberOfDetailTextLines")
 		
 		// other
 		public static let menu = Self(rawValue: "_menu")

@@ -38,8 +38,8 @@ extension Row {
 		) {
 			var item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
 			item.reuseIdentifierShouldIncludeId = true
-			item.cellProvider = { container, tableView, indexPath, reuseIdentifier in
-				let identifier = reuseIdentifier.stringValue
+			item.cellProvider = { container, tableView, indexPath, rowInfo in
+				let identifier = rowInfo.reuseIdentifier.stringValue
 				if let cell = StaticRowStorage.retrieve(identifier, in: tableView) {
 					return cell
 				}
@@ -62,8 +62,8 @@ extension Row {
 				updates(container, cell, animated)
 			})
 			item.reuseIdentifierShouldIncludeId = true
-			item.cellProvider = { container, tableView, indexPath, reuseIdentifier in
-				let identifier = reuseIdentifier.stringValue
+			item.cellProvider = { container, tableView, indexPath, rowInfo in
+				let identifier = rowInfo.reuseIdentifier.stringValue
 				if let cell = StaticRowStorage.retrieve(identifier, in: tableView) {
 					return cell
 				}
@@ -82,7 +82,7 @@ extension Row {
 				updates(container, cell, animated)
 			})
 			item.reuseIdentifierShouldIncludeId = true
-			item.cellProvider = { container, tableView, indexPath, reuseIdentifier in
+			item.cellProvider = { container, tableView, indexPath, rowInfo in
 				return cell
 			}
 			super.init(item: item)
@@ -94,7 +94,7 @@ extension Row {
 				// does nothing
 			})
 			item.reuseIdentifierShouldIncludeId = true
-			item.cellProvider = { container, tableView, indexPath, reuseIdentifier in
+			item.cellProvider = { container, tableView, indexPath, rowInfo in
 				return cell
 			}
 			super.init(item: item)

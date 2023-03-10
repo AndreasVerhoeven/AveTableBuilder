@@ -78,7 +78,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		dataSource.cellProvider = { [weak container, weak self] tableView, item, indexPath in
 			guard let self, let container else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
 			return self.perform(with: item) {
-				return item.cellProvider(container, tableView, indexPath, item.reuseIdentifier)
+				return item.cellProvider(container, tableView, indexPath, item)
 			}
 		}
 		
@@ -342,6 +342,12 @@ extension TableBuilder {
 extension TableContent {
 	public static var currentSectionInfo: SectionInfo<ContainerType>? {
 		TableBuilder<ContainerType>.currentSectionInfo
+	}
+}
+
+extension RowInfo {
+	public static var currentRowInfo: RowInfo<ContainerType>? {
+		TableBuilder<ContainerType>.currentRowInfo
 	}
 }
 

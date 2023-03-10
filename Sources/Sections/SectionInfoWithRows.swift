@@ -8,7 +8,7 @@
 import Foundation
 
 /// This is the end result of Table Building for each section: info on the section and a list of rows in that section
-public struct SectionInfoWithRows<ContainerType>: IdentifiableTableItem {
+public struct SectionInfoWithRows<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var id: TableItemIdentifier {
 		get { sectionInfo.id }
 		set { sectionInfo.id = newValue }

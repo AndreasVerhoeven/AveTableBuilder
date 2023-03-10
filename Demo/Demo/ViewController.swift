@@ -17,7 +17,7 @@ enum Topping: String, CaseIterable {
 
 enum Extra: String, CaseIterable {
 	case mozarellaSticks
-	case chiliCheeseNuggets
+	case chiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggets
 	case garlicBread
 }
 
@@ -27,7 +27,7 @@ class ViewController: UITableViewController {
 	@TableState var selectedToppings = Set<Topping>()
 	@TableState var numberOfCocaColas = 0
 	@TableState var numberOfBeers = 0
-	@TableState var extra: Extra?
+	@TableState var extra: Extra? = .chiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggets
 	
 	@TableState var start: Date?
 	
@@ -84,7 +84,7 @@ class ViewController: UITableViewController {
 			}
 			
 			Section("Extra's") {
-				Row(text: "Snack").inlineOptions(Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
+				Row(text: "Snack").inlineOptions(Extra.allCases, binding: self.$extra, titleStyle: .value1) { $0?.rawValue ?? "None" }
 			}
 			
 			// this is a special kind of setting that shows all items in a Collection and then makes sure
@@ -150,6 +150,8 @@ class ViewController: UITableViewController {
 			print("IncludeDrinks changed to: \(newValue)")
 		}
 		
+		tableView.estimatedRowHeight = UITableView.automaticDimension
+		tableView.rowHeight = UITableView.automaticDimension
 		builder.update(animated: false) // fire up the builder
 	}
 }

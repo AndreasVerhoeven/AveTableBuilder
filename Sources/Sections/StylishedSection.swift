@@ -32,6 +32,19 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 		buttonCallback?()
 	}
 	
+	private func updateAlignment() {
+		if traitCollection.preferredContentSizeCategory.isAccessibilityCategory == true {
+			button.contentHorizontalAlignment = .leading
+		} else {
+			button.contentHorizontalAlignment = .trailing
+		}
+	}
+	
+	open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+		super.traitCollectionDidChange(previousTraitCollection)
+		updateAlignment()
+	}
+	
 	public override init(reuseIdentifier: String?) {
 		super.init(reuseIdentifier: reuseIdentifier)
 		button.isHidden = true
@@ -39,7 +52,7 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 		button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
 		
 		contentView.addSubview(
-			.horizontallyStacked(
+			.autoAdjustingHorizontallyStacked(
 				label.disallowHorizontalGrowing(),
 				button.prefersExactSize(),
 				alignment: .lastBaseline,
@@ -48,6 +61,8 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 			filling: .bottom(.superview, others: .layoutMargins),
 			insets: .bottom(6)
 		)
+		
+		updateAlignment()
 	}
 	
 	@available(*, unavailable)

@@ -10,12 +10,13 @@ import UIKit
 /// This holds all information to create, configure and interact with a row.
 /// It's a generic so that we can pass a typed ContainerType to each callback, so that
 /// users of this class don't create retain cycles.
-public struct RowInfo<ContainerType>: IdentifiableTableItem {
+public struct RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var id: TableItemIdentifier = .empty
 	
-	/// provides a cell for this row
-	public typealias CellProviderHandler = (_ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ reuseIdentifier: ReuseIdentifier ) -> UITableViewCell
+	/// provides a cell for this row. Convenience provider for external cells.
+	public typealias CellProviderHandler = (_ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ rowInfo: RowInfo<ContainerType> ) -> UITableViewCell
 	public var cellProvider: CellProviderHandler
+	
 	public var cellClass: UITableViewCell.Type
 	public var cellStyle: UITableViewCell.CellStyle
 	
@@ -82,8 +83,8 @@ public struct RowInfo<ContainerType>: IdentifiableTableItem {
 		self.knownModifications = modifying
 		self.cellClass = cellClass
 		self.cellStyle = style
-		self.cellProvider = { container, tableView, indexPath, reuseIdentifier in
-			Self.createOrDequeue(tableView: tableView, cellClass: cellClass, style: style, reuseIdentifier: reuseIdentifier, indexPath: indexPath)
+		self.cellProvider = { container, tableView, indexPath, info in
+			return Self.createOrDequeue(tableView: tableView, cellClass: info.cellClass, style: info.cellStyle, reuseIdentifier: info.reuseIdentifier, indexPath: indexPath)
 		}
 		self.configurationHandlers.append { container, cell, animated in
 			guard let cell = cell as? Cell else { return }
@@ -114,7 +115,7 @@ extension RowInfo {
 	public static func createOrDequeue<Cell: UITableViewCell>(tableView: UITableView, cellClass: Cell.Type, style: UITableViewCell.CellStyle = .default, reuseIdentifier: ReuseIdentifier, indexPath: IndexPath) -> Cell {
 		let identifier = reuseIdentifier.stringValue
 		//print(identifier)
-		return (tableView.dequeueReusableCell(withIdentifier: identifier) as? Cell) ?? Cell(style: style, reuseIdentifier: identifier)
+		return (tableView.dequeueReusableCell(withIdentifier: identifier) as? Cell) ?? cellClass.init(style: style, reuseIdentifier: identifier)
 	}
 }
 
