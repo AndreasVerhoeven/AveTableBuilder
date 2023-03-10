@@ -25,6 +25,7 @@ extension Row {
 				
 				switchControl.addTarget(self, action: #selector(toggled(_:)), for: .valueChanged)
 				accessoryView = switchControl
+				editingAccessoryView = switchControl
 			}
 			
 			@available(*, unavailable)

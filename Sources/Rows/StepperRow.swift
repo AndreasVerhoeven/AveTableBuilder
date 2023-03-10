@@ -29,6 +29,7 @@ extension Row {
 				label.setText(NumberFormatter.localizedString(from: NSNumber(value: value), number: .decimal))
 				stackView.frame.size = stackView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
 				accessoryView = stackView
+				editingAccessoryView = stackView
 			}
 			
 			public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

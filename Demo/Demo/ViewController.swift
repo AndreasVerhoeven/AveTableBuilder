@@ -92,7 +92,7 @@ class ViewController: UITableViewController {
 			// when you select something, the variable is updated and vice-versa.
 			Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
 				Row(text: topping.rawValue.capitalized)
-			}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items")
+			}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
 			
 			if self.selectedToppings.count > 0 || self.hasDrinks {
 				Section {

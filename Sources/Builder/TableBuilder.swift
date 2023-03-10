@@ -124,6 +124,23 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			}
 		}
 		
+		self.dataSource.commitEditingStyle = { [weak container] tableView, item, indexPath, style in
+			guard let container else { return }
+			switch style {
+				case .none:
+					break
+					
+				case .insert:
+					item.onCommitInsertHandlers.forEach { $0(container) }
+					
+				case .delete:
+					item.onCommitDeleteHandlers.forEach { $0(container) }
+					
+				@unknown default:
+					break
+			}
+		}
+		
 		tableView.delegate = self
 		self.registerUpdaters(in: container)
 		update(animated: false)
@@ -252,6 +269,25 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let item = dataSource.item(at: indexPath) else { return nil }
 		return perform(in: tableView, indexPath: indexPath, with: item) {
 			item.contextMenuProvider?(container, point, tableView.cellForRow(at: indexPath))
+		}
+	}
+	
+	public func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+		guard let item = dataSource.item(at: indexPath) else { return .none }
+		return item.editingStyle ?? .none
+	}
+	
+	public func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+		guard let item = dataSource.item(at: indexPath) else { return true }
+		return item.shouldIndentWhileEditing ?? true
+	}
+	
+	public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+		guard let item = dataSource.item(at: indexPath) else { return true }
+		if tableView.isEditing == true {
+			return item.allowsHighlightingDuringEditing ?? false
+		} else {
+			return item.allowsHighlighting ?? true
 		}
 	}
 }

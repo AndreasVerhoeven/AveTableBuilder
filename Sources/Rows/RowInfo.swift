@@ -39,6 +39,18 @@ public struct RowInfo<ContainerType>: IdentifiableTableItem {
 	public typealias ContextMenuProvider = ( _ `self`: ContainerType, _ point: CGPoint, _ cell: UITableViewCell? ) -> UIContextMenuConfiguration?
 	public var contextMenuProvider: ContextMenuProvider?
 	
+	/// the editing style
+	public var editingStyle: UITableViewCell.EditingStyle?
+	public var shouldIndentWhileEditing: Bool?
+	
+	public typealias OnCommitEditingCallback = ( _ `self`: ContainerType) -> Void
+	public var onCommitInsertHandlers = [OnCommitEditingCallback]()
+	public var onCommitDeleteHandlers = [OnCommitEditingCallback]()
+	
+	/// highlighting
+	public var allowsHighlighting: Bool?
+	public var allowsHighlightingDuringEditing: Bool?
+	
 	/// references to items
 	public var reference = [TableItemReference]()
 	

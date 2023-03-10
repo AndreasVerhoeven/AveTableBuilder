@@ -58,6 +58,12 @@ extension RowModifyable {
 		}
 	}
 	
+	@discardableResult public func editingAccessory( _ accessoryType: UITableViewCell.AccessoryType) -> Self {
+		preConfigure(modifying: [.editingAccessory]) { container, cell, animated in
+			cell.editingAccessoryType = accessoryType
+		}
+	}
+	
 	@discardableResult public func textFont( _ font: UIFont) -> Self {
 		preConfigure(modifying: [.textFont]) { container, cell, animated in
 			cell.textLabel?.font = font
@@ -107,6 +113,68 @@ extension RowModifyable {
 		}
 	}
 	
+	@discardableResult public func editingStyle(_ style: UITableViewCell.EditingStyle?, handler: RowInfo<ContainerType>.OnCommitEditingCallback? = nil) -> Self {
+		guard let style else { return self }
+		return modifyRows { item in
+			var newItem = item
+			newItem.editingStyle = item.editingStyle ?? style
+			if let handler {
+				switch style {
+					case .none:
+						break
+						
+					case .insert:
+						newItem.onCommitInsertHandlers.append(handler)
+						
+					case .delete:
+						newItem.onCommitDeleteHandlers.append(handler)
+						
+					@unknown default:
+						break
+				}
+			}
+			return newItem
+		}
+	}
+	
+	@discardableResult public func onCommitInsertion(_ handler: @escaping RowInfo<ContainerType>.OnCommitEditingCallback) -> Self {
+		modifyRows { item in
+			var newItem = item
+			newItem.onCommitInsertHandlers.append(handler)
+			return newItem
+		}
+	}
+	
+	@discardableResult public func onCommitDeletion(_ handler: @escaping RowInfo<ContainerType>.OnCommitEditingCallback) -> Self {
+		modifyRows { item in
+			var newItem = item
+			newItem.onCommitDeleteHandlers.append(handler)
+			return newItem
+		}
+	}
+	
+	@discardableResult public func shouldIndentWhileEditing(_ value: Bool?) -> Self {
+		guard let value else { return self }
+		return modifyRows { item in
+			var newItem = item
+			newItem.shouldIndentWhileEditing = item.shouldIndentWhileEditing ?? value
+			return newItem
+		}
+	}
+	
+	@discardableResult public func allowsHighlighting(_ value: Bool, duringEditing: Bool? = nil) -> Self {
+		modifyRows { item in
+			var newItem = item
+			newItem.allowsHighlighting = value
+			newItem.allowsHighlightingDuringEditing = newItem.allowsHighlightingDuringEditing ?? duringEditing
+			return newItem
+		}
+	}
+	
+	@discardableResult public func alwaysAllowsHighlighting() -> Self {
+		allowsHighlighting(true, duringEditing: true)
+	}
+	
 	@discardableResult public func onSelect(_ handler: @escaping RowInfo<ContainerType>.SelectionHandler) -> Self {
 		modifyRows { item in
 			item.addingSelectionHandler(handler)
@@ -122,6 +190,12 @@ extension RowModifyable {
 	@discardableResult public func onSelect<T>(set binding: TableBinding<T>, to value: T) -> Self {
 		onSelect { container in
 			binding.wrappedValue = value
+		}
+	}
+	
+	@discardableResult public func mirrorAccessoryDuringSelection() -> Self {
+		configure(modifying: [.editingAccessory]) { container, cell, animated in
+			cell.editingAccessoryType = cell.accessoryType
 		}
 	}
 	

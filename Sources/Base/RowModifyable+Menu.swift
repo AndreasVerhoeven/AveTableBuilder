@@ -90,6 +90,7 @@ extension RowModifyable {
 				width: newSize.width,
 				height: newSize.height)
 			cell.accessoryView = button
+			cell.editingAccessoryView = button
 		}
 		_ = onSelect { `container` in
 			guard let cell = SectionContent<ContainerType>.currentCell else { return }

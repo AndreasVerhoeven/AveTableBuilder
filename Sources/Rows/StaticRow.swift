@@ -28,12 +28,13 @@ fileprivate enum StaticRowStorage {
 
 extension Row {
 	open class Static: SectionContent<ContainerType> {
+		
 		/// Creates a static row that is always the same cell that is not reused.
-		public init(
+		public init<Cell: UITableViewCell>(
 			cellClass: Cell.Type = Cell.self,
 			cellStyle: UITableViewCell.CellStyle = .default,
 			initial: ((_ `self`: ContainerType, _ cell: Cell) -> Void)? = nil,
-			updates: @escaping ConfigurationHandler
+			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 		) {
 			var item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
 			item.reuseIdentifierShouldIncludeId = true
@@ -52,9 +53,9 @@ extension Row {
 		}
 		
 		/// Creates a static row that is always the same cell that is not reused using a creation block.
-		public init(
+		public init<Cell: UITableViewCell>(
 			create: @escaping (_ `self`: ContainerType) -> Cell,
-			updates: @escaping ConfigurationHandler
+			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 		) {
 			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				guard let cell = cell as? Cell else { return }
@@ -75,7 +76,7 @@ extension Row {
 		}
 		
 		/// Creates a static row from a pre existing cell
-		public init(cell: Cell, updates: @escaping ConfigurationHandler) {
+		public init<Cell: UITableViewCell>(cell: Cell, updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void) {
 			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				guard let cell = cell as? Cell else { return }
 				updates(container, cell, animated)
@@ -88,7 +89,7 @@ extension Row {
 		}
 		
 		/// Creates a static row from a pre existing cell
-		public init(cell: Cell) {
+		public init<Cell: UITableViewCell>(cell: Cell) {
 			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				// does nothing
 			})

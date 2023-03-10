@@ -52,6 +52,7 @@
 		49A7370529B66D7E005A2CE9 /* RowModifyable+Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */; };
 		49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */; };
 		49A7371829B762AC005A2CE9 /* TableBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7371729B762AC005A2CE9 /* TableBinding.swift */; };
+		49A7371A29B790ED005A2CE9 /* CustomViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7371929B790ED005A2CE9 /* CustomViewRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +99,7 @@
 		49A7370429B66D7E005A2CE9 /* RowModifyable+Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RowModifyable+Menu.swift"; sourceTree = "<group>"; };
 		49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerRow.swift; sourceTree = "<group>"; };
 		49A7371729B762AC005A2CE9 /* TableBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBinding.swift; sourceTree = "<group>"; };
+		49A7371929B790ED005A2CE9 /* CustomViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomViewRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,7 @@
 				497C78AD29B1EFD9006EF4A3 /* ActionRow.swift */,
 				497C78AE29B1EFD9006EF4A3 /* SectionContentBuilder.swift */,
 				497C78AF29B1EFD9006EF4A3 /* StaticRow.swift */,
+				49A7371929B790ED005A2CE9 /* CustomViewRow.swift */,
 				497C78B029B1EFD9006EF4A3 /* Row.swift */,
 				497C78B129B1EFD9006EF4A3 /* SwitchRow.swift */,
 				497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */,
@@ -338,6 +341,7 @@
 				49A736F529B27F86005A2CE9 /* SingleSelection.swift in Sources */,
 				497C78C729B1EFD9006EF4A3 /* SectionWrapper.swift in Sources */,
 				497C78D929B1EFD9006EF4A3 /* TableBuilderContent.swift in Sources */,
+				49A7371A29B790ED005A2CE9 /* CustomViewRow.swift in Sources */,
 				49A736F929B28554005A2CE9 /* TableBuilderController.swift in Sources */,
 				49A7370529B66D7E005A2CE9 /* RowModifyable+Menu.swift in Sources */,
 				497C78CB29B1EFD9006EF4A3 /* SectionContent.swift in Sources */,

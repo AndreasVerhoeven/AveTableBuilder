@@ -20,6 +20,8 @@ public struct RowConfiguration {
 		public static let backgroundColor = Self(rawValue: "_backgroundColor")
 		public static let accessory = Self(rawValue: "_accessory")
 		public static let accessoryView = Self(rawValue: "_accessoryView")
+		public static let editingAccessory = Self(rawValue: "_editingAccessory")
+		public static let editingAccessoryView = Self(rawValue: "_editingAccessoryView")
 		
 		// content
 		public static let image = Self(rawValue: "_image")
