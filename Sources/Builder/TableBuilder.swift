@@ -124,17 +124,21 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			}
 		}
 		
-		self.dataSource.commitEditingStyle = { [weak container] tableView, item, indexPath, style in
-			guard let container else { return }
+		self.dataSource.commitEditingStyle = { [weak container, weak self] tableView, item, indexPath, style in
+			guard let container, let self else { return }
 			switch style {
 				case .none:
 					break
 					
 				case .insert:
-					item.onCommitInsertHandlers.forEach { $0(container) }
+					return self.perform(in: tableView, indexPath: indexPath, with: item) {
+						item.onCommitInsertHandlers.forEach { $0(container) }
+					}
 					
 				case .delete:
-					item.onCommitDeleteHandlers.forEach { $0(container) }
+					return self.perform(in: tableView, indexPath: indexPath, with: item) {
+						item.onCommitDeleteHandlers.forEach { $0(container) }
+					}
 					
 				@unknown default:
 					break
