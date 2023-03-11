@@ -71,3 +71,8 @@ extension Row {
 		return self
 	}
 }
+
+
+// namespace for custom cell classes
+public enum RowCells {
+}

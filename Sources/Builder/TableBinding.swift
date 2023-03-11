@@ -26,6 +26,27 @@ import Foundation
 		self.setValue = setValue
 	}
 	
+	public init<ContainerType: AnyObject>(
+		container: ContainerType,
+		get: @escaping (_ `self`: ContainerType) -> Value,
+		set: @escaping (_ `self`: ContainerType, _ value: Value) -> Void
+	) {
+		let originalValue = get(container)
+		self.getValue = { [weak container] in container.flatMap { get($0) } ?? originalValue }
+		self.setValue = { [weak container] newValue in container.flatMap { set($0, newValue) } }
+	}
+	
+	public init<ContainerType: AnyObject> (
+		container: ContainerType,
+		keyPath: ReferenceWritableKeyPath<ContainerType, Value>
+	) {
+		self.init(container: container, get: { $0[keyPath: keyPath] }, set: { $0[keyPath: keyPath] = $1 })
+	}
+	
+	static func keyPath<ContainerType: AnyObject>(_ container: ContainerType, _ keyPath: ReferenceWritableKeyPath<ContainerType, Value>) -> Self {
+		return Self(container: container, keyPath: keyPath)
+	}
+	
 	public var projectedValue: Self { self }
 	
 	/// We store our value and callbacks in a class, so we can update bindings and

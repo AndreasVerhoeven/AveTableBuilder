@@ -42,10 +42,14 @@ public struct RowConfiguration {
 		public static let detailTextAlignment = Self(rawValue: "_detailTextAlignment")
 		public static let accessoryTextAlignment = Self(rawValue: "_accessoryTextAlignment")
 		
+		public static let tintColor = Self(rawValue: "_tintColor")
 		public static let imageTintColor = Self(rawValue: "_imageTintColor")
+		
 		public static let numberOfLines = Self(rawValue: "_numberOfLines")
-		public static let numberOfTextLines = Self(rawValue: "numberOfTextLines")
-		public static let numberOfDetailLines = Self(rawValue: "numberOfDetailTextLines")
+		public static let numberOfTextLines = Self(rawValue: "_numberOfTextLines")
+		public static let numberOfDetailLines = Self(rawValue: "_numberOfDetailTextLines")
+		
+		public static let textField = Self(rawValue: "_textField")
 		
 		// other
 		public static let menu = Self(rawValue: "_menu")

@@ -106,6 +106,12 @@ extension RowModifyable {
 		}
 	}
 	
+	@discardableResult public func tintColor( _ color: UIColor) -> Self {
+		preConfigure(modifying: [.tintColor]) { container, cell, animated in
+			cell.tintColor = color
+		}
+	}
+	
 	@discardableResult public func numberOfLines(_ value: Int) -> Self {
 		preConfigure(modifying: [.numberOfLines]) { container, cell, animated in
 			cell.textLabel?.numberOfLines = value

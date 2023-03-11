@@ -17,7 +17,7 @@ enum Topping: String, CaseIterable {
 
 enum Extra: String, CaseIterable {
 	case mozarellaSticks
-	case chiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggets
+	case chiliCheeseNuggets
 	case garlicBread
 }
 
@@ -27,16 +27,24 @@ class ViewController: UITableViewController {
 	@TableState var selectedToppings = Set<Topping>()
 	@TableState var numberOfCocaColas = 0
 	@TableState var numberOfBeers = 0
-	@TableState var extra: Extra? = .chiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggetschiliCheeseNuggets
+	@TableState var extra: Extra? = .chiliCheeseNuggets
 	
 	@TableState var start: Date?
 	
 	@TableState var x = Set<String>()
 	
+	@TableState var text: String = ""
+	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
+			Section {
+				Row.TextField(binding: self.$text, placeholder: "Input")
+				Row.TextField(binding: self.$text, placeholder: "Input")
+			}.onConfigureTextField { `self`, textField in
+				textField.clearButtonMode = .always
+			}
 			// Our first section: no title and two rows
 			if self.selectedToppings.count == 0 && !self.hasDrinks {
 				Section {
@@ -71,7 +79,7 @@ class ViewController: UITableViewController {
 				// this is a switch row that is bound to the includeDrinks `TableState` variable:
 				// the switch will reflect the value of the variable and the variable will automatically
 				// be updated.
-				Row.Switch(text: "Include Drinks", binding: self.$includeDrinks)
+				Row.Switch(text: "Include Drinks", binding: .keyPath(self, \.includeDrinks))
 				
 				// These are two rows that are shown conditionally: If the includeDrinks variable
 				// is updated, we show these rows, otherwise not.
@@ -83,7 +91,7 @@ class ViewController: UITableViewController {
 				}
 			}
 			
-			Section("Extra's") {
+			Section("Extras") {
 				Row(text: "Snack").inlineOptions(Extra.allCases, binding: self.$extra, titleStyle: .value1) { $0?.rawValue ?? "None" }
 			}
 			
@@ -91,7 +99,7 @@ class ViewController: UITableViewController {
 			// that it reflects the selection state of the `selectedToppings` `TableState` variable:
 			// when you select something, the variable is updated and vice-versa.
 			Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
-				Row(text: topping.rawValue.capitalized)
+				Row(text: topping.rawValue.capitalized, image: UIImage(systemName: "leaf.fill")).imageTintColor(.systemGreen)
 			}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
 			
 			if self.selectedToppings.count > 0 || self.hasDrinks {

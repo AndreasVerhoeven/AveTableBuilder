@@ -9,30 +9,8 @@ import UIKit
 
 extension Row {
 	// A row with a switch
-	open class Switch: Row<ContainerType, Switch.Cell> {
-		public class Cell: UITableViewCell {
-			public let switchControl = UISwitch()
-			
-			public typealias Callback = (Bool) -> Void
-			public var callback: Callback?
-			
-			@objc private func toggled(_ sender: Any) {
-				callback?(switchControl.isOn)
-			}
-			
-			public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-				super.init(style: style, reuseIdentifier: reuseIdentifier)
-				
-				switchControl.addTarget(self, action: #selector(toggled(_:)), for: .valueChanged)
-				accessoryView = switchControl
-				editingAccessoryView = switchControl
-			}
-			
-			@available(*, unavailable)
-			public required init?(coder: NSCoder) {
-				fatalError("init(coder:) has not been implemented")
-			}
-		}
+	open class Switch: Row<ContainerType, RowCells.Cell> {
+		public typealias Cell = RowCells.Cell
 		
 		public typealias ChangeCallback = (_ `self`: ContainerType, _ isOn: Bool) -> Void
 		
@@ -63,4 +41,31 @@ extension Row {
 			}
 		}
 	}
+}
+
+extension RowCells {
+	public class Cell: UITableViewCell {
+		public let switchControl = UISwitch()
+		
+		public typealias Callback = (Bool) -> Void
+		public var callback: Callback?
+		
+		@objc private func toggled(_ sender: Any) {
+			callback?(switchControl.isOn)
+		}
+		
+		public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+			super.init(style: style, reuseIdentifier: reuseIdentifier)
+			
+			switchControl.addTarget(self, action: #selector(toggled(_:)), for: .valueChanged)
+			accessoryView = switchControl
+			editingAccessoryView = switchControl
+		}
+		
+		@available(*, unavailable)
+		public required init?(coder: NSCoder) {
+			fatalError("init(coder:) has not been implemented")
+		}
+	}
+	
 }
