@@ -87,12 +87,10 @@ extension TableContent {
 	public func stylished() -> Self {
 		_ = self.stylishedHeader().backgroundColor(.secondarySystemBackground)
 		
-		items = items.map { item in
-			var newItem = item
-			newItem.sectionInfo.firstAddedCallbacks.append({ container, tableView in
+		items.forEach { item in
+			item.sectionInfo.firstAddedCallbacks.append({ container, tableView in
 				tableView.backgroundColor = .systemBackground
 			})
-			return newItem
 		}
 		return self
 	}
