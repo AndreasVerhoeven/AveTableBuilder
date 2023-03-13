@@ -56,6 +56,13 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	
 	private var seenSections = Set<TableItemIdentifier>()
 	
+	private var activeIndexPaths = [IndexPath]()
+	private var activeRowInfos = [RowInfo<ContainerType>]()
+	private var activeSectionInfos = [SectionInfo<ContainerType>]()
+	
+	internal var rowInfoStorage = [RowInfo<ContainerType>.StorageKey: Any]()
+	internal var sectionInfoStorage = [SectionInfo<ContainerType>.StorageKey: Any]()
+	
 	/// Creates a TableBuilder:
 	///
 	/// Parameters:
@@ -131,12 +138,12 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 					break
 					
 				case .insert:
-					return self.perform(in: tableView, indexPath: indexPath, with: item) {
+					return self.perform(indexPath: indexPath, with: item) {
 						item.onCommitInsertHandlers.forEach { $0(container) }
 					}
 					
 				case .delete:
-					return self.perform(in: tableView, indexPath: indexPath, with: item) {
+					return self.perform(indexPath: indexPath, with: item) {
 						item.onCommitDeleteHandlers.forEach { $0(container) }
 					}
 					
@@ -247,7 +254,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		tableView.deselectRow(at: indexPath, animated: true)
 		guard let container else { return }
 		guard let item = dataSource.item(at: indexPath) else { return }
-		return perform(in: tableView, indexPath: indexPath, with: item) {
+		return perform(indexPath: indexPath, with: item) {
 			item.selectionHandlers.forEach { $0(container) }
 		}
 	}
@@ -255,7 +262,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return perform(in: tableView, indexPath: indexPath, with: item) {
+		return perform(indexPath: indexPath, with: item) {
 			return item.leadingSwipeActionsProvider?(container)
 		}
 	}
@@ -263,7 +270,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return perform(in: tableView, indexPath: indexPath, with: item) {
+		return perform(indexPath: indexPath, with: item) {
 			return item.trailingSwipeActionsProvider?(container)
 		}
 	}
@@ -271,7 +278,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
-		return perform(in: tableView, indexPath: indexPath, with: item) {
+		return perform(indexPath: indexPath, with: item) {
 			item.contextMenuProvider?(container, point, tableView.cellForRow(at: indexPath))
 		}
 	}
@@ -298,43 +305,57 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 
 
 fileprivate enum TableBuilderStaticStorage {
-	static var currentSectionInfos = [Any]()
-	static var currentRowInfos = [Any]()
-	
-	static var currentTableViews = [UITableView]()
-	static var currentIndexPath = [IndexPath]()
-	static var currentCells = [UITableViewCell]()
+	static var activeBuilders = [Any]()
 }
 
 extension TableBuilder {
+	public static var currentBuilder: TableBuilder<ContainerType>? {
+		TableBuilderStaticStorage.activeBuilders.last as? TableBuilder<ContainerType>
+	}
+	
+	fileprivate static var currentIndexPath: IndexPath? {
+		return Self.currentBuilder?.activeIndexPaths.last
+	}
+	
 	fileprivate static var currentRowInfo: RowInfo<ContainerType>? {
-		return TableBuilderStaticStorage.currentRowInfos.last as? RowInfo<ContainerType>
+		return Self.currentBuilder?.activeRowInfos.last
 	}
 	
 	fileprivate static var currentSectionInfo: SectionInfo<ContainerType>? {
-		return TableBuilderStaticStorage.currentSectionInfos.last as? SectionInfo<ContainerType>
+		return Self.currentBuilder?.activeSectionInfos.last
+	}
+	
+	private func perform<T>(callback: () -> T) -> T {
+		TableBuilderStaticStorage.activeBuilders.append(self)
+		let result = callback()
+		TableBuilderStaticStorage.activeBuilders.removeLast()
+		return result
 	}
 	
 	private func perform<T>(with item: RowInfo<ContainerType>, callback: () -> T) -> T {
-		TableBuilderStaticStorage.currentRowInfos.append(item)
+		activeRowInfos.append(item)
 		let result = callback()
-		TableBuilderStaticStorage.currentRowInfos.removeLast()
+		activeRowInfos.removeLast()
 		return result
 	}
 	
-	private func perform<T>(with item: SectionInfo<ContainerType>, callback: () -> T) -> T {
-		TableBuilderStaticStorage.currentSectionInfos.append(item)
+	private func perform<T>(indexPath: IndexPath? = nil, with item: SectionInfo<ContainerType>, callback: () -> T) -> T {
+		TableBuilderStaticStorage.activeBuilders.append(self)
 		let result = callback()
-		TableBuilderStaticStorage.currentSectionInfos.removeLast()
+		TableBuilderStaticStorage.activeBuilders.removeLast()
 		return result
 	}
 	
-	private func perform<T>(in tableView: UITableView, indexPath: IndexPath, with item: RowInfo<ContainerType>, callback: () -> T) -> T {
-		TableBuilderStaticStorage.currentTableViews.append(tableView)
-		TableBuilderStaticStorage.currentIndexPath.append(indexPath)
+	private func perform<T>(indexPath: IndexPath? = nil, with item: RowInfo<ContainerType>, callback: () -> T) -> T {
+		if let indexPath {
+			activeIndexPaths.append(indexPath)
+		}
+		activeRowInfos.append(item)
 		let result = perform(with: item, callback: callback)
-		TableBuilderStaticStorage.currentIndexPath.removeLast()
-		TableBuilderStaticStorage.currentTableViews.removeLast()
+		activeRowInfos.removeLast()
+		if indexPath != nil {
+			activeIndexPaths.removeLast()
+		}
 		return result
 	}
 }
@@ -357,11 +378,11 @@ extension SectionContent {
 	}
 	
 	public static var currentTableView: UITableView? {
-		TableBuilderStaticStorage.currentTableViews.last
+		TableBuilder<ContainerType>.currentBuilder?.dataSource.tableView
 	}
 	
 	public static var currentIndexPath: IndexPath? {
-		TableBuilderStaticStorage.currentIndexPath.last
+		TableBuilder<ContainerType>.currentIndexPath
 	}
 	
 	public static var currentCell: UITableViewCell? {

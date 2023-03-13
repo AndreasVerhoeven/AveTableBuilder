@@ -58,13 +58,6 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	/// true if we want animated content updates
 	public var animatedContentUpdates = true
 	
-	/// Storage for SectionContent subclasses, to pass data from init to separate callbacks.
-	/// This can be accessed using store() and RowInfo.retrieve().
-	public var storage: [StorageKey: Any] {
-		get { internalStorage.items }
-		set { internalStorage.items = newValue }
-	}
-	
 	/// key type for storage
 	public struct StorageKey: RawRepresentable, Hashable {
 		public var rawValue: String
@@ -73,6 +66,10 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 			self.rawValue = rawValue
 		}
 	}
+	
+	/// Storage for SectionContent subclasses, to pass data from init to separate callbacks.
+	/// This can be accessed using store() and RowInfo.retrieve().
+	public var storage = [StorageKey: Any]()
 	
 	public init<Cell: UITableViewCell>(
 		cellClass: Cell.Type = UITableViewCell.self,
@@ -101,13 +98,6 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 		}
 		return reuseIdentifier
 	}
-	
-	/// private storage, a class, so that we are nonmutating
-	private class Storage {
-		var items = [StorageKey: Any]()
-	}
-	
-	private var internalStorage = Storage()
 }
 
 extension RowInfo {

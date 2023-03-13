@@ -19,13 +19,21 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 	}
 	
 	/// store a piece of information that can be retrieve later in async callbacks from RowInfo
-	public func store(_ key: RowInfo<ContainerType>.StorageKey, value: Any?) {
+	public func storeRowData(_ key: RowInfo<ContainerType>.StorageKey, value: Any?) {
 		items.forEach { $0.storage[key] = value }
 	}
 	
 	/// this is only valid during callbacks initiated from RowInfo handlers
-	static func retrieve<T>(_ key: RowInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
+	static func retrieveRowData<T>(_ key: RowInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
 		return Self.currentRowInfo?.storage[key] as? T
+	}
+	
+	public func storeTableData(_ key: RowInfo<ContainerType>.StorageKey, value: Any?) {
+		TableBuilder<ContainerType>.currentBuilder?.rowInfoStorage[key] = value
+	}
+	
+	static func retrieveTableData<T>(_ key: RowInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
+		TableBuilder<ContainerType>.currentBuilder?.rowInfoStorage[key] as? T
 	}
 }
 

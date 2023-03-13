@@ -13,22 +13,28 @@ import Foundation
 open class TableContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, SectionInfoWithRows<ContainerType>> {
 	
 	/// stores a piece of information that can be retrieved later in async SectionInfo callback.
-	public func store(_ key: SectionInfo<ContainerType>.StorageKey, value: Any?) {
+	public func storeSectionData(_ key: SectionInfo<ContainerType>.StorageKey, value: Any?) {
 		items.forEach { $0.sectionInfo.storage[key] = value }
 	}
 	
 	/// this is only valid during callbacks initiated from SectinInfo handlers
-	static func retrieve<T>(_ key: SectionInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
+	static func retrieveSectionData<T>(_ key: SectionInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
 		return Self.currentSectionInfo?.storage[key] as? T
+	}
+	
+	public func storeTableData(_ key: SectionInfo<ContainerType>.StorageKey, value: Any?) {
+		TableBuilder<ContainerType>.currentBuilder?.sectionInfoStorage[key] = value
+	}
+	
+	static func retrieveTableData<T>(_ key: SectionInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
+		TableBuilder<ContainerType>.currentBuilder?.sectionInfoStorage[key] as? T
 	}
 }
 
 extension TableContent: RowModifyable {
 	public func modifyRows(_ callback: (RowInfo<ContainerType>) -> Void) -> Self {
-		items = items.map { item in
-			var newItem = item
-			newItem.rowInfos.forEach(callback)
-			return newItem
+		items.forEach { item in
+			item.rowInfos.forEach(callback)
 		}
 		return self
 	}

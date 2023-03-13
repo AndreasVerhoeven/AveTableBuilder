@@ -9,7 +9,7 @@ import UIKit
 
 /// This is the final result of creating Sections in a TableBuilder: it identifies a unique section
 /// and how to configure this section.
-public struct SectionInfo<ContainerType>: IdentifiableTableItem {
+public class SectionInfo<ContainerType>: IdentifiableTableItem {
 	/// id of the section we represent
 	public var id: TableItemIdentifier = .empty
 	
@@ -38,14 +38,6 @@ public struct SectionInfo<ContainerType>: IdentifiableTableItem {
 	/// callbacks that are invoked when the section is first added to the table view
 	public var firstAddedCallbacks = [InitializationCallbacks]()
 	
-	/// Storage for TableContent subclasses, to pass data from init to separate callbacks.
-	/// This can be accessed using Self.currentSectionInfo?.storage.
-	/// Self.currentSectionInfo is only set during callbacks initiated from SectionInfos.
-	public var storage: [StorageKey: Any] {
-		get { internalStorage.items }
-		nonmutating set { internalStorage.items = newValue }
-	}
-	
 	/// key type for storage
 	public struct StorageKey: RawRepresentable, Hashable {
 		public var rawValue: String
@@ -55,15 +47,13 @@ public struct SectionInfo<ContainerType>: IdentifiableTableItem {
 		}
 	}
 	
+	/// Storage for TableContent subclasses, to pass data from init to separate callbacks.
+	/// This can be accessed using Self.currentSectionInfo?.storage.
+	/// Self.currentSectionInfo is only set during callbacks initiated from SectionInfos.
+	public var storage = [StorageKey: Any]()
+	
 	public init(header: String? = nil, footer: String? = nil) {
 		self.header = header
 		self.footer = footer
 	}
-	
-	/// a class storage, so we are non mutating
-	private class Storage {
-		var items = [StorageKey: Any]()
-	}
-	
-	private var internalStorage = Storage()
 }

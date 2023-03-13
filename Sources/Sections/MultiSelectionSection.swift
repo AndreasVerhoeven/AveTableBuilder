@@ -40,15 +40,15 @@ extension Section {
 			}
 			
 			if data.count <= 1 {
-				section.store(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
+				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
 			} else if binding.wrappedValue.count != data.count {
-				section.store(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
-				section.store(.multiSelectionCallback, value: {
+				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
+				section.storeSectionData(.multiSelectionCallback, value: {
 					binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
 				})
 			} else {
-				section.store(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
-				section.store(.multiSelectionCallback, value: {
+				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
+				section.storeSectionData(.multiSelectionCallback, value: {
 					binding.wrappedValue = Set()
 				})
 			}
@@ -72,15 +72,15 @@ extension Section {
 			}
 			
 			if data.count <= 1 {
-				section.store(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
+				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
 			} else if binding.wrappedValue.count == 0 {
-				section.store(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
-				section.store(.multiSelectionCallback, value: {
+				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
+				section.storeSectionData(.multiSelectionCallback, value: {
 					binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
 				})
 			} else {
-				section.store(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
-				section.store(.multiSelectionCallback, value: {
+				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
+				section.storeSectionData(.multiSelectionCallback, value: {
 					binding.wrappedValue = Set()
 				})
 			}
@@ -95,8 +95,8 @@ extension Section {
 				var newItem = item
 				newItem.sectionInfo.headerUpdaters.append({ container, view, text, animated in
 					guard let view = view as? ButtonHaveableHeader else { return }
-					let buttonStatus = Self.retrieve(.multiSelectionButtonStatus, as: ButtonStatus.self) ?? .hidden
-					let callback = Self.retrieve(.multiSelectionCallback, as: (() -> Void).self) ?? {}
+					let buttonStatus = Self.retrieveSectionData(.multiSelectionButtonStatus, as: ButtonStatus.self) ?? .hidden
+					let callback = Self.retrieveSectionData(.multiSelectionCallback, as: (() -> Void).self) ?? {}
 					
 					switch buttonStatus {
 						case .hidden:

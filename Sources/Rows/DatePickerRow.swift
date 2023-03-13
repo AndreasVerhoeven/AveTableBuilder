@@ -101,14 +101,14 @@ extension Row {
 				cell.textLabel?.setText(text, animated: animated)
 				cell.imageView?.setImage(image, animated: animated)
 				
-				let configuration = Self.retrieve(.dateRowConfiguration, as: DatePickerConfiguration.self)
+				let configuration = Self.retrieveRowData(.dateRowConfiguration, as: DatePickerConfiguration.self)
 				let detailText = date.flatMap { configuration?.format($0) } ?? fallback
 				cell.detailTextLabel?.setText(detailText, animated: animated)
 			}
 			
 			onSelect { container in
 				guard let controller = Self.closestViewController else { return }
-				let configuration = Self.retrieve(.dateRowConfiguration, as: DatePickerConfiguration.self)
+				let configuration = Self.retrieveRowData(.dateRowConfiguration, as: DatePickerConfiguration.self)
 				
 				DatePickerViewController.show(configurationCallback: { picker in
 					picker.date = date ?? Date()

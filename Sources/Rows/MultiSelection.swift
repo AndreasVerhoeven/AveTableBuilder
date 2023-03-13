@@ -65,7 +65,3 @@ extension Row {
 		}
 	}
 }
-
-extension RowInfo.StorageKey {
-	fileprivate static var multiSelectionIsInverted: Self { Self(rawValue: "_multiSelectionIsInverted") }
-}
