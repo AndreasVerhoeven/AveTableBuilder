@@ -13,10 +13,8 @@ import UIKitAnimations
 /// combining @resultBuilders with nested generics.
 open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, RowInfo<ContainerType>> {
 	public func reference(_ reference: TableItemReference) -> Self {
-		modifyRows { row in
-			var item = row
+		modifyRows { item in
 			item.reference.append(reference)
-			return item
 		}
 	}
 	
@@ -32,8 +30,9 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 }
 
 extension SectionContent: RowModifyable {
-	public func modifyRows(_ callback: (RowInfo<ContainerType>) -> RowInfo<ContainerType>) -> Self {
-		items = items.map { callback($0) }
+	public func modifyRows(_ callback: (RowInfo<ContainerType>) -> Void) -> Self {
+		items.forEach(callback)
+		//items = items.map { callback($0) }
 		return self
 	}
 }

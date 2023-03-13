@@ -42,6 +42,7 @@
 		497C78D929B1EFD9006EF4A3 /* TableBuilderContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78BB29B1EFD9006EF4A3 /* TableBuilderContent.swift */; };
 		497C78DA29B1EFD9006EF4A3 /* RowModifyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78BC29B1EFD9006EF4A3 /* RowModifyable.swift */; };
 		497C78DC29B1F2B3006EF4A3 /* StepperRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */; };
+		4999CB5D29BF432B005EC275 /* OptionPickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4999CB5C29BF432B005EC275 /* OptionPickerRow.swift */; };
 		49A6F79626508AAB002EB98D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A6F79526508AAB002EB98D /* AppDelegate.swift */; };
 		49A6F79826508AAB002EB98D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A6F79726508AAB002EB98D /* SceneDelegate.swift */; };
 		49A6F79A26508AAB002EB98D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A6F79926508AAB002EB98D /* ViewController.swift */; };
@@ -88,6 +89,7 @@
 		497C78BB29B1EFD9006EF4A3 /* TableBuilderContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableBuilderContent.swift; sourceTree = "<group>"; };
 		497C78BC29B1EFD9006EF4A3 /* RowModifyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowModifyable.swift; sourceTree = "<group>"; };
 		497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperRow.swift; sourceTree = "<group>"; };
+		4999CB5C29BF432B005EC275 /* OptionPickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionPickerRow.swift; sourceTree = "<group>"; };
 		49A6F79226508AAB002EB98D /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49A6F79526508AAB002EB98D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49A6F79726508AAB002EB98D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */,
 				49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */,
 				497C78B229B1EFD9006EF4A3 /* RowWrapper.swift */,
+				4999CB5C29BF432B005EC275 /* OptionPickerRow.swift */,
 			);
 			path = Rows;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				497C78D729B1EFD9006EF4A3 /* TableState.swift in Sources */,
+				4999CB5D29BF432B005EC275 /* OptionPickerRow.swift in Sources */,
 				497C78C929B1EFD9006EF4A3 /* MultiSelection.swift in Sources */,
 				497C78C129B1EFD9006EF4A3 /* TableContent.swift in Sources */,
 				497C78C629B1EFD9006EF4A3 /* TableContentBuilder.swift in Sources */,

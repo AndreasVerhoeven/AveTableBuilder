@@ -10,7 +10,7 @@ import UIKit
 /// This holds all information to create, configure and interact with a row.
 /// It's a generic so that we can pass a typed ContainerType to each callback, so that
 /// users of this class don't create retain cycles.
-public struct RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
+public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var id: TableItemIdentifier = .empty
 	
 	/// provides a cell for this row. Convenience provider for external cells.
@@ -59,10 +59,10 @@ public struct RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var animatedContentUpdates = true
 	
 	/// Storage for SectionContent subclasses, to pass data from init to separate callbacks.
-	/// This can be accessed using store() and Section.retrieve().
+	/// This can be accessed using store() and RowInfo.retrieve().
 	public var storage: [StorageKey: Any] {
 		get { internalStorage.items }
-		nonmutating set { internalStorage.items = newValue }
+		set { internalStorage.items = newValue }
 	}
 	
 	/// key type for storage
@@ -121,23 +121,20 @@ extension RowInfo {
 
 
 extension RowInfo {
-	public func addingConfigurationHandler(modifying: RowConfiguration, handler: @escaping ConfigurationHandler) -> Self {
-		var item = self
-		item.knownModifications.append(modifying)
-		item.configurationHandlers.append(handler)
-		return item
+	@discardableResult public func addingConfigurationHandler(modifying: RowConfiguration, handler: @escaping ConfigurationHandler) -> Self {
+		knownModifications.append(modifying)
+		configurationHandlers.append(handler)
+		return self
 	}
 	
-	public func prependingConfigurationHandler(modifying: RowConfiguration, handler: @escaping ConfigurationHandler) -> Self {
-		var item = self
-		item.knownModifications.append(modifying)
-		item.configurationHandlers.insert(handler, at: 0)
-		return item
+	@discardableResult public func prependingConfigurationHandler(modifying: RowConfiguration, handler: @escaping ConfigurationHandler) -> Self {
+		knownModifications.append(modifying)
+		configurationHandlers.insert(handler, at: 0)
+		return self
 	}
 	
-	public func addingSelectionHandler(_ handler: @escaping SelectionHandler) -> Self {
-		var item = self
-		item.selectionHandlers.append(handler)
-		return item
+	@discardableResult public func addingSelectionHandler(_ handler: @escaping SelectionHandler) -> Self {
+		selectionHandlers.append(handler)
+		return self
 	}
 }

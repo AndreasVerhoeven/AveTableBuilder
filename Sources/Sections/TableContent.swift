@@ -24,10 +24,10 @@ open class TableContent<ContainerType: AnyObject>: TableBuilderContent<Container
 }
 
 extension TableContent: RowModifyable {
-	public func modifyRows(_ callback: (RowInfo<ContainerType>) -> RowInfo<ContainerType>) -> Self {
+	public func modifyRows(_ callback: (RowInfo<ContainerType>) -> Void) -> Self {
 		items = items.map { item in
 			var newItem = item
-			newItem.rowInfos = newItem.rowInfos.map { callback($0) }
+			newItem.rowInfos.forEach(callback)
 			return newItem
 		}
 		return self

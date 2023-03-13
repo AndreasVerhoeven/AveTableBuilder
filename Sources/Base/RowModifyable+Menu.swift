@@ -87,9 +87,7 @@ extension RowModifyable {
 	) -> Self {
 		if titleStyle != .accessory {
 			_ = modifyRows { item in
-				var newItem = item
-				newItem.cellStyle = titleStyle == .value1 ? .value1 : .subtitle
-				return newItem
+				item.cellStyle = titleStyle == .value1 ? .value1 : .subtitle
 			}
 		}
 		

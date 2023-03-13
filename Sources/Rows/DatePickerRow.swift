@@ -140,7 +140,6 @@ extension Row {
 				var configuration = item.storage[.dateRowConfiguration] as? DatePickerConfiguration ?? DatePickerConfiguration()
 				configuration[keyPath: keyPath] = value
 				item.storage[.dateRowConfiguration] = configuration
-				return item
 			}
 			return self
 		}
