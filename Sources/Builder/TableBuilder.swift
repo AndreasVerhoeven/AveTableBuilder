@@ -334,15 +334,15 @@ extension TableBuilder {
 	
 	private func perform<T>(with item: RowInfo<ContainerType>, callback: () -> T) -> T {
 		activeRowInfos.append(item)
-		let result = callback()
+		let result = perform(callback: callback)
 		activeRowInfos.removeLast()
 		return result
 	}
 	
 	private func perform<T>(indexPath: IndexPath? = nil, with item: SectionInfo<ContainerType>, callback: () -> T) -> T {
-		TableBuilderStaticStorage.activeBuilders.append(self)
-		let result = callback()
-		TableBuilderStaticStorage.activeBuilders.removeLast()
+		activeSectionInfos.append(item)
+		let result = perform(callback: callback)
+		activeSectionInfos.removeLast()
 		return result
 	}
 	

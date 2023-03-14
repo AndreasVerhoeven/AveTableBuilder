@@ -153,6 +153,8 @@ class ViewController: UITableViewController {
 			print("IncludeDrinks changed to: \(newValue)")
 		}
 		
+		tableView.backgroundColor = .systemBackground
+		
 		tableView.estimatedRowHeight = UITableView.automaticDimension
 		tableView.rowHeight = UITableView.automaticDimension
 		builder.update(animated: false) // fire up the builder
