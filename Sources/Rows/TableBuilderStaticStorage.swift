@@ -7,13 +7,13 @@
 
 import UIKit
 
+/// This is static storage to keep track of what is the active builder, row info, section info and index path
 enum TableBuilderStaticStorage {
 	fileprivate static var activeBuilders = [Any]()
 	fileprivate static var activeRowInfos = [Any]()
 	fileprivate static var activeSectionInfos = [Any]()
 	fileprivate static var activeIndexPaths = [IndexPath]()
 }
-
 
 extension TableBuilderStaticStorage {
 	@discardableResult static internal func with<T, ContainerType: AnyObject>(builder: TableBuilder<ContainerType>, callback: () -> T) -> T {
@@ -60,17 +60,34 @@ extension RowInfo {
 	}
 }
 
-fileprivate protocol TableBuilderTableViewHaveble {
+fileprivate protocol TableBuilderProtocol {
 	var tableView: UITableView { get }
+	var storage: TableBuilderStore { get }
 }
 
-extension TableBuilder: TableBuilderTableViewHaveble {
+extension TableBuilder: TableBuilderProtocol {
 	fileprivate var tableView: UITableView { dataSource.tableView }
 }
 
+protocol TableStorageProvider {}
+
+extension TableStorageProvider {
+	public var tableStorage: TableBuilderStore {
+		Self.tableStorage
+	}
+	
+	public static var tableStorage: TableBuilderStore {
+		return (TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol)?.storage ?? .init()
+	}
+}
+
+extension TableBuilderContent: TableStorageProvider {}
+extension RowInfo: TableStorageProvider {}
+extension SectionInfo: TableStorageProvider {}
+
 extension TableBuilderContent {
 	public static var currentTableView: UITableView? {
-		(TableBuilderStaticStorage.activeBuilders.last as? TableBuilderTableViewHaveble)?.tableView
+		(TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol)?.tableView
 	}
 	
 	public static var currentIndexPath: IndexPath? {

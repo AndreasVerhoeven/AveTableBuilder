@@ -44,6 +44,9 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	
 	internal var creators = [TableContent<ContainerType>]()
 	
+	// to store info in
+	public let storage = TableBuilderStore()
+	
 	public func provideHeaderView(container: ContainerType, tableView: UITableView, section: Int) -> UITableViewHeaderFooterView? {
 		headerViewProvider?(container, tableView, section, self)
 	}
@@ -63,8 +66,6 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public func performInitializationCallback(container: ContainerType, tableView: UITableView) {
 		firstAddedCallbacks.forEach { $0(container, tableView, self) }
 	}
-
-	public var storage = TableBuilderStore()
 	
 	public init(header: String? = nil, footer: String? = nil) {
 		self.header = header

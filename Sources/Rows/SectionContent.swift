@@ -18,7 +18,7 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 		}
 	}
 	
-	public func store<T>(_ value: T?, key: TableBuilderStore.Key) {
+	public func store<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>) {
 		items.forEach { $0.storage.store(value, key: key) }
 	}
 	

@@ -43,7 +43,7 @@ extension Section {
 			
 			items.forEach { item in
 				item.sectionInfo.headerUpdaters.append { `container`, view, text, tableView, section, animated, info in
-					let configuration = info.storage.retrieve(key: .multiSelectionConfiguration, as: MultiSelectionConfiguration.self) ?? .init()
+					let configuration = info.multiSelectionConfiguration
 					
 					guard let view = view as? ButtonHaveableHeader else { return }
 					if data.count <= 1 {
@@ -78,7 +78,7 @@ extension Section {
 			
 			items.forEach { item in
 				item.sectionInfo.headerUpdaters.append { `container`, view, text, tableView, section, animated, info in
-					let configuration = info.storage.retrieve(key: .multiSelectionConfiguration, as: MultiSelectionConfiguration.self) ?? .init()
+					let configuration = info.multiSelectionConfiguration
 					
 					guard let view = view as? ButtonHaveableHeader else { return }
 					if data.count <= 1 {
@@ -98,21 +98,21 @@ extension Section {
 		
 		@discardableResult public func selectionButtonTitles(selectAll: String, deselectAll: String) -> Self {
 			items.forEach { item in
-				item.sectionInfo.storage.modify(key: .multiSelectionConfiguration, default: MultiSelectionConfiguration()) { value in
-					value.selectAllTitle = selectAll
-					value.deselectAllTitle = deselectAll
-				}
+				item.sectionInfo.multiSelectionConfiguration = .init(selectAllTitle: selectAll, deselectAllTitle: deselectAll)
 			}
 			return self
 		}
 	}
 }
 
-extension TableBuilderStore.Key {
-	fileprivate static let multiSelectionConfiguration = Self(rawValue: "_multiSelectionConfiguration")
-}
+extension SectionInfo {
+	fileprivate struct MultiSelectionConfiguration {
+		var selectAllTitle = "Select All"
+		var deselectAllTitle = "Deselect All"
+	}
 
-fileprivate struct MultiSelectionConfiguration {
-	var selectAllTitle = "Select All"
-	var deselectAllTitle = "Deselect All"
+	fileprivate var multiSelectionConfiguration: MultiSelectionConfiguration {
+		get { storage.retrieve(key: "_multiSelectionConfiguration", default: .init()) }
+		set { storage.store(newValue, key: "_multiSelectionConfiguration") }
+	}
 }

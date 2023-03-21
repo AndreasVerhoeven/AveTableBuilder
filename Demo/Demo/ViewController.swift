@@ -29,19 +29,6 @@ class ViewController: UITableViewController {
 	@TableState var numberOfBeers = 0
 	@TableState var extra: Extra? = .none
 	
-	@TableState var start: Date?
-	
-	@TableState var x = Set<String>()
-	
-	@TableState var text: String = ""
-	
-	class X {
-		@TableState var string = "X"
-	}
-	var z = X()
-	
-	@TableState var showRow = true
-	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
@@ -154,23 +141,10 @@ class ViewController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		struct X {
-			func bla(_ handler: @escaping (Int) -> Void) -> Self { self }
-			func bla(_ handler: @escaping (Int, Int) -> Void) -> Self { self }
-		}
-		
-		var x = X()
-		x = x.bla { a, b in
-			print(a)
-		}
-		
 		// monitor changes to our state
 		_includeDrinks.onChange { newValue in
 			print("IncludeDrinks changed to: \(newValue)")
 		}
-		
-		tableView.backgroundColor = .systemBackground
-		builder.registerUpdaters(in: z)
 		
 		tableView.estimatedRowHeight = UITableView.automaticDimension
 		tableView.rowHeight = UITableView.automaticDimension

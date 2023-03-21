@@ -95,7 +95,7 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var animatedContentUpdates = true
 	
 	/// storage for info about rows
-	public var storage = TableBuilderStore()
+	public let storage = TableBuilderStore()
 	
 	internal var creators = [SectionContent<ContainerType>]()
 	

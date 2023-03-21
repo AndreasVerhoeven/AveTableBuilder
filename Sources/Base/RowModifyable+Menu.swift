@@ -252,6 +252,18 @@ extension MenuAccessoryButton {
 				}
 				if container.subviews.count > 1 {
 					container.subviews[1].subviews.first?.isHidden = true
+					
+					
+				}
+			}
+			animator?.addCompletion {guard let container = self.window?.subviews.last else { return }
+				if container.subviews.count > 1 {
+					UIView.animate(withDuration: 0.25) {
+						container.subviews[1].subviews.last?.layer.shadowColor = UIColor.black.cgColor
+						container.subviews[1].subviews.last?.layer.shadowRadius = 25
+						container.subviews[1].subviews.last?.layer.shadowOffset = .zero
+						container.subviews[1].subviews.last?.layer.shadowOpacity = 0.15
+					}
 				}
 			}
 		}

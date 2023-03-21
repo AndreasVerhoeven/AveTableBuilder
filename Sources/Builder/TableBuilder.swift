@@ -60,7 +60,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	private var activeRowInfos = [RowInfo<ContainerType>]()
 	private var activeSectionInfos = [SectionInfo<ContainerType>]()
 	
-	private var storage = TableBuilderStore()
+	let storage = TableBuilderStore()
 	
 	/// Creates a TableBuilder:
 	///
