@@ -16,9 +16,14 @@ open class TableBuilderContent<ContainerType, Item: IdentifiableTableItem> {
 	
 	public init(items: [Item] = [Item]()) {
 		self.items = items
+		postInit()
 	}
 	
 	public init(item: Item) {
 		self.items = [item]
+		postInit()
+	}
+	
+	internal func postInit() {
 	}
 }

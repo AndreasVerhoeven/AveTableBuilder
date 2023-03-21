@@ -35,6 +35,13 @@ class ViewController: UITableViewController {
 	
 	@TableState var text: String = ""
 	
+	class X {
+		@TableState var string = "X"
+	}
+	var z = X()
+	
+	@TableState var showRow = true
+	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
@@ -42,7 +49,7 @@ class ViewController: UITableViewController {
 			// Our first section: no title and two rows
 			if self.selectedToppings.count == 0 && !self.hasDrinks {
 				Section {
-					// this is a row that is manually configurred
+					// this is a row that is manually configured
 					Row { `self`, cell, animated in
 						cell.textLabel?.text = "Pizza Order"
 						cell.textLabel?.font = .preferredFont(forTextStyle: .title3)
@@ -87,7 +94,6 @@ class ViewController: UITableViewController {
 
 			Section("Extras") {
 				Row.OptionPicker(text: "Snack", options: Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
-				//Row(text: "Snack").inlineOptions(Extra.allCases, binding: self.$extra, titleStyle: .value1) { $0?.rawValue ?? "None" }
 			}
 
 			// this is a special kind of setting that shows all items in a Collection and then makes sure
@@ -102,7 +108,7 @@ class ViewController: UITableViewController {
 					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
 
 					// an action show renders as a "button". The callback is triggered when the user selects the row.
-					// Note that `self` is passed in as a parameter, as to not create retain cycles.
+				    // Note that `self` is passed in as a parameter, as to not create retain cycles.
 					Row.Action(text: "Complete Order") { `self` in
 						self.completeOrder()
 					}.textFont(.from(.ios.headline.medium)).numberOfLines(0)
@@ -148,12 +154,23 @@ class ViewController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		struct X {
+			func bla(_ handler: @escaping (Int) -> Void) -> Self { self }
+			func bla(_ handler: @escaping (Int, Int) -> Void) -> Self { self }
+		}
+		
+		var x = X()
+		x = x.bla { a, b in
+			print(a)
+		}
+		
 		// monitor changes to our state
 		_includeDrinks.onChange { newValue in
 			print("IncludeDrinks changed to: \(newValue)")
 		}
 		
 		tableView.backgroundColor = .systemBackground
+		builder.registerUpdaters(in: z)
 		
 		tableView.estimatedRowHeight = UITableView.automaticDimension
 		tableView.rowHeight = UITableView.automaticDimension

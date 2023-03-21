@@ -60,8 +60,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	private var activeRowInfos = [RowInfo<ContainerType>]()
 	private var activeSectionInfos = [SectionInfo<ContainerType>]()
 	
-	internal var rowInfoStorage = [RowInfo<ContainerType>.StorageKey: Any]()
-	internal var sectionInfoStorage = [SectionInfo<ContainerType>.StorageKey: Any]()
+	private var storage = TableBuilderStore()
 	
 	/// Creates a TableBuilder:
 	///
@@ -85,7 +84,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		dataSource.cellProvider = { [weak container, weak self] tableView, item, indexPath in
 			guard let self, let container else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
 			return self.perform(with: item) {
-				return item.cellProvider(container, tableView, indexPath, item)
+				return item.provideCell(container: container, tableView: tableView, indexPath: indexPath)
 			}
 		}
 		
@@ -93,7 +92,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			guard let self, let container else { return }
 			cell.selectionStyle = item.selectionHandlers.isEmpty ? .none : .default
 			self.perform(with: item) {
-				item.configurationHandlers.forEach { $0(container, cell, animated && item.animatedContentUpdates) }
+				item.onConfigure(container: container, cell: cell, animated: animated && item.animatedContentUpdates)
 			}
 		}
 		
@@ -113,7 +112,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 				view.invalidateIntrinsicContentSize()
 			} else if let view = view as? UITableViewHeaderFooterView {
 				self.perform(with: section) {
-					section.headerUpdaters.forEach { $0(container, view, section.header, animated) }
+					section.updateHeaderView(container: container, view: view, tableView: tableView, section: index, animated: animated)
 				}
 			}
 		}
@@ -126,7 +125,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 				view.invalidateIntrinsicContentSize()
 			} else if let view = view as? UITableViewHeaderFooterView {
 				self.perform(with: section) {
-					section.footerUpdaters.forEach { $0(container, view, section.footer, animated) }
+					section.updateFooterView(container: container, view: view, tableView: tableView, section: index, animated: animated)
 				}
 			}
 		}
@@ -139,12 +138,12 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 					
 				case .insert:
 					return self.perform(indexPath: indexPath, with: item) {
-						item.onCommitInsertHandlers.forEach { $0(container) }
+						item.onCommitInsert(container: container, tableView: tableView, indexPath: indexPath)
 					}
 					
 				case .delete:
 					return self.perform(indexPath: indexPath, with: item) {
-						item.onCommitDeleteHandlers.forEach { $0(container) }
+						item.onCommitInsert(container: container, tableView: tableView, indexPath: indexPath)
 					}
 					
 				@unknown default:
@@ -175,13 +174,17 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		for item in updater(container).items {
 			item.rowInfos.forEach { row in
 				row.reference.forEach { $0.wrappedValue = row.id }
+				row.creators.forEach { $0.items = [] }
 			}
 			
 			if seenSections.contains(item.sectionInfo.id) == false {
 				seenSections.insert(item.sectionInfo.id)
-				item.sectionInfo.firstAddedCallbacks.forEach { $0(container, dataSource.tableView) }
+				self.perform(with: item.sectionInfo) {
+					item.sectionInfo.performInitializationCallback(container: container, tableView: dataSource.tableView)
+				}
 			}
 			
+			item.sectionInfo.creators.forEach { $0.items = [] }
 			snapshot.addItems(item.rowInfos, for: item.sectionInfo)
 		}
 		
@@ -234,7 +237,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let container else { return nil }
 		guard let item = dataSource.currentSnapshot.sectionOrNil(at: section) else { return nil }
 		return self.perform(with: item) {
-			guard let view = item.headerViewProvider?(container, tableView, section) else { return nil }
+			guard let view = item.provideHeaderView(container: container, tableView: tableView, section: section) else { return nil }
 			dataSource.headerViewUpdater?(tableView, view, item, section, false)
 			return view
 		}
@@ -244,7 +247,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let container else { return nil }
 		guard let item = dataSource.currentSnapshot.sectionOrNil(at: section) else { return nil }
 		return self.perform(with: item) {
-			guard let view = item.footerViewProvider?(container, tableView, section) else { return nil }
+			guard let view = item.provideFooterView(container: container, tableView: tableView, section: section) else { return nil }
 			dataSource.footerViewUpdater?(tableView, view, item, section, false)
 			return view
 		}
@@ -255,7 +258,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let container else { return }
 		guard let item = dataSource.item(at: indexPath) else { return }
 		return perform(indexPath: indexPath, with: item) {
-			item.selectionHandlers.forEach { $0(container) }
+			return item.onSelect(container: container, tableView: tableView, indexPath: indexPath)
 		}
 	}
 	
@@ -263,7 +266,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
 		return perform(indexPath: indexPath, with: item) {
-			return item.leadingSwipeActionsProvider?(container)
+			return item.leadingSwipActions(container: container, tableView: tableView, indexPath: indexPath)
 		}
 	}
 	
@@ -271,7 +274,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
 		return perform(indexPath: indexPath, with: item) {
-			return item.trailingSwipeActionsProvider?(container)
+			return item.trailingSwipeActions(container: container, tableView: tableView, indexPath: indexPath)
 		}
 	}
 	
@@ -279,7 +282,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		guard let container else { return nil }
 		guard let item = dataSource.item(at: indexPath) else { return nil }
 		return perform(indexPath: indexPath, with: item) {
-			item.contextMenuProvider?(container, point, tableView.cellForRow(at: indexPath))
+			return item.contextMenu(container: container, point: point, cell: tableView.cellForRow(at: indexPath), tableView: tableView, indexPath: indexPath)
 		}
 	}
 	
@@ -303,104 +306,24 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	}
 }
 
-
-fileprivate enum TableBuilderStaticStorage {
-	static var activeBuilders = [Any]()
-}
-
 extension TableBuilder {
-	public static var currentBuilder: TableBuilder<ContainerType>? {
-		TableBuilderStaticStorage.activeBuilders.last as? TableBuilder<ContainerType>
-	}
-	
-	fileprivate static var currentIndexPath: IndexPath? {
-		return Self.currentBuilder?.activeIndexPaths.last
-	}
-	
-	fileprivate static var currentRowInfo: RowInfo<ContainerType>? {
-		return Self.currentBuilder?.activeRowInfos.last
-	}
-	
-	fileprivate static var currentSectionInfo: SectionInfo<ContainerType>? {
-		return Self.currentBuilder?.activeSectionInfos.last
-	}
-	
 	private func perform<T>(callback: () -> T) -> T {
-		TableBuilderStaticStorage.activeBuilders.append(self)
-		let result = callback()
-		TableBuilderStaticStorage.activeBuilders.removeLast()
-		return result
+		return TableBuilderStaticStorage.with(builder: self, callback: callback)
 	}
 	
 	private func perform<T>(with item: RowInfo<ContainerType>, callback: () -> T) -> T {
-		activeRowInfos.append(item)
-		let result = perform(callback: callback)
-		activeRowInfos.removeLast()
-		return result
+		return TableBuilderStaticStorage.with(rowInfo: item) { self.perform(callback: callback) }
 	}
 	
 	private func perform<T>(indexPath: IndexPath? = nil, with item: SectionInfo<ContainerType>, callback: () -> T) -> T {
-		activeSectionInfos.append(item)
-		let result = perform(callback: callback)
-		activeSectionInfos.removeLast()
-		return result
+		return TableBuilderStaticStorage.with(indexPath: indexPath) {
+			return TableBuilderStaticStorage.with(sectionInfo: item) { self.perform(callback: callback) }
+		}
 	}
 	
 	private func perform<T>(indexPath: IndexPath? = nil, with item: RowInfo<ContainerType>, callback: () -> T) -> T {
-		if let indexPath {
-			activeIndexPaths.append(indexPath)
+		return TableBuilderStaticStorage.with(indexPath: indexPath) {
+			return TableBuilderStaticStorage.with(rowInfo: item) { self.perform(callback: callback) }
 		}
-		activeRowInfos.append(item)
-		let result = perform(with: item, callback: callback)
-		activeRowInfos.removeLast()
-		if indexPath != nil {
-			activeIndexPaths.removeLast()
-		}
-		return result
-	}
-}
-
-extension TableContent {
-	public static var currentSectionInfo: SectionInfo<ContainerType>? {
-		TableBuilder<ContainerType>.currentSectionInfo
-	}
-}
-
-extension RowInfo {
-	public static var currentRowInfo: RowInfo<ContainerType>? {
-		TableBuilder<ContainerType>.currentRowInfo
-	}
-}
-
-extension SectionContent {
-	public static var currentRowInfo: RowInfo<ContainerType>? {
-		TableBuilder<ContainerType>.currentRowInfo
-	}
-	
-	public static var currentTableView: UITableView? {
-		TableBuilder<ContainerType>.currentBuilder?.dataSource.tableView
-	}
-	
-	public static var currentIndexPath: IndexPath? {
-		TableBuilder<ContainerType>.currentIndexPath
-	}
-	
-	public static var currentCell: UITableViewCell? {
-		guard let currentTableView, let currentIndexPath else { return nil }
-		return currentTableView.cellForRow(at: currentIndexPath)
-	}
-	
-	public static var closestViewController: UIViewController? {
-		return currentTableView?.closestViewController
-	}
-}
-
-extension UIResponder {
-	fileprivate var closestViewController: UIViewController? {
-		var responder: UIResponder? = self
-		while responder != nil && (responder is UIViewController) == false {
-			responder = responder?.next
-		}
-		return responder as? UIViewController
 	}
 }

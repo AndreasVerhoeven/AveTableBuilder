@@ -36,7 +36,7 @@ extension Row {
 			initial: ((_ `self`: ContainerType, _ cell: Cell) -> Void)? = nil,
 			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 		) {
-			var item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
+			let item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
 			item.reuseIdentifierShouldIncludeId = true
 			item.cellProvider = { container, tableView, indexPath, rowInfo in
 				let identifier = rowInfo.reuseIdentifier.stringValue
@@ -57,7 +57,7 @@ extension Row {
 			create: @escaping (_ `self`: ContainerType) -> Cell,
 			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 		) {
-			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
+			let item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				guard let cell = cell as? Cell else { return }
 				updates(container, cell, animated)
 			})
@@ -77,7 +77,7 @@ extension Row {
 		
 		/// Creates a static row from a pre existing cell
 		public init<Cell: UITableViewCell>(cell: Cell, updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void) {
-			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
+			let item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				guard let cell = cell as? Cell else { return }
 				updates(container, cell, animated)
 			})
@@ -90,7 +90,7 @@ extension Row {
 		
 		/// Creates a static row from a pre existing cell
 		public init<Cell: UITableViewCell>(cell: Cell) {
-			var item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
+			let item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				// does nothing
 			})
 			item.reuseIdentifierShouldIncludeId = true

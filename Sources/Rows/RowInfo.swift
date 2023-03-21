@@ -17,6 +17,10 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public typealias CellProviderHandler = (_ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ rowInfo: RowInfo<ContainerType> ) -> UITableViewCell
 	public var cellProvider: CellProviderHandler
 	
+	public func provideCell(container: ContainerType, tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+		return cellProvider(container, tableView, indexPath, self)
+	}
+	
 	public var cellClass: UITableViewCell.Type
 	public var cellStyle: UITableViewCell.CellStyle
 	
@@ -24,29 +28,61 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var knownModifications: RowConfiguration
 	
 	/// configuration handlers, called in-order
-	public typealias ConfigurationHandler = (_ `self`: ContainerType, _ cell: UITableViewCell, _ animated: Bool) -> Void
+	public typealias SimpleConfigurationHandler = (_ `self`: ContainerType, _ cell: UITableViewCell, _ animated: Bool) -> Void
+	public typealias ConfigurationHandler = (_ `self`: ContainerType, _ cell: UITableViewCell, _ animated: Bool, _ rowInfo: RowInfo<ContainerType>) -> Void
 	public var configurationHandlers = [ConfigurationHandler]()
 	
+	public func onConfigure(container: ContainerType, cell: UITableViewCell, animated: Bool) {
+		configurationHandlers.forEach { $0(container, cell, animated, self) }
+	}
+	
 	/// selection handlers, called in-order
-	public typealias SelectionHandler = (_ `self`: ContainerType) -> Void
+	public typealias SelectionHandler = (_ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ rowInfo: RowInfo<ContainerType>) -> Void
 	public var selectionHandlers = [SelectionHandler]()
 	
+	public func onSelect(container: ContainerType, tableView: UITableView, indexPath: IndexPath) {
+		selectionHandlers.forEach { $0(container, tableView, indexPath, self) }
+	}
+	
 	/// swipe actions
-	public typealias SwipeActionsProvider = ( _ `self`: ContainerType) -> UISwipeActionsConfiguration?
+	public typealias SimpleSwipeActionsProvider = ( _ `self`: ContainerType) -> UISwipeActionsConfiguration?
+	public typealias SwipeActionsProvider = ( _ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ rowInfo: RowInfo<ContainerType>) -> UISwipeActionsConfiguration?
 	public var leadingSwipeActionsProvider: SwipeActionsProvider?
 	public var trailingSwipeActionsProvider: SwipeActionsProvider?
 	
+	public func leadingSwipActions(container: ContainerType, tableView: UITableView, indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		return leadingSwipeActionsProvider?(container, tableView, indexPath, self)
+	}
+	
+	public func trailingSwipeActions(container: ContainerType, tableView: UITableView, indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		return trailingSwipeActionsProvider?(container, tableView, indexPath, self)
+	}
+	
 	/// context menu
-	public typealias ContextMenuProvider = ( _ `self`: ContainerType, _ point: CGPoint, _ cell: UITableViewCell? ) -> UIContextMenuConfiguration?
+	public typealias SimpleContextMenuProvider = ( _ `self`: ContainerType, _ point: CGPoint, _ cell: UITableViewCell?) -> UIContextMenuConfiguration?
+	public typealias ContextMenuProvider = ( _ `self`: ContainerType, _ point: CGPoint, _ cell: UITableViewCell?, _ tableView: UITableView, _ indexPath: IndexPath, _ row: RowInfo<ContainerType>) -> UIContextMenuConfiguration?
 	public var contextMenuProvider: ContextMenuProvider?
+	
+	public func contextMenu(container: ContainerType, point: CGPoint, cell: UITableViewCell?, tableView: UITableView, indexPath: IndexPath) -> UIContextMenuConfiguration? {
+		return contextMenuProvider?(container, point, cell, tableView, indexPath, self)
+	}
 	
 	/// the editing style
 	public var editingStyle: UITableViewCell.EditingStyle?
 	public var shouldIndentWhileEditing: Bool?
 	
-	public typealias OnCommitEditingCallback = ( _ `self`: ContainerType) -> Void
+	public typealias OnCommitEditingCallback = ( _ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath) -> Void
+	public typealias SimpleOnCommitEditingCallback = ( _ `self`: ContainerType) -> Void
 	public var onCommitInsertHandlers = [OnCommitEditingCallback]()
 	public var onCommitDeleteHandlers = [OnCommitEditingCallback]()
+	
+	public func onCommitInsert(container: ContainerType, tableView: UITableView, indexPath: IndexPath) {
+		onCommitInsertHandlers.forEach { $0(container, tableView, indexPath) }
+	}
+	
+	public func onCommitDelete(container: ContainerType, tableView: UITableView, indexPath: IndexPath) {
+		onCommitDeleteHandlers.forEach { $0(container, tableView, indexPath) }
+	}
 	
 	/// highlighting
 	public var allowsHighlighting: Bool?
@@ -58,24 +94,16 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	/// true if we want animated content updates
 	public var animatedContentUpdates = true
 	
-	/// key type for storage
-	public struct StorageKey: RawRepresentable, Hashable {
-		public var rawValue: String
-		
-		public init(rawValue: String) {
-			self.rawValue = rawValue
-		}
-	}
+	/// storage for info about rows
+	public var storage = TableBuilderStore()
 	
-	/// Storage for SectionContent subclasses, to pass data from init to separate callbacks.
-	/// This can be accessed using store() and RowInfo.retrieve().
-	public var storage = [StorageKey: Any]()
+	internal var creators = [SectionContent<ContainerType>]()
 	
 	public init<Cell: UITableViewCell>(
 		cellClass: Cell.Type = UITableViewCell.self,
 		style: UITableViewCell.CellStyle = .default,
 		modifying: RowConfiguration,
-		configuration: @escaping (_ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
+		configuration: ((_ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void)?
 	) {
 		self.knownModifications = modifying
 		self.cellClass = cellClass
@@ -83,9 +111,11 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 		self.cellProvider = { container, tableView, indexPath, info in
 			return Self.createOrDequeue(tableView: tableView, cellClass: info.cellClass, style: info.cellStyle, reuseIdentifier: info.reuseIdentifier, indexPath: indexPath)
 		}
-		self.configurationHandlers.append { container, cell, animated in
-			guard let cell = cell as? Cell else { return }
-			configuration(container, cell, animated)
+		if let configuration {
+			self.configurationHandlers.append { container, cell, animated, row in
+				guard let cell = cell as? Cell else { return }
+				configuration(container, cell, animated)
+			}
 		}
 	}
 	
@@ -97,6 +127,105 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 			reuseIdentifier.fixedId = id
 		}
 		return reuseIdentifier
+	}
+}
+
+extension RowInfo {
+	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> RowInfo<OtherContainerType> {
+		let rowInfo = RowInfo<OtherContainerType>(modifying: []) { container, cell, animated in
+		}
+		rowInfo.cellClass = cellClass
+		rowInfo.cellStyle = cellStyle
+		rowInfo.allowsHighlighting = allowsHighlighting
+		rowInfo.allowsHighlightingDuringEditing = allowsHighlightingDuringEditing
+		rowInfo.reference = reference
+		rowInfo.animatedContentUpdates = animatedContentUpdates
+		self.storage.chain(to: rowInfo.storage)
+		
+		rowInfo.cellProvider = { [weak originalContainer] container, tableView, indexPath, rowInfo in
+			guard let originalContainer else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
+			self.cellStyle = rowInfo.cellStyle
+			self.cellClass = rowInfo.cellClass
+			return self.provideCell(container: originalContainer, tableView: tableView, indexPath: indexPath)
+		}
+		rowInfo.configurationHandlers = [{ [weak originalContainer] container, cell, animated, rowInfo in
+			guard let originalContainer else { return }
+			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				return self.onConfigure(container: originalContainer, cell: cell, animated: animated)
+			}
+		}]
+		
+		rowInfo.selectionHandlers = [ {[weak originalContainer] container, tableView, indexPath, rowInfo in
+			guard let originalContainer else { return }
+			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				self.onSelect(container: originalContainer, tableView: tableView, indexPath: indexPath)
+			}
+		}]
+		
+		if self.leadingSwipeActionsProvider != nil {
+			rowInfo.leadingSwipeActionsProvider = { [weak originalContainer] container, tableView, indexPath, row in
+				guard let originalContainer else { return nil }
+				return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+					return self.leadingSwipActions(container: originalContainer, tableView: tableView, indexPath: indexPath)
+				}
+			}
+		}
+		
+		if self.trailingSwipeActionsProvider != nil {
+			rowInfo.trailingSwipeActionsProvider = { [weak originalContainer] container,tableView, indexPath, row in
+				guard let originalContainer else { return nil }
+				return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+					return self.trailingSwipeActions(container: originalContainer, tableView: tableView, indexPath: indexPath)
+				}
+			}
+		}
+		
+		if self.contextMenuProvider != nil {
+			rowInfo.contextMenuProvider = { [weak originalContainer] container, point, cell, tableView, indexPath, row in
+				guard let originalContainer else { return nil }
+				return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+					return self.contextMenu(container: originalContainer, point: point, cell: cell, tableView: tableView, indexPath: indexPath)
+				}
+			}
+		}
+		
+		rowInfo.onCommitInsertHandlers = [{ [weak originalContainer] container, tableView, indexPath in
+			guard let originalContainer else { return }
+			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				self.onCommitInsert(container: originalContainer, tableView: tableView, indexPath: indexPath)
+			}
+		}]
+		
+		rowInfo.onCommitDeleteHandlers = [{ [weak originalContainer] container, tableView, indexPath in
+			guard let originalContainer else { return }
+			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				self.onCommitDelete(container: originalContainer, tableView: tableView, indexPath: indexPath)
+			}
+		}]
+		
+		return rowInfo
+	}
+}
+
+public class RowInfoAdapter<MyContainerType: AnyObject, TheirContainerType: AnyObject>: RowInfo<MyContainerType> {
+	public var wrappedRowInfo: RowInfo<TheirContainerType>
+	public weak var wrappedContainer: TheirContainerType?
+	
+	init(rowInfo: RowInfo<TheirContainerType>, container: TheirContainerType) {
+		self.wrappedRowInfo = rowInfo
+		self.wrappedContainer = container
+		
+		super.init(modifying: [], configuration: nil)
+	}
+	
+	override public func provideCell(container: MyContainerType, tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+		guard let wrappedContainer else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
+		return wrappedRowInfo.provideCell(container: wrappedContainer, tableView: tableView, indexPath: indexPath)
+	}
+	
+	override public func onConfigure(container: MyContainerType, cell: UITableViewCell, animated: Bool) {
+		guard let wrappedContainer else { return }
+		wrappedRowInfo.onConfigure(container: wrappedContainer, cell: cell, animated: animated)
 	}
 }
 
@@ -123,8 +252,17 @@ extension RowInfo {
 		return self
 	}
 	
-	@discardableResult public func addingSelectionHandler(_ handler: @escaping SelectionHandler) -> Self {
-		selectionHandlers.append(handler)
+	@discardableResult public func addingSelectionHandler(_ handler: @escaping (_ `self`: ContainerType) -> Void) -> Self {
+		selectionHandlers.append({ container, tableView, indexPath, rowInfo in
+			handler(container)
+		})
+		return self
+	}
+	
+	@discardableResult public func addingSelectionHandler(_ handler: @escaping (_ `self`: ContainerType, _ indexPath: IndexPath) -> Void) -> Self {
+		selectionHandlers.append({ container, tableView, indexPath, rowInfo in
+			handler(container, indexPath)
+		})
 		return self
 	}
 }

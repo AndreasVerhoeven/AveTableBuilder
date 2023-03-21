@@ -132,10 +132,13 @@ extension RowModifyable {
 			cell.accessoryView = wrapperView
 			cell.editingAccessoryView = wrapperView
 		}
-		_ = onSelect { `container` in
-			guard let cell = SectionContent<ContainerType>.currentCell else { return }
-			guard let menuButton = (cell.accessoryView as? MenuAccessoryButton.WrapperStackView)?.menuButton else { return }
-			menuButton.showMenu()
+		
+		_ = modifyRows { item in
+			item.selectionHandlers.append { container, tableView, indexPath, rowInfo in
+				guard let cell = tableView.cellForRow(at: indexPath) else { return }
+				guard let menuButton = (cell.accessoryView as? MenuAccessoryButton.WrapperStackView)?.menuButton else { return }
+				menuButton.showMenu()
+			}
 		}
 		
 		return self

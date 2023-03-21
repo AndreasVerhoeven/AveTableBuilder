@@ -39,23 +39,26 @@ extension Section {
 				Row.MultiSelection(data, identifiedBy: identifiedBy, binding: binding, builder: builder)
 			}
 			
-			if data.count <= 1 {
-				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
-			} else if binding.wrappedValue.count != data.count {
-				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
-				section.storeSectionData(.multiSelectionCallback, value: {
-					binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
-				})
-			} else {
-				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
-				section.storeSectionData(.multiSelectionCallback, value: {
-					binding.wrappedValue = Set()
-				})
-			}
-				
 			super.init(items: section.items)
 			
-			selectionButtonTitles(selectAll: "Select All", deselectAll: "Deselect All")
+			items.forEach { item in
+				item.sectionInfo.headerUpdaters.append { `container`, view, text, tableView, section, animated, info in
+					let configuration = info.storage.retrieve(key: .multiSelectionConfiguration, as: MultiSelectionConfiguration.self) ?? .init()
+					
+					guard let view = view as? ButtonHaveableHeader else { return }
+					if data.count <= 1 {
+						view.setButton(title: nil, animated: animated, callback: nil)
+					} else if binding.wrappedValue.count != data.count {
+						view.setButton(title: configuration.selectAllTitle, animated: animated) {
+							binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
+						}
+					} else {
+						view.setButton(title: configuration.deselectAllTitle, animated: animated) {
+							binding.wrappedValue = Set()
+						}
+					}
+				}
+			}
 		}
 		
 		/// Creates selectable Rows that mirror the inverted selection status of the given binding. Selected rows will have a checkmark accessory.
@@ -71,53 +74,45 @@ extension Section {
 				Row.MultiSelection(data, identifiedBy: identifiedBy, invertedBinding: binding, builder: builder)
 			}
 			
-			if data.count <= 1 {
-				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.hidden)
-			} else if binding.wrappedValue.count == 0 {
-				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.deselectAll)
-				section.storeSectionData(.multiSelectionCallback, value: {
-					binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
-				})
-			} else {
-				section.storeSectionData(.multiSelectionButtonStatus, value: ButtonStatus.selectAll)
-				section.storeSectionData(.multiSelectionCallback, value: {
-					binding.wrappedValue = Set()
-				})
-			}
-			
 			super.init(items: section.items)
 			
-			selectionButtonTitles(selectAll: "Select All", deselectAll: "Deselect All")
+			items.forEach { item in
+				item.sectionInfo.headerUpdaters.append { `container`, view, text, tableView, section, animated, info in
+					let configuration = info.storage.retrieve(key: .multiSelectionConfiguration, as: MultiSelectionConfiguration.self) ?? .init()
+					
+					guard let view = view as? ButtonHaveableHeader else { return }
+					if data.count <= 1 {
+						view.setButton(title: nil, animated: animated, callback: nil)
+					} else if binding.wrappedValue.count == 0 {
+						view.setButton(title: configuration.deselectAllTitle, animated: animated) {
+							binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
+						}
+					} else {
+						view.setButton(title: configuration.selectAllTitle, animated: animated) {
+							binding.wrappedValue = Set()
+						}
+					}
+				}
+			}
 		}
 		
 		@discardableResult public func selectionButtonTitles(selectAll: String, deselectAll: String) -> Self {
-			items = items.map { item in
-				var newItem = item
-				newItem.sectionInfo.headerUpdaters.append({ container, view, text, animated in
-					guard let view = view as? ButtonHaveableHeader else { return }
-					let buttonStatus = Self.retrieveSectionData(.multiSelectionButtonStatus, as: ButtonStatus.self) ?? .hidden
-					let callback = Self.retrieveSectionData(.multiSelectionCallback, as: (() -> Void).self) ?? {}
-					
-					switch buttonStatus {
-						case .hidden:
-							view.setButton(title: nil, animated: animated, callback: callback)
-						
-						case .selectAll:
-							view.setButton(title: selectAll, animated: animated, callback: callback)
-							
-						case .deselectAll:
-							view.setButton(title: deselectAll, animated: animated, callback: callback)
-					}
-				})
-				return newItem
+			items.forEach { item in
+				item.sectionInfo.storage.modify(key: .multiSelectionConfiguration, default: MultiSelectionConfiguration()) { value in
+					value.selectAllTitle = selectAll
+					value.deselectAllTitle = deselectAll
+				}
 			}
-			
 			return self
 		}
 	}
 }
 
-extension SectionInfo.StorageKey {
-	fileprivate static var multiSelectionButtonStatus: Self { Self(rawValue: "_multiSelectionButtonStatus") }
-	fileprivate static var multiSelectionCallback: Self { Self(rawValue: "_multiSelectionBinding") }
+extension TableBuilderStore.Key {
+	fileprivate static let multiSelectionConfiguration = Self(rawValue: "_multiSelectionConfiguration")
+}
+
+fileprivate struct MultiSelectionConfiguration {
+	var selectAllTitle = "Select All"
+	var deselectAllTitle = "Deselect All"
 }

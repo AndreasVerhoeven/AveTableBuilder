@@ -18,7 +18,7 @@ open class Row<ContainerType: AnyObject, Cell: UITableViewCell>: SectionContent<
 		cellClass: Cell.Type = Cell.self,
 		style: UITableViewCell.CellStyle = .default,
 		modifying: RowConfiguration = [.manual],
-		_ configuration: @escaping ConfigurationHandler
+		_ configuration: ConfigurationHandler? = nil
 	) {
 		let item = RowInfo<ContainerType>(cellClass: cellClass, style: style, modifying: modifying, configuration: configuration)
 		super.init(item: item)
@@ -55,10 +55,9 @@ extension Row {
 	/// provides a context menu for this cell
 	@discardableResult public  func contextMenuProvider(_ handler: ((_ `self`: ContainerType, _ point: CGPoint, _ cell: Cell?) -> UIContextMenuConfiguration?)?) -> Self {
 		guard let handler else { return self }
-		items = items.map { item in
-			guard item.contextMenuProvider == nil else { return item }
-			var newItem = item
-			newItem.contextMenuProvider = { container, point, cell in
+		items.forEach { item in
+			guard item.contextMenuProvider == nil else { return }
+			item.contextMenuProvider = { container, point, cell, tableView, IndexPath, row in
 				if let cell = cell {
 					guard let cell = cell as? Cell else { return nil }
 					return handler(container, point, cell)
@@ -66,7 +65,6 @@ extension Row {
 					return handler(container, point, nil)
 				}
 			}
-			return newItem
 		}
 		return self
 	}

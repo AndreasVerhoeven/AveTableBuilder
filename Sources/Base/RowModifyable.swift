@@ -25,7 +25,7 @@ extension RowModifyable {
 		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 	) -> Self {
 		modifyRows { item in
-			item.addingConfigurationHandler(modifying: modifying) { container, cell, animated in
+			item.addingConfigurationHandler(modifying: modifying) { container, cell, animated, row in
 				guard let cell = cell as? Cell else { return }
 				handler(container, cell, animated)
 			}
@@ -38,7 +38,7 @@ extension RowModifyable {
 		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 	) -> Self {
 		modifyRows { item in
-			item.prependingConfigurationHandler(modifying: modifying) { container, cell, animated in
+			item.prependingConfigurationHandler(modifying: modifying) { container, cell, animated, row in
 				guard let cell = cell as? Cell else { return }
 				handler(container, cell, animated)
 			}
@@ -119,7 +119,7 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func editingStyle(_ style: UITableViewCell.EditingStyle?, handler: RowInfo<ContainerType>.OnCommitEditingCallback? = nil) -> Self {
+	@discardableResult public func editingStyle(_ style: UITableViewCell.EditingStyle?, handler: RowInfo<ContainerType>.SimpleOnCommitEditingCallback? = nil) -> Self {
 		guard let style else { return self }
 		return modifyRows { item in
 			item.editingStyle = item.editingStyle ?? style
@@ -129,10 +129,14 @@ extension RowModifyable {
 						break
 						
 					case .insert:
-						item.onCommitInsertHandlers.append(handler)
+						item.onCommitInsertHandlers.append({ container, tableView, indexPath in
+							handler(container)
+						})
 						
 					case .delete:
-						item.onCommitDeleteHandlers.append(handler)
+						item.onCommitDeleteHandlers.append({ container, tableView, indexPath in
+							handler(container)
+						})
 						
 					@unknown default:
 						break
@@ -141,15 +145,19 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func onCommitInsertion(_ handler: @escaping RowInfo<ContainerType>.OnCommitEditingCallback) -> Self {
+	@discardableResult public func onCommitInsertion(_ handler: @escaping RowInfo<ContainerType>.SimpleOnCommitEditingCallback) -> Self {
 		modifyRows { item in
-			item.onCommitInsertHandlers.append(handler)
+			item.onCommitInsertHandlers.append({ container, tableView, indexPath in
+				handler(container)
+			})
 		}
 	}
 	
-	@discardableResult public func onCommitDeletion(_ handler: @escaping RowInfo<ContainerType>.OnCommitEditingCallback) -> Self {
+	@discardableResult public func onCommitDeletion(_ handler: @escaping RowInfo<ContainerType>.SimpleOnCommitEditingCallback) -> Self {
 		modifyRows { item in
-			item.onCommitDeleteHandlers.append(handler)
+			item.onCommitDeleteHandlers.append({ container, tableView, indexPath in
+				handler(container)
+			})
 		}
 	}
 	
@@ -171,7 +179,13 @@ extension RowModifyable {
 		allowsHighlighting(true, duringEditing: true)
 	}
 	
-	@discardableResult public func onSelect(_ handler: @escaping RowInfo<ContainerType>.SelectionHandler) -> Self {
+	@discardableResult public func onSelect(_ handler: @escaping (_ `self`: ContainerType) -> Void) -> Self {
+		modifyRows { item in
+			item.addingSelectionHandler(handler)
+		}
+	}
+	
+	@discardableResult public func onSelectWithIndexPath(_ handler: @escaping (_ `self`: ContainerType, _ indexPath: IndexPath) -> Void) -> Self {
 		modifyRows { item in
 			item.addingSelectionHandler(handler)
 		}
@@ -227,27 +241,33 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func leadingSwipeActions(_ handler: RowInfo<ContainerType>.SwipeActionsProvider?) -> Self {
+	@discardableResult public func leadingSwipeActions(_ handler: RowInfo<ContainerType>.SimpleSwipeActionsProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
 			guard item.leadingSwipeActionsProvider == nil else { return }
-			item.leadingSwipeActionsProvider = handler
+			item.leadingSwipeActionsProvider = { container, tableView, indexPath, row in
+				handler(container)
+			}
 		}
 	}
 	
-	@discardableResult public func trailingSwipeActions(_ handler: RowInfo<ContainerType>.SwipeActionsProvider?) -> Self {
+	@discardableResult public func trailingSwipeActions(_ handler: RowInfo<ContainerType>.SimpleSwipeActionsProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
 			guard item.trailingSwipeActionsProvider == nil else { return }
-			item.trailingSwipeActionsProvider = handler
+			item.trailingSwipeActionsProvider = { container, tableView, indexPath, row in
+				handler(container)
+			}
 		}
 	}
 	
-	@discardableResult public func contextMenuProvider(_ handler: RowInfo<ContainerType>.ContextMenuProvider?) -> Self {
+	@discardableResult public func contextMenuProvider(_ handler: RowInfo<ContainerType>.SimpleContextMenuProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
 			guard item.contextMenuProvider == nil else { return }
-			item.contextMenuProvider = handler
+			item.contextMenuProvider = { container, point, cell, tableView, indexPath, row in
+				handler(container, point, cell)
+			}
 		}
 	}
 	

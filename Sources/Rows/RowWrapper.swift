@@ -15,3 +15,12 @@ extension Row {
 		}
 	}
 }
+
+extension Row {
+	open class WithContainer<OtherContainerType: AnyObject>: SectionContent<ContainerType> {
+		init(_ container: OtherContainerType, @SectionContentBuilder<OtherContainerType> builder: () -> SectionContentBuilder<OtherContainerType>.Collection) {
+			let items = builder().items.map { $0.adapt(to: ContainerType.self, from: container) }
+			super.init(items: items)
+		}
+	}
+}

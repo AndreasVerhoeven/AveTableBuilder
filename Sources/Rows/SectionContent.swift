@@ -18,29 +18,21 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 		}
 	}
 	
-	/// store a piece of information that can be retrieve later in async callbacks from RowInfo
-	public func storeRowData(_ key: RowInfo<ContainerType>.StorageKey, value: Any?) {
-		items.forEach { $0.storage[key] = value }
+	public func store<T>(_ value: T?, key: TableBuilderStore.Key) {
+		items.forEach { $0.storage.store(value, key: key) }
 	}
 	
-	/// this is only valid during callbacks initiated from RowInfo handlers
-	static func retrieveRowData<T>(_ key: RowInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
-		return Self.currentRowInfo?.storage[key] as? T
-	}
-	
-	public func storeTableData(_ key: RowInfo<ContainerType>.StorageKey, value: Any?) {
-		TableBuilder<ContainerType>.currentBuilder?.rowInfoStorage[key] = value
-	}
-	
-	static func retrieveTableData<T>(_ key: RowInfo<ContainerType>.StorageKey, as type: T.Type) -> T? {
-		TableBuilder<ContainerType>.currentBuilder?.rowInfoStorage[key] as? T
+	override func postInit() {
+		super.postInit()
+		modifyRows { item in
+			item.creators.append(self)
+		}
 	}
 }
 
 extension SectionContent: RowModifyable {
-	public func modifyRows(_ callback: (RowInfo<ContainerType>) -> Void) -> Self {
+	@discardableResult public func modifyRows(_ callback: (RowInfo<ContainerType>) -> Void) -> Self {
 		items.forEach(callback)
-		//items = items.map { callback($0) }
 		return self
 	}
 }

@@ -100,22 +100,26 @@ extension Row {
 				cell.accessoryType = .disclosureIndicator
 				cell.textLabel?.setText(text, animated: animated)
 				cell.imageView?.setImage(image, animated: animated)
-				
-				let configuration = Self.retrieveRowData(.dateRowConfiguration, as: DatePickerConfiguration.self)
-				let detailText = date.flatMap { configuration?.format($0) } ?? fallback
-				cell.detailTextLabel?.setText(detailText, animated: animated)
 			}
 			
-			onSelect { container in
-				guard let controller = Self.closestViewController else { return }
-				let configuration = Self.retrieveRowData(.dateRowConfiguration, as: DatePickerConfiguration.self)
+			modifyRows { item in
+				item.configurationHandlers.append { `container`, cell, animated, rowInfo in
+					let configuration = rowInfo.storage.retrieve(key: .dateRowConfiguration, as: DatePickerConfiguration.self)
+					let detailText = date.flatMap { configuration?.format($0) } ?? fallback
+					cell.detailTextLabel?.setText(detailText, animated: animated)
+				}
 				
-				DatePickerViewController.show(configurationCallback: { picker in
-					picker.date = date ?? Date()
-					configuration?.configure(datePicker: picker)
-				}, changedCallback: { controller in
-					callback?(container, controller.datePicker.date)
-				}, dismissCallback: nil, in: controller, from: Self.currentCell)
+				item.selectionHandlers.append { container, tableView, indexPath, rowInfo in
+					guard let controller = Self.closestViewController else { return }
+					let configuration = rowInfo.storage.retrieve(key: .dateRowConfiguration, as: DatePickerConfiguration.self)
+					
+					DatePickerViewController.show(configurationCallback: { picker in
+						picker.date = date ?? Date()
+						configuration?.configure(datePicker: picker)
+					}, changedCallback: { controller in
+						callback?(container, controller.datePicker.date)
+					}, dismissCallback: nil, in: controller, from: Self.currentCell)
+				}
 			}
 		}
 		
@@ -137,17 +141,17 @@ extension Row {
 		
 		@discardableResult fileprivate func setField<T>(_ keyPath: WritableKeyPath<DatePickerConfiguration, T>, value: T) -> Self {
 			_ = modifyRows { item in
-				var configuration = item.storage[.dateRowConfiguration] as? DatePickerConfiguration ?? DatePickerConfiguration()
-				configuration[keyPath: keyPath] = value
-				item.storage[.dateRowConfiguration] = configuration
+				item.storage.modify(key: .dateRowConfiguration, default: DatePickerConfiguration()) { configuration in
+					configuration[keyPath: keyPath] = value
+				}
 			}
 			return self
 		}
 	}
 }
 
-extension RowInfo.StorageKey {
-	fileprivate static var dateRowConfiguration: Self { Self(rawValue: "_dateRowConfiguration") }
+extension TableBuilderStore.Key {
+	fileprivate static let dateRowConfiguration = Self(rawValue: "_dateRowConfiguration")
 }
 
 fileprivate final class DatePickerViewController: UIViewController {

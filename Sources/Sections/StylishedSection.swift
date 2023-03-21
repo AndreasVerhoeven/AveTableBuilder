@@ -88,7 +88,7 @@ extension TableContent {
 		_ = self.stylishedHeader().backgroundColor(.secondarySystemBackground)
 		
 		items.forEach { item in
-			item.sectionInfo.firstAddedCallbacks.append({ container, tableView in
+			item.sectionInfo.firstAddedCallbacks.append({ container, tableView, info in
 				tableView.backgroundColor = .systemBackground
 			})
 		}
