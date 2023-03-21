@@ -16,3 +16,11 @@ extension Section {
 	}
 }
 
+extension Section {
+	open class WithContainer<OtherContainerType: AnyObject>: TableContent<ContainerType> {
+		public init(_ container: OtherContainerType, @TableContentBuilder<OtherContainerType> builder: () -> TableContentBuilder<OtherContainerType>.Collection) {
+			let items = builder().items.map { $0.adapt(to: ContainerType.self, from: container) }
+			super.init(items: items)
+		}
+	}
+}

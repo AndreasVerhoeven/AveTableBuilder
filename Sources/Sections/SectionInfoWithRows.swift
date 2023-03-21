@@ -21,4 +21,10 @@ public class SectionInfoWithRows<ContainerType: AnyObject>: IdentifiableTableIte
 		self.sectionInfo = sectionInfo
 		self.rowInfos = rowInfos
 	}
+	
+	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionInfoWithRows<OtherContainerType> {
+		let sectionInfo = self.sectionInfo.adapt(to: type, from: originalContainer)
+		let rowInfos = self.rowInfos.map { $0.adapt(to: type, from: originalContainer) }
+		return SectionInfoWithRows<OtherContainerType>(sectionInfo: sectionInfo, rowInfos: rowInfos)
+	}
 }

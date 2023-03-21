@@ -132,8 +132,7 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 
 extension RowInfo {
 	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> RowInfo<OtherContainerType> {
-		let rowInfo = RowInfo<OtherContainerType>(modifying: []) { container, cell, animated in
-		}
+		let rowInfo = RowInfo<OtherContainerType>(modifying: [], configuration: nil)
 		rowInfo.cellClass = cellClass
 		rowInfo.cellStyle = cellStyle
 		rowInfo.allowsHighlighting = allowsHighlighting
@@ -146,18 +145,20 @@ extension RowInfo {
 			guard let originalContainer else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
 			self.cellStyle = rowInfo.cellStyle
 			self.cellClass = rowInfo.cellClass
-			return self.provideCell(container: originalContainer, tableView: tableView, indexPath: indexPath)
+			return TableBuilderStaticStorage.with(rowInfo: self) {
+				return self.provideCell(container: originalContainer, tableView: tableView, indexPath: indexPath)
+			}
 		}
 		rowInfo.configurationHandlers = [{ [weak originalContainer] container, cell, animated, rowInfo in
 			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+			return TableBuilderStaticStorage.with(rowInfo: self) {
 				return self.onConfigure(container: originalContainer, cell: cell, animated: animated)
 			}
 		}]
 		
 		rowInfo.selectionHandlers = [ {[weak originalContainer] container, tableView, indexPath, rowInfo in
 			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+			return TableBuilderStaticStorage.with(rowInfo: self) {
 				self.onSelect(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}]
@@ -174,7 +175,7 @@ extension RowInfo {
 		if self.trailingSwipeActionsProvider != nil {
 			rowInfo.trailingSwipeActionsProvider = { [weak originalContainer] container,tableView, indexPath, row in
 				guard let originalContainer else { return nil }
-				return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				return TableBuilderStaticStorage.with(rowInfo: self) {
 					return self.trailingSwipeActions(container: originalContainer, tableView: tableView, indexPath: indexPath)
 				}
 			}
@@ -183,7 +184,7 @@ extension RowInfo {
 		if self.contextMenuProvider != nil {
 			rowInfo.contextMenuProvider = { [weak originalContainer] container, point, cell, tableView, indexPath, row in
 				guard let originalContainer else { return nil }
-				return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				return TableBuilderStaticStorage.with(rowInfo: self) {
 					return self.contextMenu(container: originalContainer, point: point, cell: cell, tableView: tableView, indexPath: indexPath)
 				}
 			}
@@ -191,41 +192,19 @@ extension RowInfo {
 		
 		rowInfo.onCommitInsertHandlers = [{ [weak originalContainer] container, tableView, indexPath in
 			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+			return TableBuilderStaticStorage.with(rowInfo: self) {
 				self.onCommitInsert(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}]
 		
 		rowInfo.onCommitDeleteHandlers = [{ [weak originalContainer] container, tableView, indexPath in
 			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+			return TableBuilderStaticStorage.with(rowInfo: self) {
 				self.onCommitDelete(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}]
 		
 		return rowInfo
-	}
-}
-
-public class RowInfoAdapter<MyContainerType: AnyObject, TheirContainerType: AnyObject>: RowInfo<MyContainerType> {
-	public var wrappedRowInfo: RowInfo<TheirContainerType>
-	public weak var wrappedContainer: TheirContainerType?
-	
-	init(rowInfo: RowInfo<TheirContainerType>, container: TheirContainerType) {
-		self.wrappedRowInfo = rowInfo
-		self.wrappedContainer = container
-		
-		super.init(modifying: [], configuration: nil)
-	}
-	
-	override public func provideCell(container: MyContainerType, tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
-		guard let wrappedContainer else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
-		return wrappedRowInfo.provideCell(container: wrappedContainer, tableView: tableView, indexPath: indexPath)
-	}
-	
-	override public func onConfigure(container: MyContainerType, cell: UITableViewCell, animated: Bool) {
-		guard let wrappedContainer else { return }
-		wrappedRowInfo.onConfigure(container: wrappedContainer, cell: cell, animated: animated)
 	}
 }
 

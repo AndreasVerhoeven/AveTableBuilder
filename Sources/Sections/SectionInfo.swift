@@ -19,11 +19,11 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	// optional footer text
 	public var footer: String?
 	
-	public typealias SimpleHeaderFooterProvider = (_ `self`: ContainerType, _ tableView: UITableView,  _ section: Int) -> UITableViewHeaderFooterView
+	public typealias SimpleHeaderFooterProvider = (_ `self`: ContainerType, _ tableView: UITableView,  _ section: Int) -> UITableViewHeaderFooterView?
 	public typealias SimpleHeaderFooterUpdater = ( _ `self`: ContainerType, _ view: UITableViewHeaderFooterView, _ text: String?, _ animated: Bool) -> Void
 	public typealias SimpleInitializationCallbacks = ( _ `self`: ContainerType, _ tableView: UITableView) -> Void
 	
-	public typealias HeaderFooterProvider = (_ `self`: ContainerType, _ tableView: UITableView,  _ section: Int, _ info: SectionInfo<ContainerType>) -> UITableViewHeaderFooterView
+	public typealias HeaderFooterProvider = (_ `self`: ContainerType, _ tableView: UITableView,  _ section: Int, _ info: SectionInfo<ContainerType>) -> UITableViewHeaderFooterView?
 	public typealias HeaderFooterUpdater = ( _ `self`: ContainerType, _ view: UITableViewHeaderFooterView, _ text: String?, _ tableView: UITableView,  _ section: Int, _ animated: Bool, _ info: SectionInfo<ContainerType>) -> Void
 	public typealias InitializationCallbacks = ( _ `self`: ContainerType, _ tableView: UITableView, _ info: SectionInfo<ContainerType>) -> Void
 	
@@ -69,5 +69,63 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public init(header: String? = nil, footer: String? = nil) {
 		self.header = header
 		self.footer = footer
+	}
+}
+
+extension SectionInfo {
+	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionInfo<OtherContainerType> {
+		let sectionInfo = SectionInfo<OtherContainerType>(header: self.header, footer: self.footer)
+		self.storage.chain(to: sectionInfo.storage)
+		
+		if footerViewProvider != nil {
+			sectionInfo.footerViewProvider = { [weak originalContainer]  container, tableView, section, info in
+				guard let originalContainer else { return nil }
+				return TableBuilderStaticStorage.with(sectionInfo: self) {
+					self.header = self.header ?? info.header
+					self.footer = self.footer ?? info.footer
+					return self.provideFooterView(container: originalContainer, tableView: tableView, section: section)
+				}
+			}
+		}
+		
+		if headerViewProvider != nil {
+			sectionInfo.headerViewProvider = { [weak originalContainer]  container, tableView, section, info in
+				guard let originalContainer else { return nil }
+				return TableBuilderStaticStorage.with(sectionInfo: self) {
+					self.header = self.header ?? info.header
+					self.footer = self.footer ?? info.footer
+					return self.provideHeaderView(container: originalContainer, tableView: tableView, section: section)
+				}
+			}
+		}
+		
+		sectionInfo.headerUpdaters.append { [weak originalContainer] container, view, text, tableView, section, animated, info in
+			guard let originalContainer else { return }
+			TableBuilderStaticStorage.with(sectionInfo: self) {
+				self.header = self.header ?? info.header
+				self.footer = self.footer ?? info.footer
+				self.updateHeaderView(container: originalContainer, view: view, tableView: tableView, section: section, animated: animated)
+			}
+		}
+		
+		sectionInfo.footerUpdaters.append { [weak originalContainer] container, view, text, tableView, section, animated, info in
+			guard let originalContainer else { return }
+			TableBuilderStaticStorage.with(sectionInfo: self) {
+				self.header = self.header ?? info.header
+				self.footer = self.footer ?? info.footer
+				self.updateFooterView(container: originalContainer, view: view, tableView: tableView, section: section, animated: animated)
+			}
+		}
+		
+		sectionInfo.firstAddedCallbacks.append { [weak originalContainer] container, tableView, info in
+			guard let originalContainer else { return }
+			TableBuilderStaticStorage.with(sectionInfo: self) {
+				self.header = self.header ?? info.header
+				self.footer = self.footer ?? info.footer
+				self.performInitializationCallback(container: originalContainer, tableView: tableView)
+			}
+		}
+		
+		return sectionInfo
 	}
 }

@@ -10,7 +10,7 @@ import Foundation
 extension Row {
 	/// This is a simple wrapper around sections that can be used to apply multiple properties to a section in one go
 	open class Group: SectionContent<ContainerType> {
-		init(@SectionContentBuilder<ContainerType> builder: () -> SectionContentBuilder<ContainerType>.Collection) {
+		public init(@SectionContentBuilder<ContainerType> builder: () -> SectionContentBuilder<ContainerType>.Collection) {
 			super.init(items: builder().items)
 		}
 	}
@@ -18,7 +18,7 @@ extension Row {
 
 extension Row {
 	open class WithContainer<OtherContainerType: AnyObject>: SectionContent<ContainerType> {
-		init(_ container: OtherContainerType, @SectionContentBuilder<OtherContainerType> builder: () -> SectionContentBuilder<OtherContainerType>.Collection) {
+		public init(_ container: OtherContainerType, @SectionContentBuilder<OtherContainerType> builder: () -> SectionContentBuilder<OtherContainerType>.Collection) {
 			let items = builder().items.map { $0.adapt(to: ContainerType.self, from: container) }
 			super.init(items: items)
 		}
