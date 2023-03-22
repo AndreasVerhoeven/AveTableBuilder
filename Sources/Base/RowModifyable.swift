@@ -31,9 +31,12 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult internal func addModification(for item: RowConfiguration.Item, force: Bool = false, handler: @escaping RowInfo<ContainerType>.ConfigurationHandler) -> Self {
+	@discardableResult internal func addModification(for item: RowConfiguration.Item,
+													 force: Bool = false,
+													 mode: RowModificationHandlerMode = .regular,
+													 handler: @escaping RowInfo<ContainerType>.ConfigurationHandler) -> Self {
 		modifyRows { row in
-			row.addModification(for: item, force: force, handler: handler)
+			row.addModification(for: item, force: force, mode: mode, handler: handler)
 		}
 	}
 	
@@ -66,13 +69,16 @@ extension RowModifyable {
 	}
 	
 	@discardableResult public func backgroundColor( _ color: UIColor?) -> Self {
-		guard let color else {
-			return modifyRows { $0.knownModifications.items.insert(.backgroundColor) }
-		}
-		
-		return addModification(for: .backgroundColor) { container, cell, animated, rowInfo in
+		return addModification(for: .backgroundColor, mode: color == nil ? .canBeOverriden : .regular) { container, cell, animated, rowInfo in
 			UIView.performAnimationsIfNeeded(animated: animated) {
-				cell.backgroundColor = color
+				cell.backgroundColor = color ?? rowInfo.defaultCellColor ?? {
+					guard let tableView = SectionContent<ContainerType>.currentTableView else { return nil }
+					switch tableView.style {
+						case .insetGrouped, .grouped: return .secondarySystemGroupedBackground
+						case .plain: return .secondarySystemBackground
+						@unknown default: return .secondarySystemBackground
+					}
+				}()
 			}
 		}
 	}

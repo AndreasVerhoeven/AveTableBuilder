@@ -22,99 +22,7 @@ enum Extra: String, CaseIterable {
 	case garlicBread
 }
 
-protocol EditItemContentsProvider {
-	var id: String { get }
-	var container: Self { get }
-	func builderContents() -> SectionContentBuilder<Builder>.Collection
-}
 
-extension EditItemContentsProvider {
-	var container: Self { self }
-}
-
-
-class EditItemBase<Container: AnyObject>: EditItemContentsProvider {
-	var id: String { String(describing: self) }
-	@SectionContentBuilder<Container> func contents() -> SectionContentBuilder<Container>.Collection {
-	}
-	
-	func builderContents() -> SectionContentBuilder<Builder>.Collection {
-		contents().adapt(to: Builder.self, from: self as! Container)
-	}
-}
-
-class GroupedEditItem: EditItemBase<GroupedEditItem> {
-	var items: [EditItemContentsProvider]
-	init(items: [EditItemContentsProvider]) {
-		self.items = items
-	}
-	
-	@SectionContentBuilder<Builder> override func builderContents() -> SectionContentBuilder<Builder>.Collection {
-		Row.ForEach(items, identifiedBy: \.id) { item in
-			item.builderContents()
-		}
-	}
-}
-
-class BlaEditItem: EditItemBase<BlaEditItem> {
-	@TableState var showRow = false
-	
-	@SectionContentBuilder<BlaEditItem> override func contents() -> SectionContentBuilder<BlaEditItem>.Collection {
-		Row.Switch(text: "Bla", binding: self.$showRow)
-		if self.showRow == true {
-			Row(text: "Y")
-		}
-	}
-}
-
-class FooEditItem: EditItemBase<FooEditItem> {
-	@TableState var text = ""
-	@TableItemReference var textRow: TableItemIdentifier?
-	
-	@SectionContentBuilder<FooEditItem> override func contents() -> SectionContentBuilder<FooEditItem>.Collection {
-		Row(text: "Z", subtitle: self.text).numberOfLines(0).noAnimatedContentChanges().detailTextColor(.secondaryLabel)
-		
-		Row.TextField(binding: self.$text, placeholder: "text here").reference(self.$textRow).onBuild {
-			if self.text.count > 3 {
-				self.$textRow.cell?.shake()
-			}
-		}.backgroundColor(self.text.count > 3 ? .systemRed.withAlphaComponent(0.3) : nil)
-	}
-}
-
-class AEditItem: EditItemBase<AEditItem> {
-	@SectionContentBuilder<AEditItem> override func contents() -> SectionContentBuilder<AEditItem>.Collection {
-		Row(text: "A")
-	}
-}
-
-class BEditItem: EditItemBase<BEditItem> {
-	@SectionContentBuilder<BEditItem> override func contents() -> SectionContentBuilder<BEditItem>.Collection {
-		Row(text: "B")
-	}
-}
-
-class Builder {
-	var items: [EditItemContentsProvider] = [FooEditItem(), GroupedEditItem(items: [AEditItem(), BEditItem(), BlaEditItem()])]
-	
-	let tableView = UITableView(frame: .zero, style: .insetGrouped)
-	lazy var builder = TableBuilder(tableView: tableView, container: self) { `self` in
-		
-	}
-	
-	@TableContentBuilder<Builder> func build() -> TableContentBuilder<Builder>.Collection {
-		Section.Stylished {
-			Section.ForEach(items, identifiedBy: \.id) { item in
-				let contents = item.builderContents()
-				if contents.items.isEmpty == false {
-					Section(item.id) {
-						contents
-					}
-				}
-			}
-		}
-	}
-}
 
 class ViewController: UITableViewController {
 	// this is the state that we keep which makes the TableBuilder update itself when changed.
@@ -131,16 +39,14 @@ class ViewController: UITableViewController {
 	}
 	@TableState var category = Category.toppings
 	
-	var zzz = Builder()
+	var editItemBuilder = EditItemBuilder(items: [
+		NameEditItem(),
+		GroupedEditItem(subItems: [NameEditItem(), IncludeThingEditItem()])
+	])
+	
 	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
-		//Section.Stylished {
-			self.zzz.build().adapt(to: ViewController.self, from: self.zzz)
-		//}
-		
-		/*
-		
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
 			// Our first section: no title and two rows
@@ -222,7 +128,6 @@ class ViewController: UITableViewController {
 				}
 			}
 		}
-		*/
 	}
 	
 	private var hasDrinks: Bool {

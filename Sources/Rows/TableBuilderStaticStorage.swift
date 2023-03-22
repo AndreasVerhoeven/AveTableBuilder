@@ -85,10 +85,7 @@ extension TableBuilderStaticStorage {
 	}
 }
 
-extension TableBuilder: TableBuilderProtocol {
-	fileprivate var tableView: UITableView { dataSource.tableView }
-}
-
+extension TableBuilder: TableBuilderProtocol {}
 protocol TableStorageProvider {}
 
 extension TableStorageProvider {

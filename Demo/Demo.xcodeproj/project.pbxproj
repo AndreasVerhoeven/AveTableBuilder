@@ -60,6 +60,12 @@
 		49DD5DED29CB3EFC00DA2331 /* SegmentControlRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */; };
 		49DD5DF129CB555D00DA2331 /* ChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DF029CB555D00DA2331 /* ChangeObserver.swift */; };
 		49DD5DF329CB5BFB00DA2331 /* PerformOnUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DF229CB5BFB00DA2331 /* PerformOnUpdate.swift */; };
+		49DD5DF629CBB1A200DA2331 /* BaseEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DF529CBB1A200DA2331 /* BaseEditItem.swift */; };
+		49DD5DF829CBB1EF00DA2331 /* TypedBuilderBaseEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DF729CBB1EF00DA2331 /* TypedBuilderBaseEditItem.swift */; };
+		49DD5DFA29CBB25000DA2331 /* EditItemBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DF929CBB25000DA2331 /* EditItemBuilder.swift */; };
+		49DD5DFC29CBB2A500DA2331 /* NameEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFB29CBB2A500DA2331 /* NameEditItem.swift */; };
+		49DD5DFE29CBB31300DA2331 /* GroupedEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */; };
+		49DD5E0029CBB3B200DA2331 /* IncludeThingEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,6 +120,12 @@
 		49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentControlRow.swift; sourceTree = "<group>"; };
 		49DD5DF029CB555D00DA2331 /* ChangeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeObserver.swift; sourceTree = "<group>"; };
 		49DD5DF229CB5BFB00DA2331 /* PerformOnUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformOnUpdate.swift; sourceTree = "<group>"; };
+		49DD5DF529CBB1A200DA2331 /* BaseEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEditItem.swift; sourceTree = "<group>"; };
+		49DD5DF729CBB1EF00DA2331 /* TypedBuilderBaseEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedBuilderBaseEditItem.swift; sourceTree = "<group>"; };
+		49DD5DF929CBB25000DA2331 /* EditItemBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditItemBuilder.swift; sourceTree = "<group>"; };
+		49DD5DFB29CBB2A500DA2331 /* NameEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameEditItem.swift; sourceTree = "<group>"; };
+		49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedEditItem.swift; sourceTree = "<group>"; };
+		49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncludeThingEditItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,11 +250,25 @@
 				49A6F79526508AAB002EB98D /* AppDelegate.swift */,
 				49A6F79726508AAB002EB98D /* SceneDelegate.swift */,
 				49A6F79926508AAB002EB98D /* ViewController.swift */,
+				49DD5DF429CBB19400DA2331 /* EditItem */,
 				49A6F79E26508AAC002EB98D /* Assets.xcassets */,
 				49A6F7A026508AAC002EB98D /* LaunchScreen.storyboard */,
 				49A6F7A326508AAC002EB98D /* Info.plist */,
 			);
 			path = Demo;
+			sourceTree = "<group>";
+		};
+		49DD5DF429CBB19400DA2331 /* EditItem */ = {
+			isa = PBXGroup;
+			children = (
+				49DD5DF529CBB1A200DA2331 /* BaseEditItem.swift */,
+				49DD5DF729CBB1EF00DA2331 /* TypedBuilderBaseEditItem.swift */,
+				49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */,
+				49DD5DF929CBB25000DA2331 /* EditItemBuilder.swift */,
+				49DD5DFB29CBB2A500DA2331 /* NameEditItem.swift */,
+				49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */,
+			);
+			path = EditItem;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,6 +360,7 @@
 				497C78C629B1EFD9006EF4A3 /* TableContentBuilder.swift in Sources */,
 				497C78BD29B1EFD9006EF4A3 /* SectionForEach.swift in Sources */,
 				497C78CA29B1EFD9006EF4A3 /* RowCollection.swift in Sources */,
+				49DD5DFA29CBB25000DA2331 /* EditItemBuilder.swift in Sources */,
 				497C78DA29B1EFD9006EF4A3 /* RowModifyable.swift in Sources */,
 				497C78C229B1EFD9006EF4A3 /* SectionCollection.swift in Sources */,
 				497C78BE29B1EFD9006EF4A3 /* MultiSelectionSection.swift in Sources */,
@@ -344,17 +371,21 @@
 				49A6F79A26508AAB002EB98D /* ViewController.swift in Sources */,
 				497C78D329B1EFD9006EF4A3 /* TableItemReference.swift in Sources */,
 				49DD5DED29CB3EFC00DA2331 /* SegmentControlRow.swift in Sources */,
+				49DD5DFE29CBB31300DA2331 /* GroupedEditItem.swift in Sources */,
 				497C78BF29B1EFD9006EF4A3 /* SectionInfo.swift in Sources */,
 				49A736F729B28082005A2CE9 /* SingleSelectionSection.swift in Sources */,
 				49A6F79626508AAB002EB98D /* AppDelegate.swift in Sources */,
 				497C78D129B1EFD9006EF4A3 /* SwitchRow.swift in Sources */,
+				49DD5E0029CBB3B200DA2331 /* IncludeThingEditItem.swift in Sources */,
 				497C78CE29B1EFD9006EF4A3 /* SectionContentBuilder.swift in Sources */,
 				497C78D829B1EFD9006EF4A3 /* TableBuilder.swift in Sources */,
 				497C78C829B1EFD9006EF4A3 /* RowForEach.swift in Sources */,
+				49DD5DF829CBB1EF00DA2331 /* TypedBuilderBaseEditItem.swift in Sources */,
 				493B7A6A29BC981A0005F42B /* TextFieldRow.swift in Sources */,
 				497C78CF29B1EFD9006EF4A3 /* StaticRow.swift in Sources */,
 				497C78CC29B1EFD9006EF4A3 /* RowInfo.swift in Sources */,
 				497C78C029B1EFD9006EF4A3 /* StylishedSection.swift in Sources */,
+				49DD5DF629CBB1A200DA2331 /* BaseEditItem.swift in Sources */,
 				497C78D029B1EFD9006EF4A3 /* Row.swift in Sources */,
 				49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */,
 				497C78C329B1EFD9006EF4A3 /* SectionInfoWithRows.swift in Sources */,
@@ -362,6 +393,7 @@
 				49A7371829B762AC005A2CE9 /* TableBinding.swift in Sources */,
 				49DD5DAA29C9C5A800DA2331 /* TableBuilderStore.swift in Sources */,
 				49DD5DF129CB555D00DA2331 /* ChangeObserver.swift in Sources */,
+				49DD5DFC29CBB2A500DA2331 /* NameEditItem.swift in Sources */,
 				497C78DC29B1F2B3006EF4A3 /* StepperRow.swift in Sources */,
 				497C78CD29B1EFD9006EF4A3 /* ActionRow.swift in Sources */,
 				49A6F79826508AAB002EB98D /* SceneDelegate.swift in Sources */,

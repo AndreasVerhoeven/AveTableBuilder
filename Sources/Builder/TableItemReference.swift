@@ -20,9 +20,16 @@ import UIKit
 	
 	public var indexPath: IndexPath? { resolver?.indexPath(for: wrappedValue) }
 	public var cell: UITableViewCell? { resolver?.cell(for: wrappedValue) }
+	
+	public func scrollTo(_ position: UITableView.ScrollPosition = .none, animated: Bool = true) {
+		guard let indexPath, let tableView = resolver?.tableView else { return }
+		tableView.scrollToRow(at: indexPath, at: position, animated: animated)
+	}
 }
 
 internal protocol TableItemReferenceResolver: AnyObject {
+	var tableView: UITableView { get }
+	
 	func indexPath(for reference: TableItemIdentifier?) -> IndexPath?
 	func cell(for reference: TableItemIdentifier?) -> UITableViewCell?
 }

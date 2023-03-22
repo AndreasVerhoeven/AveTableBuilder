@@ -34,7 +34,7 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	
 	public func runModificationHandlers(container: ContainerType, cell: UITableViewCell, animated: Bool) {
 		for (_, value) in modificationHandlers {
-			if case let .handler(handler) = value {
+			if case let .handler(handler, _) = value {
 				handler(container, cell, animated, self)
 			}
 		}
@@ -97,6 +97,8 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var allowsHighlighting: Bool?
 	public var allowsHighlightingDuringEditing: Bool?
 	
+	public var defaultCellColor: UIColor?
+	
 	/// references to items
 	public var references = [TableItemReference]()
 	
@@ -110,16 +112,26 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	
 	public enum ModificationHandler {
 		case manual
-		case handler(ConfigurationHandler)
+		case handler(ConfigurationHandler, RowModificationHandlerMode = .regular)
+		
+		var canBeOverriden: Bool {
+			switch self {
+				case .manual: return false
+				case .handler(_, let mode): return mode == .canBeOverriden
+			}
+		}
 	}
 	
 	public var modificationHandlers = [RowConfiguration.Item: ModificationHandler]()
 	
-	@discardableResult func addModification(for item: RowConfiguration.Item, force: Bool = false, handler: @escaping ConfigurationHandler) -> Self {
+	@discardableResult func addModification(for item: RowConfiguration.Item,
+											force: Bool = false,
+											mode: RowModificationHandlerMode = .regular,
+											handler: @escaping ConfigurationHandler) -> Self {
 		knownModifications.items.insert(item)
 		
-		guard force == true || modificationHandlers[item] == nil else { return self }
-		modificationHandlers[item] = .handler(handler)
+		guard force == true || (modificationHandlers[item]?.canBeOverriden ?? true) else { return self }
+		modificationHandlers[item] = .handler(handler, mode)
 		return self
 	}
 	
@@ -171,13 +183,13 @@ extension RowInfo {
 		self.storage.chain(to: rowInfo.storage)
 		
 		for (key, value) in modificationHandlers {
-			if case let .handler(handler) = value {
+			if case let .handler(handler, mode) = value {
 				rowInfo.modificationHandlers[key] = .handler({ [weak originalContainer] container, cell, animated, rowInfo in
 					guard let originalContainer else { return }
 					return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 						handler(originalContainer, cell, animated, self)
 					}
-				})
+				}, mode)
 			} else {
 				rowInfo.modificationHandlers[key] = .manual
 			}
@@ -291,4 +303,9 @@ extension RowInfo {
 		})
 		return self
 	}
+}
+
+public enum RowModificationHandlerMode {
+	case regular
+	case canBeOverriden
 }

@@ -54,13 +54,13 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public typealias StateChangesCallback = () -> Void
 	private(set) var stateChangeCallbacks = [StateChangesCallback]()
 	
+	public var coalesceUpdates = true
+	public var hasPendingUpdate = false
+	
 	private var seenSections = Set<TableItemIdentifier>()
+	private var runLoopObserver: CFRunLoopObserver?
 	
-	private var activeIndexPaths = [IndexPath]()
-	private var activeRowInfos = [RowInfo<ContainerType>]()
-	private var activeSectionInfos = [SectionInfo<ContainerType>]()
-	
-	let storage = TableBuilderStore()
+	internal let storage = TableBuilderStore()
 	
 	/// Creates a TableBuilder:
 	///
@@ -168,6 +168,12 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func update(animated: Bool) {
 		guard let container else { return }
 		
+		hasPendingUpdate = false
+		if let runLoopObserver {
+			CFRunLoopRemoveObserver(CFRunLoopGetMain(), runLoopObserver, CFRunLoopMode.commonModes);
+			self.runLoopObserver = nil
+		}
+		
 		perform {
 			let reallyAnimated = (animated && dataSource.tableView.window != nil)
 			
@@ -202,6 +208,10 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		}
 	}
 	
+	public var tableView: UITableView {
+		dataSource.tableView
+	}
+	
 	/// gets the IndexPath in the tableview for the given identifier
 	public func indexPath(for identifier: TableItemIdentifier?) -> IndexPath? {
 		guard let identifier else { return nil }
@@ -218,7 +228,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func registerUpdater<T: SimpleChangeObservable>(_ item: T) {
 		item.register(object: self) { [weak self] in
 			self?.stateChangeCallbacks.forEach { $0() }
-			self?.update(animated: true)
+			self?.setNeedsUpdate()
 		}
 	}
 	
@@ -235,6 +245,32 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	/// Callback will be called when any of the registered `TableState`s variables changes.
 	public func onStateChange(_ callback: @escaping StateChangesCallback) {
 		stateChangeCallbacks.append(callback)
+	}
+	
+	
+	/// will immediately call update when something changes
+	public func immediateUpdates() -> Self {
+		coalesceUpdates = false
+		return self
+	}
+	
+	public func setNeedsUpdate() {
+		guard coalesceUpdates == true else { return update(animated: true) }
+		guard hasPendingUpdate == false else {
+			print("Ignoring an update")
+			return
+			
+		}
+		hasPendingUpdate = true
+		
+		// add an observer to execute once at the end of the runloop
+		runLoopObserver = CFRunLoopObserverCreateWithHandler(nil, CFRunLoopActivity.beforeWaiting.rawValue, false, 0) { [weak self] observer, activity in
+			self?.runLoopObserver = nil
+			self?.update(animated: true)
+		}
+		if let runLoopObserver {
+			CFRunLoopAddObserver(CFRunLoopGetMain(), runLoopObserver, CFRunLoopMode.commonModes)
+		}
 	}
 	
 	// MARK: - UITableViewDelegate

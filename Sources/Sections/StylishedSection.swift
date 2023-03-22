@@ -86,6 +86,7 @@ extension StylishedCustomHeader: ButtonHaveableHeader {
 extension TableContent {
 	public func stylished() -> Self {
 		_ = self.stylishedHeader().backgroundColor(.secondarySystemBackground)
+		_ = modifyRows { $0.defaultCellColor = $0.defaultCellColor ?? .secondarySystemBackground }
 		
 		items.forEach { item in
 			item.sectionInfo.firstAddedCallbacks.append({ container, tableView, info in
