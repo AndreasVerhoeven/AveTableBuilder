@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIKitAnimations
 
 /// Base protocol for modifying rows. By this being a protocol, we can have our modification methods
 /// apply to both sections and rows.
@@ -45,10 +46,11 @@ extension RowModifyable {
 		}
 	}
 	
-	
 	@discardableResult public func backgroundColor( _ color: UIColor) -> Self {
-		preConfigure(modifying: [.backgroundColor]) { container, cell, animated in
-			cell.backgroundColor = color
+		return preConfigure(modifying: [.backgroundColor]) { container, cell, animated in
+			UIView.performAnimationsIfNeeded(animated: animated) {
+				cell.backgroundColor = color
+			}
 		}
 	}
 	
