@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIKitAnimations
 
 enum Topping: String, CaseIterable {
 	case olives
@@ -42,6 +43,19 @@ class EditItemBase<Container: AnyObject>: EditItemContentsProvider {
 	}
 }
 
+class GroupedEditItem: EditItemBase<GroupedEditItem> {
+	var items: [EditItemContentsProvider]
+	init(items: [EditItemContentsProvider]) {
+		self.items = items
+	}
+	
+	@SectionContentBuilder<Builder> override func builderContents() -> SectionContentBuilder<Builder>.Collection {
+		Row.ForEach(items, identifiedBy: \.id) { item in
+			item.builderContents()
+		}
+	}
+}
+
 class BlaEditItem: EditItemBase<BlaEditItem> {
 	@TableState var showRow = false
 	
@@ -54,13 +68,34 @@ class BlaEditItem: EditItemBase<BlaEditItem> {
 }
 
 class FooEditItem: EditItemBase<FooEditItem> {
+	@TableState var text = ""
+	@TableItemReference var textRow: TableItemIdentifier?
+	
 	@SectionContentBuilder<FooEditItem> override func contents() -> SectionContentBuilder<FooEditItem>.Collection {
-		Row(text: "Z")
+		Row(text: "Z", subtitle: self.text).numberOfLines(0).noAnimatedContentChanges().detailTextColor(.secondaryLabel)
+		
+		Row.TextField(binding: self.$text, placeholder: "text here").reference(self.$textRow).onBuild {
+			if self.text.count > 3 {
+				self.$textRow.cell?.shake()
+			}
+		}.backgroundColor(self.text.count > 3 ? .systemRed.withAlphaComponent(0.3) : nil)
+	}
+}
+
+class AEditItem: EditItemBase<AEditItem> {
+	@SectionContentBuilder<AEditItem> override func contents() -> SectionContentBuilder<AEditItem>.Collection {
+		Row(text: "A")
+	}
+}
+
+class BEditItem: EditItemBase<BEditItem> {
+	@SectionContentBuilder<BEditItem> override func contents() -> SectionContentBuilder<BEditItem>.Collection {
+		Row(text: "B")
 	}
 }
 
 class Builder {
-	var items: [EditItemContentsProvider] = [BlaEditItem(), FooEditItem()]
+	var items: [EditItemContentsProvider] = [FooEditItem(), GroupedEditItem(items: [AEditItem(), BEditItem(), BlaEditItem()])]
 	
 	let tableView = UITableView(frame: .zero, style: .insetGrouped)
 	lazy var builder = TableBuilder(tableView: tableView, container: self) { `self` in
@@ -68,11 +103,13 @@ class Builder {
 	}
 	
 	@TableContentBuilder<Builder> func build() -> TableContentBuilder<Builder>.Collection {
-		Section.ForEach(items, identifiedBy: \.id) { item in
-			let contents = item.builderContents()
-			if contents.items.isEmpty == false {
-				Section(item.id) {
-					contents
+		Section.Stylished {
+			Section.ForEach(items, identifiedBy: \.id) { item in
+				let contents = item.builderContents()
+				if contents.items.isEmpty == false {
+					Section(item.id) {
+						contents
+					}
 				}
 			}
 		}
@@ -98,9 +135,9 @@ class ViewController: UITableViewController {
 	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
-		Section.Stylished {
+		//Section.Stylished {
 			self.zzz.build().adapt(to: ViewController.self, from: self.zzz)
-		}
+		//}
 		
 		/*
 		

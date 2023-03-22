@@ -13,25 +13,33 @@ enum TableBuilderStaticStorage {
 	fileprivate static var activeRowInfos = [Any]()
 	fileprivate static var activeSectionInfos = [Any]()
 	fileprivate static var activeIndexPaths = [IndexPath]()
+	fileprivate static var activeContainers = [Any]()
 }
 
 extension TableBuilderStaticStorage {
 	@discardableResult static internal func with<T, ContainerType: AnyObject>(builder: TableBuilder<ContainerType>, callback: () -> T) -> T {
 		activeBuilders.append(builder)
 		defer { activeBuilders.removeLast() }
+		return with(container: builder.container, callback: callback)
+	}
+	
+	@discardableResult static internal func with<T>(container: Any?, callback: () -> T) -> T {
+		guard let container = container else { return callback() }
+		activeContainers.append(container)
+		defer { activeContainers.removeLast() }
 		return callback()
 	}
 	
-	@discardableResult static internal func with<T, ContainerType: AnyObject>(rowInfo: RowInfo<ContainerType>, callback: () -> T) -> T {
+	@discardableResult static internal func with<T, ContainerType: AnyObject>(rowInfo: RowInfo<ContainerType>, container: ContainerType? = nil, callback: () -> T) -> T {
 		activeRowInfos.append(rowInfo)
 		defer { activeRowInfos.removeLast() }
-		return callback()
+		return with(container: container, callback: callback)
 	}
 	
-	@discardableResult static internal func with<T, ContainerType: AnyObject>(sectionInfo: SectionInfo<ContainerType>, callback: () -> T) -> T {
+	@discardableResult static internal func with<T, ContainerType: AnyObject>(sectionInfo: SectionInfo<ContainerType>, container: ContainerType? = nil, callback: () -> T) -> T {
 		activeSectionInfos.append(sectionInfo)
 		defer { activeSectionInfos.removeLast() }
-		return callback()
+		return with(container: container, callback: callback)
 	}
 	
 	@discardableResult static internal func with<T>(indexPath: IndexPath?, callback: () -> T) -> T {
@@ -70,6 +78,10 @@ fileprivate protocol TableBuilderProtocol {
 extension TableBuilderStaticStorage {
 	internal static func registerUpdaters<T: AnyObject>(in container: T) {
 		(TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol)?.registerUpdaters(in: container)
+	}
+	
+	internal static var currentContainer: Any? {
+		return activeContainers.last
 	}
 }
 

@@ -39,7 +39,7 @@ import AveDataSource
 /// 				}
 /// 		}
 /// ```
-public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UITableViewDelegate {
+public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdatable, UITableViewDelegate, TableItemReferenceResolver {
 	
 	/// our container, weakly retained. Passed to all escaping closures
 	private(set) weak var container: ContainerType?
@@ -174,7 +174,10 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			var snapshot = DataSourceType.SnapshotType()
 			for item in updater(container).items {
 				item.rowInfos.forEach { row in
-					row.reference.forEach { $0.wrappedValue = row.id }
+					for reference in row.references {
+						reference.wrappedValue = row.id
+						reference.resolver = self
+					}
 					row.creators.forEach { $0.items = [] }
 				}
 				
@@ -212,9 +215,8 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	}
 	
 	/// Registers an item that, when changed, should update the tableview
-	public func registerUpdater<T: TableUpdateNotifyable>(_ item: T) {
-		item.reg
-		item.onChange { [weak self] in
+	public func registerUpdater<T: SimpleChangeObservable>(_ item: T) {
+		item.register(object: self) { [weak self] in
 			self?.stateChangeCallbacks.forEach { $0() }
 			self?.update(animated: true)
 		}
@@ -224,7 +226,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	/// change, the tableview is updated.
 	public func registerUpdaters<T: AnyObject>(in container: T) {
 		for child in Mirror(reflecting: container).children {
-			if let item = child.value as? TableUpdateNotifyable {
+			if let item = child.value as? SimpleChangeObservable {
 				registerUpdater(item)
 			}
 		}

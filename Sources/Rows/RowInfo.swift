@@ -98,7 +98,7 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var allowsHighlightingDuringEditing: Bool?
 	
 	/// references to items
-	public var reference = [TableItemReference]()
+	public var references = [TableItemReference]()
 	
 	/// true if we want animated content updates
 	public var animatedContentUpdates = true
@@ -165,7 +165,7 @@ extension RowInfo {
 		rowInfo.cellStyle = cellStyle
 		rowInfo.allowsHighlighting = allowsHighlighting
 		rowInfo.allowsHighlightingDuringEditing = allowsHighlightingDuringEditing
-		rowInfo.reference = reference
+		rowInfo.references = references
 		rowInfo.animatedContentUpdates = animatedContentUpdates
 		rowInfo.knownModifications = knownModifications
 		self.storage.chain(to: rowInfo.storage)
@@ -174,7 +174,9 @@ extension RowInfo {
 			if case let .handler(handler) = value {
 				rowInfo.modificationHandlers[key] = .handler({ [weak originalContainer] container, cell, animated, rowInfo in
 					guard let originalContainer else { return }
-					handler(originalContainer, cell, animated, self)
+					return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
+						handler(originalContainer, cell, animated, self)
+					}
 				})
 			} else {
 				rowInfo.modificationHandlers[key] = .manual
@@ -186,7 +188,7 @@ extension RowInfo {
 			guard let originalContainer else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
 			self.cellStyle = rowInfo.cellStyle
 			self.cellClass = rowInfo.cellClass
-			return TableBuilderStaticStorage.with(rowInfo: self) {
+			return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 				return self.provideCell(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}
@@ -200,7 +202,7 @@ extension RowInfo {
 		if selectionHandlers.isEmpty == false {
 			rowInfo.selectionHandlers = [ {[weak originalContainer] container, tableView, indexPath, rowInfo in
 				guard let originalContainer else { return }
-				return TableBuilderStaticStorage.with(rowInfo: self) {
+				return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 					self.onSelect(container: originalContainer, tableView: tableView, indexPath: indexPath)
 				}
 			}]
@@ -209,7 +211,7 @@ extension RowInfo {
 		if self.leadingSwipeActionsProvider != nil {
 			rowInfo.leadingSwipeActionsProvider = { [weak originalContainer] container, tableView, indexPath, row in
 				guard let originalContainer else { return nil }
-				return TableBuilderStaticStorage.with(rowInfo: rowInfo) {
+				return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 					return self.leadingSwipActions(container: originalContainer, tableView: tableView, indexPath: indexPath)
 				}
 			}
@@ -218,7 +220,7 @@ extension RowInfo {
 		if self.trailingSwipeActionsProvider != nil {
 			rowInfo.trailingSwipeActionsProvider = { [weak originalContainer] container,tableView, indexPath, row in
 				guard let originalContainer else { return nil }
-				return TableBuilderStaticStorage.with(rowInfo: self) {
+				return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 					return self.trailingSwipeActions(container: originalContainer, tableView: tableView, indexPath: indexPath)
 				}
 			}
@@ -227,7 +229,7 @@ extension RowInfo {
 		if self.contextMenuProvider != nil {
 			rowInfo.contextMenuProvider = { [weak originalContainer] container, point, cell, tableView, indexPath, row in
 				guard let originalContainer else { return nil }
-				return TableBuilderStaticStorage.with(rowInfo: self) {
+				return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 					return self.contextMenu(container: originalContainer, point: point, cell: cell, tableView: tableView, indexPath: indexPath)
 				}
 			}
@@ -235,14 +237,14 @@ extension RowInfo {
 		
 		rowInfo.onCommitInsertHandlers = [{ [weak originalContainer] container, tableView, indexPath in
 			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: self) {
+			return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 				self.onCommitInsert(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}]
 		
 		rowInfo.onCommitDeleteHandlers = [{ [weak originalContainer] container, tableView, indexPath in
 			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: self) {
+			return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 				self.onCommitDelete(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}]

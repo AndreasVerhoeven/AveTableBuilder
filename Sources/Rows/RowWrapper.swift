@@ -19,7 +19,12 @@ extension Row {
 extension Row {
 	open class WithContainer<OtherContainerType: AnyObject>: SectionContent<ContainerType> {
 		public init(_ container: OtherContainerType, @SectionContentBuilder<OtherContainerType> builder: () -> SectionContentBuilder<OtherContainerType>.Collection) {
-			let items = builder().items.map { $0.adapt(to: ContainerType.self, from: container) }
+			
+			var items = [RowInfo<ContainerType>]()
+			TableBuilderStaticStorage.with(container: container) {
+				items = builder().items.map { $0.adapt(to: ContainerType.self, from: container) }
+			}
+			
 			super.init(items: items)
 		}
 	}

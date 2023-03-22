@@ -9,73 +9,75 @@ import Foundation
 
 /// Can be used to bind to a value. Used by `TableState`. Nonmutating setter, so can be used
 /// in nonmutating contexts.
-@propertyWrapper public struct TableBinding<Value>: TableUpdateNotifyable {
+@propertyWrapper public final class TableBinding<Value>: ChangeObservable {
+	private var internalObservers = ChangeObserverList<Value>()
+	public var observers: ChangeObserverList<Value> {
+		state?.observers ?? internalObservers
+	}
+	
+	public let get: () -> Value
+	public let set: (Value) -> Void
+	public var state: TableState<Value>?
+	
+	public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
+		self.get = get
+		self.set = set
+	}
+	
+	public init(state: TableState<Value>) {
+		self.state = state
+		self.get = { state.wrappedValue }
+		self.set = { state.wrappedValue = $0 }
+	}
+	
 	public var wrappedValue: Value {
-		get { return getValue() }
-		nonmutating set {
-			setValue(newValue)
-			storage.onChangeCallbacks.forEach { $0(newValue) }
+		get { get() }
+		set {
+			let oldValue = wrappedValue
+			set(newValue)
+			if state == nil {
+				notifyCallbacks(oldValue: oldValue, newValue: newValue)
+			}
 		}
 	}
 	
-	public let getValue: () -> Value
-	public let setValue: (Value) -> Void
-	
-	public init(getValue: @escaping () -> Value, setValue: @escaping (Value) -> Void) {
-		self.getValue = getValue
-		self.setValue = setValue
-	}
-	
-	public init<ContainerType: AnyObject>(
+	public var projectedValue: TableBinding<Value> { self }
+}
+
+extension TableBinding {
+	public convenience init<ContainerType: AnyObject>(
 		container: ContainerType,
 		get: @escaping (_ `self`: ContainerType) -> Value,
 		set: @escaping (_ `self`: ContainerType, _ value: Value) -> Void
 	) {
 		let originalValue = get(container)
-		self.getValue = { [weak container] in container.flatMap { get($0) } ?? originalValue }
-		self.setValue = { [weak container] newValue in container.flatMap { set($0, newValue) } }
+		self.init(get: { [weak container] in
+			guard let container else { return originalValue }
+			return get(container)
+		}, set: { [weak container] newValue in
+			guard let container else { return }
+			set(container, newValue)
+		})
 	}
 	
-	public init<ContainerType: AnyObject> (
+	public convenience init<ContainerType: AnyObject>(
 		container: ContainerType,
 		keyPath: ReferenceWritableKeyPath<ContainerType, Value>
 	) {
 		self.init(container: container, get: { $0[keyPath: keyPath] }, set: { $0[keyPath: keyPath] = $1 })
 	}
-	
-	static func keyPath<ContainerType: AnyObject>(_ container: ContainerType, _ keyPath: ReferenceWritableKeyPath<ContainerType, Value>) -> Self {
-		return Self(container: container, keyPath: keyPath)
-	}
-	
-	public var projectedValue: Self { self }
-	
-	/// We store our value and callbacks in a class, so we can update bindings and
-	/// callbacks without mutating self.
-	private class Storage {
-		var onChangeCallbacks = [(Value) -> Void]()
-	}
-	private var storage = Storage()
-	
-	public func onChange(_ callback: @escaping () -> Void) {
-		storage.onChangeCallbacks.append({ _ in callback() })
-	}
-	
-	public func onChange(_ callback: @escaping (Value) -> Void) {
-		storage.onChangeCallbacks.append(callback)
-	}
 }
-
 extension TableBinding {
 	/// Returns a binding where wrappedValue  is transformed by a callback
 	public func transformed(_ transform: @escaping (Value) -> Value) -> Self {
-		Self(getValue: { transform(self.wrappedValue) }, setValue: { self.wrappedValue = transform($0) })
+		Self(get: { transform(self.wrappedValue) }, set: { self.wrappedValue = transform($0) })
 	}
 	
 	/// Returns a binding where wrappedValue is transformed from and to a value, e.g.
 	/// `TableBinding<Int>.transformed(from: { $0 == 10 }, to: { $0 ? 10 : 0 })`
 	/// converts an integer to a boolean binding: if the integer is 10, then the value is true, if the value is true, then the integer will be 10, otherwise 0
 	public func transformed<ReturnValue>(from: @escaping (Value) -> ReturnValue, to: @escaping (ReturnValue) -> Value) -> TableBinding<ReturnValue> {
-		TableBinding<ReturnValue>(getValue: { from(self.wrappedValue) }, setValue: { self.wrappedValue = to($0) })
+		TableBinding<ReturnValue>(get: { from(self.wrappedValue) }, set: { self.wrappedValue = to($0) })
 	}
 	
 	/// Converts any Equatable TableBinding to a true/false binding. E.g. `self.$integer.boolean(trueValue: 10, falseValue: 0)`

@@ -14,9 +14,11 @@ import UIKitAnimations
 open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, RowInfo<ContainerType>> {
 	public func reference(_ reference: TableItemReference) -> Self {
 		modifyRows { item in
-			item.reference.append(reference)
+			item.references.append(reference)
 		}
 	}
+	
+	public var hasRows: Bool { items.isEmpty == false }
 	
 	public func store<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>) {
 		items.forEach { $0.storage.store(value, key: key) }

@@ -85,7 +85,9 @@ extension SectionInfo {
 				return TableBuilderStaticStorage.with(sectionInfo: self) {
 					self.header = self.header ?? info.header
 					self.footer = self.footer ?? info.footer
-					return self.provideFooterView(container: originalContainer, tableView: tableView, section: section)
+					return TableBuilderStaticStorage.with(container: originalContainer) {
+						return self.provideFooterView(container: originalContainer, tableView: tableView, section: section)
+					}
 				}
 			}
 		}
@@ -96,7 +98,9 @@ extension SectionInfo {
 				return TableBuilderStaticStorage.with(sectionInfo: self) {
 					self.header = self.header ?? info.header
 					self.footer = self.footer ?? info.footer
-					return self.provideHeaderView(container: originalContainer, tableView: tableView, section: section)
+					return TableBuilderStaticStorage.with(sectionInfo: self, container: originalContainer) {
+						return self.provideHeaderView(container: originalContainer, tableView: tableView, section: section)
+					}
 				}
 			}
 		}
@@ -106,7 +110,9 @@ extension SectionInfo {
 			TableBuilderStaticStorage.with(sectionInfo: self) {
 				self.header = self.header ?? info.header
 				self.footer = self.footer ?? info.footer
-				self.updateHeaderView(container: originalContainer, view: view, tableView: tableView, section: section, animated: animated)
+				return TableBuilderStaticStorage.with(sectionInfo: self, container: originalContainer) {
+					self.updateHeaderView(container: originalContainer, view: view, tableView: tableView, section: section, animated: animated)
+				}
 			}
 		}
 		
@@ -115,7 +121,9 @@ extension SectionInfo {
 			TableBuilderStaticStorage.with(sectionInfo: self) {
 				self.header = self.header ?? info.header
 				self.footer = self.footer ?? info.footer
-				self.updateFooterView(container: originalContainer, view: view, tableView: tableView, section: section, animated: animated)
+				return TableBuilderStaticStorage.with(sectionInfo: self, container: originalContainer) {
+					self.updateFooterView(container: originalContainer, view: view, tableView: tableView, section: section, animated: animated)
+				}
 			}
 		}
 		
@@ -124,7 +132,9 @@ extension SectionInfo {
 			TableBuilderStaticStorage.with(sectionInfo: self) {
 				self.header = self.header ?? info.header
 				self.footer = self.footer ?? info.footer
-				self.performInitializationCallback(container: originalContainer, tableView: tableView)
+				return TableBuilderStaticStorage.with(sectionInfo: self, container: originalContainer) {
+					self.performInitializationCallback(container: originalContainer, tableView: tableView)
+				}
 			}
 		}
 		

@@ -65,8 +65,12 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func backgroundColor( _ color: UIColor) -> Self {
-		addModification(for: .backgroundColor) { container, cell, animated, rowInfo in
+	@discardableResult public func backgroundColor( _ color: UIColor?) -> Self {
+		guard let color else {
+			return modifyRows { $0.knownModifications.items.insert(.backgroundColor) }
+		}
+		
+		return addModification(for: .backgroundColor) { container, cell, animated, rowInfo in
 			UIView.performAnimationsIfNeeded(animated: animated) {
 				cell.backgroundColor = color
 			}
@@ -318,5 +322,10 @@ extension RowModifyable {
 		return modifyRows { item in
 			item.animatedContentUpdates = false
 		}
+	}
+	
+	@discardableResult public func onBuild(callback: () -> Void) -> Self {
+		callback()
+		return self
 	}
 }

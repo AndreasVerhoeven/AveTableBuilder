@@ -19,6 +19,8 @@ open class TableContent<ContainerType: AnyObject>: TableBuilderContent<Container
 		}
 	}
 	
+	public var hasSections: Bool { items.isEmpty == false }
+	
 	public func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionCollection<OtherContainerType> {
 		let items = self.items.map { $0.adapt(to: type, from: originalContainer) }
 		return SectionCollection(items: items)
