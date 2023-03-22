@@ -60,6 +60,10 @@ extension TableBinding {
 		})
 	}
 	
+	public static func keyPath<ContainerType: AnyObject>(_ container: ContainerType, _ keyPath: ReferenceWritableKeyPath<ContainerType, Value>) -> Self {
+		return Self(container: container, keyPath: keyPath)
+	}
+	
 	public convenience init<ContainerType: AnyObject>(
 		container: ContainerType,
 		keyPath: ReferenceWritableKeyPath<ContainerType, Value>

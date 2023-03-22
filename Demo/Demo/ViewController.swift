@@ -84,14 +84,13 @@ class ViewController: UITableViewController {
 			
 			switch self.category {
 				case .drinks:
-					
 					// Just a section with a header
 					Section("Drinks") {
 						// this is a switch row that is bound to the includeDrinks `TableState` variable:
 						// the switch will reflect the value of the variable and the variable will automatically
 						// be updated.
 						Row.Switch(text: "Include Drinks", binding: .keyPath(self, \.includeDrinks))
-						
+
 						// These are two rows that are shown conditionally: If the includeDrinks variable
 						// is updated, we show these rows, otherwise not.
 						if self.includeDrinks == true {
@@ -116,6 +115,7 @@ class ViewController: UITableViewController {
 					}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
 			}
 
+			/*
 			if self.selectedToppings.count > 0 || self.hasDrinks {
 				Section("Order Summary") {
 					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
@@ -126,7 +126,7 @@ class ViewController: UITableViewController {
 						self.completeOrder()
 					}.textFont(.from(.ios.headline.medium)).numberOfLines(0)
 				}
-			}
+			}*/
 		}
 	}
 	
