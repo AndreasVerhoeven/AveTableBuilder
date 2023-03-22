@@ -21,6 +21,64 @@ enum Extra: String, CaseIterable {
 	case garlicBread
 }
 
+protocol EditItemContentsProvider {
+	var id: String { get }
+	var container: Self { get }
+	func builderContents() -> SectionContentBuilder<Builder>.Collection
+}
+
+extension EditItemContentsProvider {
+	var container: Self { self }
+}
+
+
+class EditItemBase<Container: AnyObject>: EditItemContentsProvider {
+	var id: String { String(describing: self) }
+	@SectionContentBuilder<Container> func contents() -> SectionContentBuilder<Container>.Collection {
+	}
+	
+	func builderContents() -> SectionContentBuilder<Builder>.Collection {
+		contents().adapt(to: Builder.self, from: self as! Container)
+	}
+}
+
+class BlaEditItem: EditItemBase<BlaEditItem> {
+	@TableState var showRow = false
+	
+	@SectionContentBuilder<BlaEditItem> override func contents() -> SectionContentBuilder<BlaEditItem>.Collection {
+		Row.Switch(text: "Bla", binding: self.$showRow)
+		if self.showRow == true {
+			Row(text: "Y")
+		}
+	}
+}
+
+class FooEditItem: EditItemBase<FooEditItem> {
+	@SectionContentBuilder<FooEditItem> override func contents() -> SectionContentBuilder<FooEditItem>.Collection {
+		Row(text: "Z")
+	}
+}
+
+class Builder {
+	var items: [EditItemContentsProvider] = [BlaEditItem(), FooEditItem()]
+	
+	let tableView = UITableView(frame: .zero, style: .insetGrouped)
+	lazy var builder = TableBuilder(tableView: tableView, container: self) { `self` in
+		
+	}
+	
+	@TableContentBuilder<Builder> func build() -> TableContentBuilder<Builder>.Collection {
+		Section.ForEach(items, identifiedBy: \.id) { item in
+			let contents = item.builderContents()
+			if contents.items.isEmpty == false {
+				Section(item.id) {
+					contents
+				}
+			}
+		}
+	}
+}
+
 class ViewController: UITableViewController {
 	// this is the state that we keep which makes the TableBuilder update itself when changed.
 	@TableState var includeDrinks = false
@@ -36,8 +94,16 @@ class ViewController: UITableViewController {
 	}
 	@TableState var category = Category.toppings
 	
+	var zzz = Builder()
+	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
+		Section.Stylished {
+			self.zzz.build().adapt(to: ViewController.self, from: self.zzz)
+		}
+		
+		/*
+		
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
 			// Our first section: no title and two rows
@@ -119,6 +185,7 @@ class ViewController: UITableViewController {
 				}
 			}
 		}
+		*/
 	}
 	
 	private var hasDrinks: Bool {

@@ -23,6 +23,8 @@ public class SectionInfoWithRows<ContainerType: AnyObject>: IdentifiableTableIte
 	}
 	
 	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionInfoWithRows<OtherContainerType> {
+		TableBuilderStaticStorage.registerUpdaters(in: originalContainer)
+		
 		let sectionInfo = self.sectionInfo.adapt(to: type, from: originalContainer)
 		let rowInfos = self.rowInfos.map { $0.adapt(to: type, from: originalContainer) }
 		return SectionInfoWithRows<OtherContainerType>(sectionInfo: sectionInfo, rowInfos: rowInfos)

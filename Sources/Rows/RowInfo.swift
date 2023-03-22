@@ -156,7 +156,11 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 
 extension RowInfo {
 	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> RowInfo<OtherContainerType> {
+		
+		TableBuilderStaticStorage.registerUpdaters(in: originalContainer)
+		
 		let rowInfo = RowInfo<OtherContainerType>(modifying: [], configuration: nil)
+		rowInfo.id = id
 		rowInfo.cellClass = cellClass
 		rowInfo.cellStyle = cellStyle
 		rowInfo.allowsHighlighting = allowsHighlighting
@@ -193,12 +197,14 @@ extension RowInfo {
 			}
 		}]
 		
-		rowInfo.selectionHandlers = [ {[weak originalContainer] container, tableView, indexPath, rowInfo in
-			guard let originalContainer else { return }
-			return TableBuilderStaticStorage.with(rowInfo: self) {
-				self.onSelect(container: originalContainer, tableView: tableView, indexPath: indexPath)
-			}
-		}]
+		if selectionHandlers.isEmpty == false {
+			rowInfo.selectionHandlers = [ {[weak originalContainer] container, tableView, indexPath, rowInfo in
+				guard let originalContainer else { return }
+				return TableBuilderStaticStorage.with(rowInfo: self) {
+					self.onSelect(container: originalContainer, tableView: tableView, indexPath: indexPath)
+				}
+			}]
+		}
 		
 		if self.leadingSwipeActionsProvider != nil {
 			rowInfo.leadingSwipeActionsProvider = { [weak originalContainer] container, tableView, indexPath, row in

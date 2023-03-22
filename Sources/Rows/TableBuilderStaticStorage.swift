@@ -63,6 +63,14 @@ extension RowInfo {
 fileprivate protocol TableBuilderProtocol {
 	var tableView: UITableView { get }
 	var storage: TableBuilderStore { get }
+	
+	func registerUpdaters<T: AnyObject>(in container: T)
+}
+
+extension TableBuilderStaticStorage {
+	internal static func registerUpdaters<T: AnyObject>(in container: T) {
+		(TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol)?.registerUpdaters(in: container)
+	}
 }
 
 extension TableBuilder: TableBuilderProtocol {

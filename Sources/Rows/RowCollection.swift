@@ -30,4 +30,8 @@ open class RowCollection<ContainerType: AnyObject>: SectionContent<ContainerType
 		let items = other?.items.map { $0.appending(id: id) } ?? []
 		super.init(items: items)
 	}
+	
+	override internal init(items: [InnerItem]) {
+		super.init(items: items)
+	}
 }

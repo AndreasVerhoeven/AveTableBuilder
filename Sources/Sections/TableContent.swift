@@ -18,6 +18,15 @@ open class TableContent<ContainerType: AnyObject>: TableBuilderContent<Container
 			item.sectionInfo.creators.append(self)
 		}
 	}
+	
+	public func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionCollection<OtherContainerType> {
+		let items = self.items.map { $0.adapt(to: type, from: originalContainer) }
+		return SectionCollection(items: items)
+	}
+	
+	public func bind<OtherContainerType: AnyObject>(_ originalContainer: ContainerType) -> SectionCollection<OtherContainerType> {
+		adapt(to: OtherContainerType.self, from: originalContainer)
+	}
 }
 
 extension TableContent: RowModifyable {

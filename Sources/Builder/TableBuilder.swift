@@ -213,6 +213,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	
 	/// Registers an item that, when changed, should update the tableview
 	public func registerUpdater<T: TableUpdateNotifyable>(_ item: T) {
+		item.reg
 		item.onChange { [weak self] in
 			self?.stateChangeCallbacks.forEach { $0() }
 			self?.update(animated: true)

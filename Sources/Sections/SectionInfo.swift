@@ -76,6 +76,7 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 extension SectionInfo {
 	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionInfo<OtherContainerType> {
 		let sectionInfo = SectionInfo<OtherContainerType>(header: self.header, footer: self.footer)
+		sectionInfo.id = id
 		self.storage.chain(to: sectionInfo.storage)
 		
 		if footerViewProvider != nil {
