@@ -33,9 +33,9 @@ extension Row {
 		
 		
 		public init(text: String?, action: ((_ `self`: ContainerType) -> Void)? = nil) {
-			super.init(cellClass: Cell.self) { container, cell, animated in
-				cell.textLabel?.setText(text, animated: animated)
-			}
+			super.init(cellClass: Cell.self)
+			_ = self.text(text)
+			
 			if let action {
 				onSelect(action)
 			}

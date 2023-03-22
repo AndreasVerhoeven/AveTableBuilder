@@ -168,31 +168,33 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public func update(animated: Bool) {
 		guard let container else { return }
 		
-		let reallyAnimated = (animated && dataSource.tableView.window != nil)
-		
-		var snapshot = DataSourceType.SnapshotType()
-		for item in updater(container).items {
-			item.rowInfos.forEach { row in
-				row.reference.forEach { $0.wrappedValue = row.id }
-				row.creators.forEach { $0.items = [] }
-			}
+		perform {
+			let reallyAnimated = (animated && dataSource.tableView.window != nil)
 			
-			if seenSections.contains(item.sectionInfo.id) == false {
-				seenSections.insert(item.sectionInfo.id)
-				self.perform(with: item.sectionInfo) {
-					item.sectionInfo.performInitializationCallback(container: container, tableView: dataSource.tableView)
+			var snapshot = DataSourceType.SnapshotType()
+			for item in updater(container).items {
+				item.rowInfos.forEach { row in
+					row.reference.forEach { $0.wrappedValue = row.id }
+					row.creators.forEach { $0.items = [] }
 				}
+				
+				if seenSections.contains(item.sectionInfo.id) == false {
+					seenSections.insert(item.sectionInfo.id)
+					self.perform(with: item.sectionInfo) {
+						item.sectionInfo.performInitializationCallback(container: container, tableView: dataSource.tableView)
+					}
+				}
+				
+				item.sectionInfo.creators.forEach { $0.items = [] }
+				snapshot.addItems(item.rowInfos, for: item.sectionInfo)
 			}
 			
-			item.sectionInfo.creators.forEach { $0.items = [] }
-			snapshot.addItems(item.rowInfos, for: item.sectionInfo)
-		}
-		
-		dataSource.apply(snapshot, animated: reallyAnimated)
-		
-		if reallyAnimated == true {
-			DispatchQueue.main.async { [weak self] in
-				self?.dataSource.tableView.performBatchUpdates { }
+			dataSource.apply(snapshot, animated: reallyAnimated)
+			
+			if reallyAnimated == true {
+				DispatchQueue.main.async { [weak self] in
+					self?.dataSource.tableView.performBatchUpdates { }
+				}
 			}
 		}
 	}

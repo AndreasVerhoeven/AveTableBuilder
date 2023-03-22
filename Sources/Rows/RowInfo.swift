@@ -32,7 +32,16 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public typealias ConfigurationHandler = (_ `self`: ContainerType, _ cell: UITableViewCell, _ animated: Bool, _ rowInfo: RowInfo<ContainerType>) -> Void
 	public var configurationHandlers = [ConfigurationHandler]()
 	
+	public func runModificationHandlers(container: ContainerType, cell: UITableViewCell, animated: Bool) {
+		for (_, value) in modificationHandlers {
+			if case let .handler(handler) = value {
+				handler(container, cell, animated, self)
+			}
+		}
+	}
+	
 	public func onConfigure(container: ContainerType, cell: UITableViewCell, animated: Bool) {
+		runModificationHandlers(container: container, cell: cell, animated: animated)
 		configurationHandlers.forEach { $0(container, cell, animated, self) }
 	}
 	
@@ -99,6 +108,21 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	
 	internal var creators = [SectionContent<ContainerType>]()
 	
+	public enum ModificationHandler {
+		case manual
+		case handler(ConfigurationHandler)
+	}
+	
+	public var modificationHandlers = [RowConfiguration.Item: ModificationHandler]()
+	
+	@discardableResult func addModification(for item: RowConfiguration.Item, force: Bool = false, handler: @escaping ConfigurationHandler) -> Self {
+		knownModifications.items.insert(item)
+		
+		guard force == true || modificationHandlers[item] == nil else { return self }
+		modificationHandlers[item] = .handler(handler)
+		return self
+	}
+	
 	public init<Cell: UITableViewCell>(
 		cellClass: Cell.Type = UITableViewCell.self,
 		style: UITableViewCell.CellStyle = .default,
@@ -139,7 +163,20 @@ extension RowInfo {
 		rowInfo.allowsHighlightingDuringEditing = allowsHighlightingDuringEditing
 		rowInfo.reference = reference
 		rowInfo.animatedContentUpdates = animatedContentUpdates
+		rowInfo.knownModifications = knownModifications
 		self.storage.chain(to: rowInfo.storage)
+		
+		for (key, value) in modificationHandlers {
+			if case let .handler(handler) = value {
+				rowInfo.modificationHandlers[key] = .handler({ [weak originalContainer] container, cell, animated, rowInfo in
+					guard let originalContainer else { return }
+					handler(originalContainer, cell, animated, self)
+				})
+			} else {
+				rowInfo.modificationHandlers[key] = .manual
+			}
+		}
+		modificationHandlers.removeAll()
 		
 		rowInfo.cellProvider = { [weak originalContainer] container, tableView, indexPath, rowInfo in
 			guard let originalContainer else { return UITableViewCell(style: .default, reuseIdentifier: nil) }
@@ -220,12 +257,14 @@ extension RowInfo {
 
 extension RowInfo {
 	@discardableResult public func addingConfigurationHandler(modifying: RowConfiguration, handler: @escaping ConfigurationHandler) -> Self {
+		modifying.items.forEach { modificationHandlers[$0] = .manual }
 		knownModifications.append(modifying)
 		configurationHandlers.append(handler)
 		return self
 	}
 	
 	@discardableResult public func prependingConfigurationHandler(modifying: RowConfiguration, handler: @escaping ConfigurationHandler) -> Self {
+		modifying.items.forEach { modificationHandlers[$0] = .manual }
 		knownModifications.append(modifying)
 		configurationHandlers.insert(handler, at: 0)
 		return self

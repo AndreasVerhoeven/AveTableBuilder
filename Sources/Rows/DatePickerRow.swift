@@ -69,11 +69,8 @@ extension Row {
 		public typealias DateChangeCallback = (_ `self`: ContainerType, _ date: Date) -> Void
 		
 		fileprivate init(text: String, image: UIImage? = nil, date: Date?, fallback: String? = nil, callback: DateChangeCallback? = nil) {
-			super.init(style: .value1, modifying: [.text, .accessory, .detailText]) { container, cell, animated in
-				cell.accessoryType = .disclosureIndicator
-				cell.textLabel?.setText(text, animated: animated)
-				cell.imageView?.setImage(image, animated: animated)
-			}
+			super.init(style: .value1, modifying: [])
+			_ = self.text(text).image(image).accessory(.disclosureIndicator)
 			
 			modifyRows { item in
 				item.configurationHandlers.append { `container`, cell, animated, rowInfo in

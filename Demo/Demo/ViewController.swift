@@ -29,6 +29,13 @@ class ViewController: UITableViewController {
 	@TableState var numberOfBeers = 0
 	@TableState var extra: Extra? = .none
 	
+	enum Category: String, CaseIterable {
+		case toppings
+		case drinks
+		case extras
+	}
+	@TableState var category = Category.toppings
+	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
@@ -61,37 +68,47 @@ class ViewController: UITableViewController {
 								   // Note that properties are applied outside-in: properties deeper will override properties
 								   // on the outside
 			}
-
-			// Just a section with a header
-			Section("Drinks") {
-				// this is a switch row that is bound to the includeDrinks `TableState` variable:
-				// the switch will reflect the value of the variable and the variable will automatically
-				// be updated.
-				Row.Switch(text: "Include Drinks", binding: .keyPath(self, \.includeDrinks))
-
-				// These are two rows that are shown conditionally: If the includeDrinks variable
-				// is updated, we show these rows, otherwise not.
-				if self.includeDrinks == true {
-					// A stepper row shows a stepper with a value. We also use a binding to a `TableState`
-					// here to keep the row and the variable in sync.
-					Row.Stepper(text: "Coca-Cola", binding: self.$numberOfCocaColas)
-					Row.Stepper(text: "Beer", binding: self.$numberOfBeers)
-				}
+			
+			Section {
+				Row.SegmentControl(Category.allCases, binding: self.$category, mode: .fullWidth) { $0.rawValue }
 			}
-
-			Section("Extras") {
-				Row.OptionPicker(text: "Snack", options: Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
+			
+			switch self.category {
+				case .drinks:
+					
+					// Just a section with a header
+					Section("Drinks") {
+						// this is a switch row that is bound to the includeDrinks `TableState` variable:
+						// the switch will reflect the value of the variable and the variable will automatically
+						// be updated.
+						Row.Switch(text: "Include Drinks", binding: .keyPath(self, \.includeDrinks))
+						
+						// These are two rows that are shown conditionally: If the includeDrinks variable
+						// is updated, we show these rows, otherwise not.
+						if self.includeDrinks == true {
+							// A stepper row shows a stepper with a value. We also use a binding to a `TableState`
+							// here to keep the row and the variable in sync.
+							Row.Stepper(text: "Coca-Cola", binding: self.$numberOfCocaColas)
+							Row.Stepper(text: "Beer", binding: self.$numberOfBeers)
+						}
+					}
+					
+				case .extras:
+					Section("Extras") {
+						Row.OptionPicker(text: "Snack", options: Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
+					}
+					
+				case .toppings:
+					// this is a special kind of setting that shows all items in a Collection and then makes sure
+					// that it reflects the selection state of the `selectedToppings` `TableState` variable:
+					// when you select something, the variable is updated and vice-versa.
+					Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
+						Row(text: topping.rawValue.capitalized, image: UIImage(systemName: "leaf.fill")).imageTintColor(.systemGreen)
+					}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
 			}
-
-			// this is a special kind of setting that shows all items in a Collection and then makes sure
-			// that it reflects the selection state of the `selectedToppings` `TableState` variable:
-			// when you select something, the variable is updated and vice-versa.
-			Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
-				Row(text: topping.rawValue.capitalized, image: UIImage(systemName: "leaf.fill")).imageTintColor(.systemGreen)
-			}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
 
 			if self.selectedToppings.count > 0 || self.hasDrinks {
-				Section {
+				Section("Order Summary") {
 					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
 
 					// an action show renders as a "button". The callback is triggered when the user selects the row.

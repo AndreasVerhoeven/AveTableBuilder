@@ -57,6 +57,7 @@
 		49A7371A29B790ED005A2CE9 /* CustomViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7371929B790ED005A2CE9 /* CustomViewRow.swift */; };
 		49DD5DAA29C9C5A800DA2331 /* TableBuilderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DA929C9C5A800DA2331 /* TableBuilderStore.swift */; };
 		49DD5DB029C9FD9200DA2331 /* TableBuilderStaticStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DAF29C9FD9200DA2331 /* TableBuilderStaticStorage.swift */; };
+		49DD5DED29CB3EFC00DA2331 /* SegmentControlRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,7 @@
 		49A7371929B790ED005A2CE9 /* CustomViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomViewRow.swift; sourceTree = "<group>"; };
 		49DD5DA929C9C5A800DA2331 /* TableBuilderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderStore.swift; sourceTree = "<group>"; };
 		49DD5DAF29C9FD9200DA2331 /* TableBuilderStaticStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderStaticStorage.swift; sourceTree = "<group>"; };
+		49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentControlRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				497C78B129B1EFD9006EF4A3 /* SwitchRow.swift */,
 				493B7A6929BC981A0005F42B /* TextFieldRow.swift */,
 				497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */,
+				49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */,
 				49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */,
 				497C78B229B1EFD9006EF4A3 /* RowWrapper.swift */,
 				4999CB5C29BF432B005EC275 /* OptionPickerRow.swift */,
@@ -334,6 +337,7 @@
 				497C78C429B1EFD9006EF4A3 /* Section.swift in Sources */,
 				49A6F79A26508AAB002EB98D /* ViewController.swift in Sources */,
 				497C78D329B1EFD9006EF4A3 /* TableItemReference.swift in Sources */,
+				49DD5DED29CB3EFC00DA2331 /* SegmentControlRow.swift in Sources */,
 				497C78BF29B1EFD9006EF4A3 /* SectionInfo.swift in Sources */,
 				49A736F729B28082005A2CE9 /* SingleSelectionSection.swift in Sources */,
 				49A6F79626508AAB002EB98D /* AppDelegate.swift in Sources */,

@@ -17,8 +17,6 @@ extension Row {
 		/// Creates a row with a switch with a value and a callback
 		public init(text: String?, image: UIImage? = nil, isOn: Bool, change: ChangeCallback? = nil) {
 			super.init(cellClass: Cell.self) { container, cell, animated in
-				cell.textLabel?.setText(text, animated: animated)
-				cell.imageView?.setImage(image, animated: animated)
 				if let change = change {
 					cell.callback = { [weak container] isOn in
 						guard let container else { return }
@@ -29,16 +27,16 @@ extension Row {
 				}
 				cell.switchControl.setOn(isOn, animated: animated)
 			}
+			_ = self.text(text).image(image)
 		}
 		
 		/// Creates a row with a switch with a binding
 		public init(text: String?, image: UIImage? = nil, binding: TableBinding<Bool>)  {
 			super.init(cellClass: Cell.self) { container, cell, animated in
-				cell.textLabel?.setText(text, animated: animated)
-				cell.imageView?.setImage(image, animated: animated)
 				cell.callback = { binding.wrappedValue = $0 }
 				cell.switchControl.setOn(binding.wrappedValue, animated: animated)
 			}
+			_ = self.text(text).image(image)
 		}
 	}
 }

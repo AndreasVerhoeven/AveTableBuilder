@@ -18,10 +18,8 @@ extension Row {
 			titleStyle: MenuTitleStyle = .value1,
 			textProvider: @escaping (Collection.Element) -> String
 		) where Collection.Element: Hashable {
-			super.init(modifying: [.text, .image]) { container, cell, animated in
-				cell.textLabel?.setText(text, animated: animated)
-				cell.imageView?.setImage(image, animated: animated)
-			}
+			super.init(modifying: [])
+			_ = self.text(text).image(image)
 			inlineOptions(options, binding: binding, showSeparately: customOptions, titleStyle: titleStyle, textProvider: textProvider)
 		}
 		
@@ -33,10 +31,8 @@ extension Row {
 			titleStyle: MenuTitleStyle = .value1,
 			textProvider: @escaping (Collection.Element?) -> String
 		) where Collection.Element : Equatable {
-			super.init(modifying: [.text, .image]) { container, cell, animated in
-				cell.textLabel?.setText(text, animated: animated)
-				cell.imageView?.setImage(image, animated: animated)
-			}
+			super.init(modifying: [])
+			_ = self.text(text).image(image)
 			inlineOptions(options, binding: binding, titleStyle: titleStyle, textProvider: textProvider)
 		}
 	}

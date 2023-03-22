@@ -18,7 +18,26 @@ public protocol RowModifyable {
 	func modifyRows(_ callback: (RowInfoType) -> Void) -> Self
 }
 
-extension RowModifyable {	
+extension RowModifyable {
+	@discardableResult public func modify<Cell: UITableViewCell>(
+		_ item: RowConfiguration.Item,
+		force: Bool = false,
+		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,
+		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
+	) -> Self {
+		return addModification(for: item) { container, cell, animated, rowInfo in
+			guard let cell = cell as? Cell else { return }
+			handler(container, cell, animated)
+		}
+	}
+	
+	@discardableResult internal func addModification(for item: RowConfiguration.Item, force: Bool = false, handler: @escaping RowInfo<ContainerType>.ConfigurationHandler) -> Self {
+		modifyRows { row in
+			row.addModification(for: item, force: force, handler: handler)
+		}
+	}
+	
+	
 	/// Configures
 	@discardableResult public func configure<Cell: UITableViewCell>(
 		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,
@@ -47,45 +66,63 @@ extension RowModifyable {
 	}
 	
 	@discardableResult public func backgroundColor( _ color: UIColor) -> Self {
-		return preConfigure(modifying: [.backgroundColor]) { container, cell, animated in
+		addModification(for: .backgroundColor) { container, cell, animated, rowInfo in
 			UIView.performAnimationsIfNeeded(animated: animated) {
 				cell.backgroundColor = color
 			}
 		}
 	}
 	
+	@discardableResult public func text(_ value: String?) -> Self {
+		addModification(for: .text) { container, cell, animated, rowInfo in
+			cell.textLabel?.setText(value, animated: animated)
+		}
+	}
+	
+	@discardableResult public func detailText(_ value: String?) -> Self {
+		addModification(for: .detailText) { container, cell, animated, rowInfo in
+			cell.detailTextLabel?.setText(value, animated: animated)
+		}
+	}
+	
+	@discardableResult public func image(_ value: UIImage?) -> Self {
+		addModification(for: .image) { container, cell, animated, rowInfo in
+			cell.imageView?.setImage(value, animated: animated)
+		}
+	}
+	
 	@discardableResult public func accessory( _ accessoryType: UITableViewCell.AccessoryType) -> Self {
-		preConfigure(modifying: [.accessory]) { container, cell, animated in
+		addModification(for: .accessory) { container, cell, animated, rowInfo in
 			cell.accessoryType = accessoryType
 		}
 	}
 	
 	@discardableResult public func editingAccessory( _ accessoryType: UITableViewCell.AccessoryType) -> Self {
-		preConfigure(modifying: [.editingAccessory]) { container, cell, animated in
+		addModification(for: .editingAccessory) { container, cell, animated, rowInfo in
 			cell.editingAccessoryType = accessoryType
 		}
 	}
 	
 	@discardableResult public func textFont( _ font: UIFont) -> Self {
-		preConfigure(modifying: [.textFont]) { container, cell, animated in
+		addModification(for: .textFont) { container, cell, animated, rowInfo in
 			cell.textLabel?.font = font
 		}
 	}
 	
 	@discardableResult public func detailTextFont( _ font: UIFont) -> Self {
-		preConfigure(modifying: [.detailTextFont]) { container, cell, animated in
-			cell.detailTextLabel?.font = font
+		addModification(for: .detailTextFont) { container, cell, animated, rowInfo in
+			cell.textLabel?.font = font
 		}
 	}
 	
 	@discardableResult public func textColor( _ color: UIColor) -> Self {
-		preConfigure(modifying: [.textColor]) { container, cell, animated in
+		addModification(for: .textColor) { container, cell, animated, rowInfo in
 			cell.textLabel?.textColor = color
 		}
 	}
 	
 	@discardableResult public func detailTextColor( _ color: UIColor) -> Self {
-		preConfigure(modifying: [.detailTextColor]) { container, cell, animated in
+		addModification(for: .detailTextColor) { container, cell, animated, rowInfo in
 			cell.detailTextLabel?.textColor = color
 		}
 	}
@@ -103,14 +140,18 @@ extension RowModifyable {
 	}
 	
 	@discardableResult public func imageTintColor( _ color: UIColor) -> Self {
-		preConfigure(modifying: [.imageTintColor]) { container, cell, animated in
-			cell.imageView?.tintColor = color
+		addModification(for: .imageTintColor) { container, cell, animated, rowInfo in
+			UIView.performAnimationsIfNeeded(animated: animated) {
+				cell.imageView?.tintColor = color
+			}
 		}
 	}
 	
 	@discardableResult public func tintColor( _ color: UIColor) -> Self {
-		preConfigure(modifying: [.tintColor]) { container, cell, animated in
-			cell.tintColor = color
+		addModification(for: .imageTintColor) { container, cell, animated, rowInfo in
+			UIView.performAnimationsIfNeeded(animated: animated) {
+				cell.tintColor = color
+			}
 		}
 	}
 	

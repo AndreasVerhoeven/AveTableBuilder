@@ -28,28 +28,24 @@ open class Row<ContainerType: AnyObject, Cell: UITableViewCell>: SectionContent<
 extension Row {
 	/// creates a row with a text and image
 	public convenience init(text: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
-		self.init(cellClass: cellClass, modifying: [.text, .image]) { container, cell, animated in
-			cell.textLabel?.setText(text, animated: animated)
-			cell.imageView?.setImage(image, animated: animated)
-		}
+		self.init(cellClass: cellClass, modifying: [])
+		_ = self.text(text).image(image)
 	}
 	
 	/// creates a row with a text,  value1 value and image
 	public convenience init(text: String, value: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
-		self.init(cellClass: cellClass, style: .value1, modifying: [.text, .image, .detailText]) { container, cell, animated in
-			cell.textLabel?.setText(text, animated: animated)
-			cell.detailTextLabel?.setText(value, animated: animated)
-			cell.imageView?.setImage(image, animated: animated)
-		}
+		self.init(cellClass: cellClass, style: .value1, modifying: [])
+		_ = self.text(text)
+		_ = self.detailText(value)
+		_ = self.image(image)
 	}
 	
 	/// creates a row with a text,  subtitle value and image
 	public convenience init(text: String, subtitle: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
-		self.init(cellClass: cellClass, style: .subtitle, modifying: [.text, .image, .detailText]) { container, cell, animated in
-			cell.textLabel?.setText(text, animated: animated)
-			cell.detailTextLabel?.setText(subtitle, animated: animated)
-			cell.imageView?.setImage(image, animated: animated)
-		}
+		self.init(cellClass: cellClass, style: .subtitle, modifying: [])
+		_ = self.text(text)
+		_ = self.detailText(subtitle)
+		_ = self.image(image)
 	}
 	
 	/// provides a context menu for this cell
