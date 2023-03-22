@@ -15,18 +15,18 @@ extension Section {
 			_ data: Collection,
 			@TableContentBuilder<ContainerType> builder: (Collection.Element) -> TableContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
-			self.init(data, identifiedBy: \.self, builder: builder)
+			self.init(data, identifiedBy: { $0 }, builder: builder)
 		}
 		
 		/// Shows the created Rows for each items in the collection, the items must be identified by a unique field
 		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
-			identifiedBy: KeyPath<Collection.Element, ID>,
+			identifiedBy: (Collection.Element) -> ID,
 			@TableContentBuilder<ContainerType> builder: (Collection.Element) -> TableContentBuilder<ContainerType>.Collection
 		) {
 			let items = data.flatMap {
 				element in
-				builder(element).items.map { $0.appending(id: .custom(element[keyPath: identifiedBy])) }
+				builder(element).items.map { $0.appending(id: .custom(identifiedBy(element))) }
 			}
 			super.init(items: items)
 		}

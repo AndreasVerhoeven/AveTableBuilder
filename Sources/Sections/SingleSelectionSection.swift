@@ -23,7 +23,7 @@ extension Section {
 			binding: TableBinding<Collection.Element>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
-			self.init(header, footer: footer, data: data, identifiedBy: \.self, binding: binding, builder: builder)
+			self.init(header, footer: footer, data: data, identifiedBy: { $0 }, binding: binding, builder: builder)
 		}
 		
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
@@ -31,7 +31,7 @@ extension Section {
 			_ header: String? = nil,
 			footer: String? = nil,
 			data: Collection,
-			identifiedBy: KeyPath<Collection.Element, ID>,
+			identifiedBy: (Collection.Element) -> ID,
 			binding: TableBinding<ID>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {

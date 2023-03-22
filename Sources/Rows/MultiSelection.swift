@@ -17,18 +17,18 @@ extension Row {
 			binding: TableBinding<Set<Collection.Element>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
-			self.init(data, identifiedBy: \.self, binding: binding, builder: builder)
+			self.init(data, identifiedBy: { $0 }, binding: binding, builder: builder)
 		}
 		
 		/// Creates selectable Rows that mirror the inverted selection status of the given binding. Selected rows will have a checkmark accessory.
 		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
-			identifiedBy: KeyPath<Collection.Element, ID>,
+			identifiedBy: (Collection.Element) -> ID,
 			binding: TableBinding<Set<ID>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
 			let items = data.flatMap { element in
-				let identifier = element[keyPath: identifiedBy]
+				let identifier = identifiedBy(element)
 				let collection = RowCollection(builder(element), id: .custom(identifier))
 				collection.checked(binding.wrappedValue.contains(identifier)).onSelect { container in
 					if binding.wrappedValue.contains(identifier) {
@@ -45,12 +45,12 @@ extension Row {
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
 		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
-			identifiedBy: KeyPath<Collection.Element, ID>,
+			identifiedBy: (Collection.Element) -> ID,
 			invertedBinding binding: TableBinding<Set<ID>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
 			let items = data.flatMap { element in
-				let identifier = element[keyPath: identifiedBy]
+				let identifier = identifiedBy(element)
 				let collection = RowCollection(builder(element), id: .custom(identifier))
 				collection.checked(binding.wrappedValue.contains(identifier) == false).onSelect { container in
 					if binding.wrappedValue.contains(identifier) {

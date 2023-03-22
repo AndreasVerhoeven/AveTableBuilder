@@ -23,7 +23,7 @@ extension Section {
 			binding: TableBinding<Set<Collection.Element>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
-			self.init(header, footer: footer, data: data, identifiedBy: \.self, binding: binding, builder: builder)
+			self.init(header, footer: footer, data: data, identifiedBy: { $0 }, binding: binding, builder: builder)
 		}
 		
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
@@ -31,7 +31,7 @@ extension Section {
 			_ header: String? = nil,
 			footer: String? = nil,
 			data: Collection,
-			identifiedBy: KeyPath<Collection.Element, ID>,
+			identifiedBy: @escaping (Collection.Element) -> ID,
 			binding: TableBinding<Set<ID>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
@@ -50,7 +50,7 @@ extension Section {
 						view.setButton(title: nil, animated: animated, callback: nil)
 					} else if binding.wrappedValue.count != data.count {
 						view.setButton(title: configuration.selectAllTitle, animated: animated) {
-							binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
+							binding.wrappedValue = Set(data.map({ identifiedBy($0) }))
 						}
 					} else {
 						view.setButton(title: configuration.deselectAllTitle, animated: animated) {
@@ -66,7 +66,7 @@ extension Section {
 			_ header: String? = nil,
 			footer: String? = nil,
 			data: Collection,
-			identifiedBy: KeyPath<Collection.Element, ID>,
+			identifiedBy: @escaping (Collection.Element) -> ID,
 			invertedBinding binding: TableBinding<Set<ID>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
@@ -85,7 +85,7 @@ extension Section {
 						view.setButton(title: nil, animated: animated, callback: nil)
 					} else if binding.wrappedValue.count == 0 {
 						view.setButton(title: configuration.deselectAllTitle, animated: animated) {
-							binding.wrappedValue = Set(data.map({ $0[keyPath: identifiedBy] }))
+							binding.wrappedValue = Set(data.map({ identifiedBy($0) }))
 						}
 					} else {
 						view.setButton(title: configuration.selectAllTitle, animated: animated) {
