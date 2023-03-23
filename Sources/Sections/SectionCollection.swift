@@ -20,6 +20,16 @@ public class SectionCollection<ContainerType: AnyObject>: TableContent<Container
 		super.init(items: items)
 	}
 	
+	public init(forArray other: [BaseItem]) {
+		let items = other.enumerated().flatMap { (offset, item) in
+			item.items.map { item in
+				defer { item.sectionInfo.hasExplicitIdForForEach = false }
+				return item.sectionInfo.hasExplicitIdForForEach ? item : item.appending(id: .offset(offset))
+			}
+		}
+		super.init(items: items)
+	}
+	
 	public init(_ other: BaseItem?, id: TableItemIdentifier) {
 		let items = other?.items.map { $0.appending(id: id) } ?? []
 		super.init(items: items)

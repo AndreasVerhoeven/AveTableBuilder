@@ -67,6 +67,8 @@ public struct TableItemIdentifier: Hashable {
 		items.append(kind)
 	}
 	
+	public var isEmpty: Bool { items.isEmpty }
+	
 	internal var stringValue: String {
 		items.map{ String(describing: $0) }.joined(separator: ".")
 	}
@@ -94,4 +96,5 @@ extension IdentifiableTableItem {
 		item.id.append(id)
 		return item
 	}
+
 }

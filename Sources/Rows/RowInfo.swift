@@ -156,6 +156,7 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	}
 	
 	internal var reuseIdentifierShouldIncludeId = false
+	internal var hasExplicitIdForForEach = false
 	
 	internal var reuseIdentifier: ReuseIdentifier {
 		var reuseIdentifier = ReuseIdentifier(cellClass: cellClass, cellStyle: cellStyle, modifications: knownModifications)
@@ -175,6 +176,7 @@ extension RowInfo {
 		rowInfo.id = id
 		rowInfo.cellClass = cellClass
 		rowInfo.cellStyle = cellStyle
+		rowInfo.hasExplicitIdForForEach = hasExplicitIdForForEach
 		rowInfo.allowsHighlighting = allowsHighlighting
 		rowInfo.allowsHighlightingDuringEditing = allowsHighlightingDuringEditing
 		rowInfo.references = references

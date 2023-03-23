@@ -59,6 +59,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	
 	private var seenSections = Set<TableItemIdentifier>()
 	private var runLoopObserver: CFRunLoopObserver?
+	private var debugShouldPrintIdentifiersOnUpdate = false
 	
 	internal let storage = TableBuilderStore()
 	
@@ -177,6 +178,10 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		perform {
 			let reallyAnimated = (animated && dataSource.tableView.window != nil)
 			
+			if debugShouldPrintIdentifiersOnUpdate {
+				print("<<<Debug Update Start>>>\n")
+			}
+			
 			var snapshot = DataSourceType.SnapshotType()
 			for item in updater(container).items {
 				item.rowInfos.forEach { row in
@@ -196,6 +201,25 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 				
 				item.sectionInfo.creators.forEach { $0.items = [] }
 				snapshot.addItems(item.rowInfos, for: item.sectionInfo)
+				
+				if debugShouldPrintIdentifiersOnUpdate {
+					print("Section:")
+					print(" Id = \"\(item.sectionInfo.id.stringValue)\"")
+					print(" Number of rows = \(item.rowInfos.count)")
+					if item.rowInfos.isEmpty == false {
+						print(" Rows: ")
+						for row in item.rowInfos {
+							print( " - id: \"\(row.id.stringValue)\"")
+							print( "  + reuse: \"\(row.reuseIdentifier.stringValue)\" ")
+						}
+					}
+					
+					print("\n")
+				}
+			}
+			
+			if debugShouldPrintIdentifiersOnUpdate {
+				print("<<<Debug Update End>>>\n")
 			}
 			
 			dataSource.apply(snapshot, animated: reallyAnimated)
@@ -256,11 +280,8 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	
 	public func setNeedsUpdate() {
 		guard coalesceUpdates == true else { return update(animated: true) }
-		guard hasPendingUpdate == false else {
-			print("Ignoring an update")
-			return
-			
-		}
+		guard hasPendingUpdate == false else { return }
+		guard hasPendingUpdate == false else { return }
 		hasPendingUpdate = true
 		
 		// add an observer to execute once at the end of the runloop
@@ -271,6 +292,11 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		if let runLoopObserver {
 			CFRunLoopAddObserver(CFRunLoopGetMain(), runLoopObserver, CFRunLoopMode.commonModes)
 		}
+	}
+	
+	@discardableResult public func debugPrintIdentifiersOnUpdate() -> Self {
+		debugShouldPrintIdentifiersOnUpdate = true
+		return self
 	}
 	
 	// MARK: - UITableViewDelegate

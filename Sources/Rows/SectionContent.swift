@@ -39,6 +39,13 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 	public func bind<OtherContainerType: AnyObject>(_ originalContainer: ContainerType) -> RowCollection<OtherContainerType> {
 		adapt(to: OtherContainerType.self, from: originalContainer)
 	}
+	
+	public func identify<T: Hashable>(by id: T) -> Self {
+		modifyRows { item in
+			item.hasExplicitIdForForEach = true
+			item.id.append(.custom(id))
+		}
+	}
 }
 
 extension SectionContent: RowModifyable {

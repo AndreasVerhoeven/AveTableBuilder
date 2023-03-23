@@ -6,25 +6,6 @@
 //
 
 import UIKit
-import ObjectiveC.runtime
-
-fileprivate enum StaticRowStorage {
-	private static var associatedObjectPointer = 0
-	
-	private static func retrieve(in tableView: UITableView) -> [String: UITableViewCell] {
-		(objc_getAssociatedObject(tableView, &Self.associatedObjectPointer) as? [String: UITableViewCell]) ?? [:]
-	}
-	
-	fileprivate static func retrieve(_ key: String, in tableView: UITableView) -> UITableViewCell? {
-		retrieve(in: tableView)[key]
-	}
-	
-	fileprivate static func add(_ cell: UITableViewCell, forKey key: String, in tableView: UITableView) {
-		var storage = retrieve(in: tableView)
-		storage[key] = cell
-		objc_setAssociatedObject(tableView, &Self.associatedObjectPointer, storage, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-	}
-}
 
 extension Row {
 	open class Static: SectionContent<ContainerType> {
@@ -40,12 +21,14 @@ extension Row {
 			item.reuseIdentifierShouldIncludeId = true
 			item.cellProvider = { container, tableView, indexPath, rowInfo in
 				let identifier = rowInfo.reuseIdentifier.stringValue
-				if let cell = StaticRowStorage.retrieve(identifier, in: tableView) {
+				var lookup = rowInfo.tableStorage.staticCellStorage ?? [:]
+				if let cell = lookup[identifier] {
 					return cell
 				}
 				
 				let cell = Cell.init(style: cellStyle, reuseIdentifier: nil)
-				StaticRowStorage.add(cell, forKey: identifier, in: tableView)
+				lookup[identifier] = cell
+				rowInfo.tableStorage.staticCellStorage = lookup
 				initial?(container, cell)
 				return cell
 			}
@@ -64,12 +47,15 @@ extension Row {
 			item.reuseIdentifierShouldIncludeId = true
 			item.cellProvider = { container, tableView, indexPath, rowInfo in
 				let identifier = rowInfo.reuseIdentifier.stringValue
-				if let cell = StaticRowStorage.retrieve(identifier, in: tableView) {
+				
+				var lookup = rowInfo.tableStorage.staticCellStorage ?? [:]
+				if let cell = lookup[identifier] {
 					return cell
 				}
-				
+
 				let cell = create(container)
-				StaticRowStorage.add(cell, forKey: identifier, in: tableView)
+				lookup[identifier] = cell
+				rowInfo.tableStorage.staticCellStorage = lookup
 				return cell
 			}
 			super.init(item: item)
@@ -100,4 +86,8 @@ extension Row {
 			super.init(item: item)
 		}
 	}
+}
+
+extension TableBuilderStore.Keys {
+	fileprivate var staticCellStorage: Key<[String: UITableViewCell]> { "_staticCellStorage" }
 }

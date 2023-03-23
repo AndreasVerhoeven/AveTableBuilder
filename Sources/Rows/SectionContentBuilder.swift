@@ -22,7 +22,11 @@ import Foundation
 	}
 	
 	public static func buildBlock(_ components: ContentType...) -> Collection {
-		Collection(components)
+		if components.count == 1 {
+			return Collection(components[0], id: .empty)
+		} else {
+			return Collection(components)
+		}
 	}
 	
 	public static func buildOptional(_ component: Collection?) -> Collection {
@@ -38,7 +42,7 @@ import Foundation
 	}
 	
 	public static func buildArray(_ components: [Collection]) -> Collection {
-		Collection(components)
+		Collection(forArray: components)
 	}
 	
 	public static func buildLimitedAvailability(_ component: Collection) -> Collection {

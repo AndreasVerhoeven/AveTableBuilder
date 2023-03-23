@@ -44,7 +44,6 @@ class ViewController: UITableViewController {
 		GroupedEditItem(subItems: [NameEditItem(), IncludeThingEditItem()])
 	])
 	
-	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
@@ -115,7 +114,6 @@ class ViewController: UITableViewController {
 					}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
 			}
 
-			/*
 			if self.selectedToppings.count > 0 || self.hasDrinks {
 				Section("Order Summary") {
 					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
@@ -126,7 +124,7 @@ class ViewController: UITableViewController {
 						self.completeOrder()
 					}.textFont(.from(.ios.headline.medium)).numberOfLines(0)
 				}
-			}*/
+			}
 		}
 	}
 	

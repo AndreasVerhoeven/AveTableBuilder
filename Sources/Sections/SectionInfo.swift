@@ -13,6 +13,8 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	/// id of the section we represent
 	public var id: TableItemIdentifier = .empty
 	
+	internal var hasExplicitIdForForEach = false
+	
 	/// optional header text
 	public var header: String?
 	
@@ -77,6 +79,7 @@ extension SectionInfo {
 	func adapt<OtherContainerType: AnyObject>(to type: OtherContainerType.Type, from originalContainer: ContainerType) -> SectionInfo<OtherContainerType> {
 		let sectionInfo = SectionInfo<OtherContainerType>(header: self.header, footer: self.footer)
 		sectionInfo.id = id
+		sectionInfo.hasExplicitIdForForEach = hasExplicitIdForForEach
 		self.storage.chain(to: sectionInfo.storage)
 		
 		if footerViewProvider != nil {
