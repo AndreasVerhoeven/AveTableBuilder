@@ -17,7 +17,14 @@ import Foundation
 	
 	public let get: () -> Value
 	public let set: (Value) -> Void
-	public var state: TableState<Value>?
+	
+	private var state: TableState<Value>?
+	private var allowAnimatedUpdates = true
+	
+	public func noAnimatedUpdates() -> Self {
+		allowAnimatedUpdates = false
+		return self
+	}
 	
 	public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
 		self.get = get
@@ -33,10 +40,12 @@ import Foundation
 	public var wrappedValue: Value {
 		get { get() }
 		set {
-			let oldValue = wrappedValue
-			set(newValue)
-			if state == nil {
-				notifyCallbacks(oldValue: oldValue, newValue: newValue)
+			TableBuilderStaticStorage.withAnimatedUpdates(suppressed: allowAnimatedUpdates == false) {
+				let oldValue = wrappedValue
+				set(newValue)
+				if state == nil {
+					notifyCallbacks(oldValue: oldValue, newValue: newValue)
+				}
 			}
 		}
 	}

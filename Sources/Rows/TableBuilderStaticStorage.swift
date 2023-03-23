@@ -14,6 +14,8 @@ enum TableBuilderStaticStorage {
 	fileprivate static var activeSectionInfos = [Any]()
 	fileprivate static var activeIndexPaths = [IndexPath]()
 	fileprivate static var activeContainers = [Any]()
+	
+	fileprivate static var animatedUpdatesSupressedCount = 0
 }
 
 extension TableBuilderStaticStorage {
@@ -73,6 +75,7 @@ fileprivate protocol TableBuilderProtocol {
 	var storage: TableBuilderStore { get }
 	
 	func registerUpdaters<T: AnyObject>(in container: T)
+	@discardableResult func withAnimatedUpdatesSupressed<T>(callback: () -> T) -> T
 }
 
 extension TableBuilderStaticStorage {
@@ -83,6 +86,19 @@ extension TableBuilderStaticStorage {
 	internal static var currentContainer: Any? {
 		return activeContainers.last
 	}
+	
+	@discardableResult internal static func withAnimatedUpdates<T>(suppressed: Bool, callback: () -> T) -> T {
+		guard suppressed == true else { return callback() }
+		return withAnimatedUpdatesSupressed(callback: callback)
+	}
+	
+	@discardableResult internal static func withAnimatedUpdatesSupressed<T>(callback: () -> T) -> T {
+		Self.animatedUpdatesSupressedCount += 1
+		defer { Self.animatedUpdatesSupressedCount -= 1 }
+		return callback()
+	}
+	
+	internal static var shouldSupressAnimatedUpdates: Bool { animatedUpdatesSupressedCount > 0 }
 }
 
 extension TableBuilder: TableBuilderProtocol {}

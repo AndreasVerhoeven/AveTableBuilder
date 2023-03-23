@@ -61,6 +61,8 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	private var runLoopObserver: CFRunLoopObserver?
 	private var debugShouldPrintIdentifiersOnUpdate = false
 	
+	private var supressAnimatedUpdatesCount = 0
+	
 	internal let storage = TableBuilderStore()
 	
 	/// Creates a TableBuilder:
@@ -279,8 +281,11 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	}
 	
 	public func setNeedsUpdate() {
+		if TableBuilderStaticStorage.shouldSupressAnimatedUpdates || supressAnimatedUpdatesCount > 0 {
+			return update(animated: false)
+		}
+		
 		guard coalesceUpdates == true else { return update(animated: true) }
-		guard hasPendingUpdate == false else { return }
 		guard hasPendingUpdate == false else { return }
 		hasPendingUpdate = true
 		
@@ -297,6 +302,12 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	@discardableResult public func debugPrintIdentifiersOnUpdate() -> Self {
 		debugShouldPrintIdentifiersOnUpdate = true
 		return self
+	}
+	
+	@discardableResult public func withAnimatedUpdatesSupressed<T>(callback: () -> T) -> T {
+		supressAnimatedUpdatesCount += 1
+		defer { supressAnimatedUpdatesCount -= 1 }
+		return callback()
 	}
 	
 	// MARK: - UITableViewDelegate

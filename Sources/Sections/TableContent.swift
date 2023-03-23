@@ -30,7 +30,7 @@ open class TableContent<ContainerType: AnyObject>: TableBuilderContent<Container
 		adapt(to: OtherContainerType.self, from: originalContainer)
 	}
 	
-	public func identify<T: Hashable>(by id: T) -> Self {
+	public func identified<T: Hashable>(by id: T) -> Self {
 		for item in items {
 			item.sectionInfo.hasExplicitIdForForEach = true
 			item.id.append(.custom(id))

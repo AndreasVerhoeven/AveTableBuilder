@@ -15,8 +15,8 @@ class GroupedEditItem: BaseEditItem {
 	}
 	
 	@BuilderContentsBuilder override func builderContents() -> BuilderContentsResult {
-		Row.ForEach(subItems, identifiedBy: \.id) { item in
-			item.builderContents()
+		for item in subItems {
+			item.builderContents().identified(by: item.id)
 		}
 	}
 }

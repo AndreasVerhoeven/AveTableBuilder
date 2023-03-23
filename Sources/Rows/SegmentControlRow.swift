@@ -36,8 +36,9 @@ extension Row {
 		) where Collection.Element: Hashable {
 			super.init(cellClass: Cell.self) { container, cell, animated in
 				cell.callback = { binding.wrappedValue = identifiedBy(data[data.index(data.startIndex, offsetBy: $0) ]) }
-				cell.segmentControl.removeAllSegments()
 				cell.isFullWidth = mode == .fullWidth
+				cell.segmentControl.removeAllSegments()
+
 				for item in data {
 					let value = segment(item)
 					if let value = value as? String {
