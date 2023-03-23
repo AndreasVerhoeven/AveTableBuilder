@@ -82,6 +82,7 @@ extension TableBuilderStore {
 	public struct Keys {
 		fileprivate static var instance = Self()
 		
+		
 		public struct Key<T>: RawRepresentable, ExpressibleByStringLiteral {
 			public var rawValue: String
 			

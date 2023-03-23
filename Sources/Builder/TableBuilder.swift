@@ -167,6 +167,28 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		self.init(tableView: controller.tableView, container: controller, updater: updater)
 	}
 	
+	public convenience init(tableView: UITableView,
+							container: ContainerType,
+							@SectionContentBuilder<ContainerType> updater: @escaping (ContainerType) -> SectionContentBuilder<ContainerType>.Collection
+	) {
+		self.init(tableView: tableView, container: container) { container in
+			Section {
+				updater(container)
+			}
+		}
+	}
+	
+	public convenience init(
+		controller: ContainerType,
+		@SectionContentBuilder<ContainerType> updater: @escaping (ContainerType) -> SectionContentBuilder<ContainerType>.Collection
+	) where ContainerType: UITableViewController {
+		self.init(controller: controller) { container in
+			Section {
+				updater(container)
+			}
+		}
+	}
+	
 	/// Triggers an update of the table view
 	public func update(animated: Bool) {
 		guard let container else { return }

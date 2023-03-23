@@ -38,6 +38,10 @@ public struct RowConfiguration {
 		public static let detailTextColor = Self(rawValue: "_detailTextColor")
 		public static let accessoryTextColor = Self(rawValue: "_accessoryTextColor")
 		
+		public static let textAlpha = Self(rawValue: "_textAlpha")
+		public static let detailTextAlpha = Self(rawValue: "_detailTextAlpha")
+		public static let accessoryTextAlpha = Self(rawValue: "_accessoryTextAlpha")
+		
 		public static let textAlignment = Self(rawValue: "_textAlignment")
 		public static let detailTextAlignment = Self(rawValue: "_detailTextAlignment")
 		public static let accessoryTextAlignment = Self(rawValue: "_accessoryTextAlignment")

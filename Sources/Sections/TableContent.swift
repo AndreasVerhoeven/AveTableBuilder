@@ -37,6 +37,12 @@ open class TableContent<ContainerType: AnyObject>: TableBuilderContent<Container
 		}
 		return self
 	}
+	
+	
+	public func emptySectionRemoved() -> Self {
+		items.removeAll { $0.rowInfos.isEmpty }
+		return self
+	}
 }
 
 extension TableContent: RowModifyable {

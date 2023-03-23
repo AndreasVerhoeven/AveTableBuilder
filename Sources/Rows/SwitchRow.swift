@@ -16,29 +16,48 @@ extension Row {
 		
 		/// Creates a row with a switch with a value and a callback
 		public init(text: String?, image: UIImage? = nil, isOn: Bool, change: ChangeCallback? = nil) {
-			super.init(cellClass: Cell.self) { container, cell, animated in
-				if let change = change {
-					cell.callback = { [weak container] isOn in
-						guard let container else { return }
-						change(container, isOn)
+			super.init(cellClass: Cell.self)
+			
+			modifyRows { item in
+				item.addingConfigurationHandler(modifying: [.detailTextAlpha]) { container, cell, animated, rowInfo in
+					guard let cell = cell as? Cell else { return }
+					
+					if let change = change {
+						cell.callback = { [weak container] isOn in
+							guard let container else { return }
+							change(container, isOn)
+						}
+					} else {
+						cell.callback = nil
 					}
-				} else {
-					cell.callback = nil
+					
+					UIView.performAnimationsIfNeeded(animated: animated) {
+						cell.switchControl.isEnabled = rowInfo.storage.isEnabled ?? true
+						cell.textLabel?.alpha = cell.switchControl.isEnabled ? 1 : 0.5
+					}
+					cell.switchControl.setOn(isOn, animated: animated)
 				}
-				cell.switchControl.setOn(isOn, animated: animated)
 			}
+			
 			_ = self.text(text).image(image)
 		}
 		
 		/// Creates a row with a switch with a binding
-		public init(text: String?, image: UIImage? = nil, binding: TableBinding<Bool>)  {
-			super.init(cellClass: Cell.self) { container, cell, animated in
-				cell.callback = { binding.wrappedValue = $0 }
-				cell.switchControl.setOn(binding.wrappedValue, animated: animated)
+		public convenience init(text: String?, image: UIImage? = nil, binding: TableBinding<Bool>)  {
+			self.init(text: text, image: image, isOn: binding.wrappedValue) { container, isOn in
+				binding.wrappedValue = isOn
 			}
-			_ = self.text(text).image(image)
+		}
+		
+		public func isEnabled(_ enabled: Bool) -> Self {
+			store(enabled, key: "switchIsEnabled")
+			return self
 		}
 	}
+}
+
+extension TableBuilderStore.Keys {
+	fileprivate var isEnabled: Key<Bool> { "switchIsEnabled" }
 }
 
 extension RowCells {

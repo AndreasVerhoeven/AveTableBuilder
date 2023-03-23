@@ -66,6 +66,7 @@
 		49DD5DFC29CBB2A500DA2331 /* NameEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFB29CBB2A500DA2331 /* NameEditItem.swift */; };
 		49DD5DFE29CBB31300DA2331 /* GroupedEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */; };
 		49DD5E0029CBB3B200DA2331 /* IncludeThingEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */; };
+		49DD5E0229CC84A200DA2331 /* StylishedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5E0129CC84A200DA2331 /* StylishedRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,6 +127,7 @@
 		49DD5DFB29CBB2A500DA2331 /* NameEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameEditItem.swift; sourceTree = "<group>"; };
 		49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedEditItem.swift; sourceTree = "<group>"; };
 		49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncludeThingEditItem.swift; sourceTree = "<group>"; };
+		49DD5E0129CC84A200DA2331 /* StylishedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylishedRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +199,7 @@
 				497C78B229B1EFD9006EF4A3 /* RowWrapper.swift */,
 				4999CB5C29BF432B005EC275 /* OptionPickerRow.swift */,
 				49DD5DF229CB5BFB00DA2331 /* PerformOnUpdate.swift */,
+				49DD5E0129CC84A200DA2331 /* StylishedRow.swift */,
 			);
 			path = Rows;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				497C78D129B1EFD9006EF4A3 /* SwitchRow.swift in Sources */,
 				49DD5E0029CBB3B200DA2331 /* IncludeThingEditItem.swift in Sources */,
 				497C78CE29B1EFD9006EF4A3 /* SectionContentBuilder.swift in Sources */,
+				49DD5E0229CC84A200DA2331 /* StylishedRow.swift in Sources */,
 				497C78D829B1EFD9006EF4A3 /* TableBuilder.swift in Sources */,
 				497C78C829B1EFD9006EF4A3 /* RowForEach.swift in Sources */,
 				49DD5DF829CBB1EF00DA2331 /* TypedBuilderBaseEditItem.swift in Sources */,

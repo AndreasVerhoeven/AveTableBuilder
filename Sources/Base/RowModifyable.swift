@@ -95,6 +95,22 @@ extension RowModifyable {
 		}
 	}
 	
+	@discardableResult public func textAlpha(_ value: CGFloat) -> Self {
+		addModification(for: .textAlpha) { container, cell, animated, rowInfo in
+			UIView.performAnimationsIfNeeded(animated: animated) {
+				cell.textLabel?.alpha = value
+			}
+		}
+	}
+	
+	@discardableResult public func detailTextAlpha(_ value: CGFloat) -> Self {
+		addModification(for: .detailTextAlpha) { container, cell, animated, rowInfo in
+			UIView.performAnimationsIfNeeded(animated: animated) {
+				cell.detailTextLabel?.alpha = value
+			}
+		}
+	}
+	
 	@discardableResult public func image(_ value: UIImage?) -> Self {
 		addModification(for: .image) { container, cell, animated, rowInfo in
 			cell.imageView?.setImage(value, animated: animated)
