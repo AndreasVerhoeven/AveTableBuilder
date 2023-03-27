@@ -8,8 +8,8 @@
 import UIKit
 
 extension Row {
-	class OptionPicker: Row<ContainerType, UITableViewCell> {
-		init<Collection: RandomAccessCollection>(
+	open class OptionPicker: Row<ContainerType, UITableViewCell> {
+		public init<Collection: RandomAccessCollection>(
 			text: String,
 			image: UIImage? = nil,
 			options: Collection,
@@ -23,7 +23,7 @@ extension Row {
 			inlineOptions(options, binding: binding, showSeparately: customOptions, titleStyle: titleStyle, textProvider: textProvider)
 		}
 		
-		init<Collection: RandomAccessCollection>(
+		public init<Collection: RandomAccessCollection>(
 			text: String,
 			image: UIImage? = nil,
 			options: Collection,
