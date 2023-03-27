@@ -69,6 +69,14 @@ extension TableBinding {
 		})
 	}
 	
+	public static func custom<ContainerType: AnyObject>(
+		container: ContainerType,
+		get: @escaping (_ `self`: ContainerType) -> Value,
+		set: @escaping (_ `self`: ContainerType, _ value: Value) -> Void
+	) -> TableBinding<Value> {
+		return TableBinding(container: container, get: get, set: set)
+	}
+	
 	public static func keyPath<ContainerType: AnyObject>(_ container: ContainerType, _ keyPath: ReferenceWritableKeyPath<ContainerType, Value>) -> Self {
 		return Self(container: container, keyPath: keyPath)
 	}

@@ -22,7 +22,7 @@ extension Row {
 					guard let cell = cell as? RowCells.TextViewCell else { return }
 					rowInfo.storage.isInUpdate = true
 					
-					var storage = rowInfo.storage
+					let storage = rowInfo.storage
 					DispatchQueue.main.async { [weak storage] in
 						storage?.isInUpdate = false
 					}

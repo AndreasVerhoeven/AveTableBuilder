@@ -60,6 +60,7 @@ extension RowModifyable {
 	@discardableResult public func inlineOptions<Collection: RandomAccessCollection>(
 		_ data: Collection,
 		binding: TableBinding<Collection.Element?>,
+		allowsSelectingNone: Bool = true,
 		titleStyle: MenuTitleStyle = .value1,
 		textProvider: @escaping (Collection.Element?) -> String
 	) -> Self where Collection.Element : Equatable {
@@ -70,6 +71,7 @@ extension RowModifyable {
 					binding.wrappedValue = item
 				}) }
 			let itemsMenu = UIMenu(title: "", options: .displayInline, children: items)
+			guard allowsSelectingNone == true else { return itemsMenu }
 			
 			let noneItem = UIAction(title: textProvider(nil), state: binding.wrappedValue == nil ? .on: .off, handler: { _ in
 				binding.wrappedValue = nil

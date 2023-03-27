@@ -350,4 +350,16 @@ extension RowModifyable {
 		callback()
 		return self
 	}
+	
+	@discardableResult public func activityIndicator(show: Bool) -> Self {
+		preConfigure(modifying: [.accessoryView]) { container, cell, animated in
+			if show == true {
+				let spinner = (cell.accessoryView as? UIActivityIndicatorView) ?? UIActivityIndicatorView(style: .medium)
+				spinner.startAnimating()
+				cell.accessoryView = spinner
+			} else {
+				cell.accessoryView = nil
+			}
+		}
+	}
 }
