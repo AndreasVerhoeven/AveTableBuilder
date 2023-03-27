@@ -9,7 +9,7 @@ import UIKit
 
 extension Row {
 	open class CustomView: Static {
-		init<View: UIView>(
+		public init<View: UIView>(
 			viewClass: View.Type = UIView.self,
 			creation: ((_ `self`: ContainerType) -> View)? = nil,
 			configure: @escaping (_ `self`: ContainerType, _ view: View, _ animated: Bool) -> Void
