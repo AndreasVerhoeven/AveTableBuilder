@@ -47,7 +47,7 @@ extension Row {
 }
 
 extension RowModifyable {
-	@discardableResult func onConfigureTextField(_ handler: @escaping (_ `self`: ContainerType, _ textField: UITextField) -> Void) -> Self {
+	@discardableResult public func onConfigureTextField(_ handler: @escaping (_ `self`: ContainerType, _ textField: UITextField) -> Void) -> Self {
 		preConfigure(modifying: [.textField]) { container, cell, animated in
 			guard let cell = cell as? RowCells.TextFieldCell else { return }
 			handler(container, cell.textField)

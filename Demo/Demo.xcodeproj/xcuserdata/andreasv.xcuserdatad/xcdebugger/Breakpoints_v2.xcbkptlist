@@ -3,4 +3,29 @@
    uuid = "86DCA7EF-E105-4B0F-89FD-FADD27859C8B"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
+         <BreakpointContent
+            uuid = "B59AD097-3DF4-41C3-874D-EDDA9D459212"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            symbolName = "UITableViewAlertForVisibleCellsAccessDuringUpdate"
+            moduleName = "">
+            <Locations>
+               <Location
+                  uuid = "B59AD097-3DF4-41C3-874D-EDDA9D459212 - 450592ddb0594c08"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UITableViewAlertForVisibleCellsAccessDuringUpdate"
+                  moduleName = "UIKitCore"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "0">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

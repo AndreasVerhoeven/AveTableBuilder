@@ -50,6 +50,11 @@ class ViewController: UITableViewController {
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
+			
+			Section {
+				Row.TextView(binding: self.$name, placeholder: "Add Text").maximumHeight(120)
+			}
+			
 			// Our first section: no title and two rows
 			if self.selectedToppings.count == 0 && !self.hasDrinks {
 				Section {

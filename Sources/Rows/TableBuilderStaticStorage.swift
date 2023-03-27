@@ -70,10 +70,11 @@ extension RowInfo {
 	}
 }
 
-fileprivate protocol TableBuilderProtocol {
+fileprivate protocol TableBuilderProtocol: AnyObject {
 	var tableView: UITableView { get }
 	var storage: TableBuilderStore { get }
 	
+	func  update(animated: Bool)
 	func registerUpdaters<T: AnyObject>(in container: T)
 	@discardableResult func withAnimatedUpdatesSupressed<T>(callback: () -> T) -> T
 }
@@ -85,6 +86,18 @@ extension TableBuilderStaticStorage {
 	
 	internal static var currentContainer: Any? {
 		return activeContainers.last
+	}
+	
+	struct Updater {
+		fileprivate weak var builder: TableBuilderProtocol?
+		func update(animated: Bool) {
+			builder?.update(animated: animated)
+		}
+	}
+	
+	internal static var currentUpdater: Updater? {
+		guard let builder = TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol else { return nil }
+		return Updater(builder: builder)
 	}
 	
 	@discardableResult internal static func withAnimatedUpdates<T>(suppressed: Bool, callback: () -> T) -> T {

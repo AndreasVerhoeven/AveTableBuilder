@@ -67,6 +67,7 @@
 		49DD5DFE29CBB31300DA2331 /* GroupedEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */; };
 		49DD5E0029CBB3B200DA2331 /* IncludeThingEditItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */; };
 		49DD5E0229CC84A200DA2331 /* StylishedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5E0129CC84A200DA2331 /* StylishedRow.swift */; };
+		49DD5E4A29D1B18600DA2331 /* TextViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5E4929D1B18600DA2331 /* TextViewRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +129,7 @@
 		49DD5DFD29CBB31300DA2331 /* GroupedEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedEditItem.swift; sourceTree = "<group>"; };
 		49DD5DFF29CBB3B200DA2331 /* IncludeThingEditItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncludeThingEditItem.swift; sourceTree = "<group>"; };
 		49DD5E0129CC84A200DA2331 /* StylishedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylishedRow.swift; sourceTree = "<group>"; };
+		49DD5E4929D1B18600DA2331 /* TextViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +195,7 @@
 				497C78B029B1EFD9006EF4A3 /* Row.swift */,
 				497C78B129B1EFD9006EF4A3 /* SwitchRow.swift */,
 				493B7A6929BC981A0005F42B /* TextFieldRow.swift */,
+				49DD5E4929D1B18600DA2331 /* TextViewRow.swift */,
 				497C78DB29B1F2B3006EF4A3 /* StepperRow.swift */,
 				49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */,
 				49A7370629B67C9B005A2CE9 /* DatePickerRow.swift */,
@@ -362,6 +365,7 @@
 				49DD5DB029C9FD9200DA2331 /* TableBuilderStaticStorage.swift in Sources */,
 				497C78C629B1EFD9006EF4A3 /* TableContentBuilder.swift in Sources */,
 				497C78BD29B1EFD9006EF4A3 /* SectionForEach.swift in Sources */,
+				49DD5E4A29D1B18600DA2331 /* TextViewRow.swift in Sources */,
 				497C78CA29B1EFD9006EF4A3 /* RowCollection.swift in Sources */,
 				49DD5DFA29CBB25000DA2331 /* EditItemBuilder.swift in Sources */,
 				497C78DA29B1EFD9006EF4A3 /* RowModifyable.swift in Sources */,
