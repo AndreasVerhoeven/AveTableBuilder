@@ -54,7 +54,7 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	}
 	
 	public func provideFooterView(container: ContainerType, tableView: UITableView, section: Int) -> UITableViewHeaderFooterView? {
-		headerViewProvider?(container, tableView, section, self)
+		footerViewProvider?(container, tableView, section, self)
 	}
 	
 	public func updateHeaderView(container: ContainerType, view: UITableViewHeaderFooterView, tableView: UITableView, section: Int, animated: Bool) {
@@ -62,7 +62,7 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	}
 	
 	public func updateFooterView(container: ContainerType, view: UITableViewHeaderFooterView, tableView: UITableView, section: Int, animated: Bool) {
-		headerUpdaters.forEach { $0(container, view, header, tableView, section, animated, self) }
+		footerUpdaters.forEach { $0(container, view, header, tableView, section, animated, self) }
 	}
 	
 	public func performInitializationCallback(container: ContainerType, tableView: UITableView) {

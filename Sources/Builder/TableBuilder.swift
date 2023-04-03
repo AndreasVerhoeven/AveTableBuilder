@@ -199,8 +199,9 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			self.runLoopObserver = nil
 		}
 		
+		let tableView = dataSource.tableView
 		perform {
-			let reallyAnimated = (animated && dataSource.tableView.window != nil)
+			let reallyAnimated = (animated && tableView.window != nil)
 			
 			if debugShouldPrintIdentifiersOnUpdate {
 				print("<<<Debug Update Start>>>\n")
@@ -214,12 +215,13 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 						reference.resolver = self
 					}
 					row.creators.forEach { $0.items = [] }
+					row.finalize(container: container, tableView: tableView)
 				}
 				
 				if seenSections.contains(item.sectionInfo.id) == false {
 					seenSections.insert(item.sectionInfo.id)
 					self.perform(with: item.sectionInfo) {
-						item.sectionInfo.performInitializationCallback(container: container, tableView: dataSource.tableView)
+						item.sectionInfo.performInitializationCallback(container: container, tableView: tableView)
 					}
 				}
 				

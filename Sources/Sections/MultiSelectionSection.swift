@@ -11,9 +11,6 @@ extension Section {
 	/// Creates a section that shows rows for every item in a Collection. The rows, in turn, can be selected/deselected by tapping on them. A binding
 	/// to a `Set<Collection.Element>`  reflects what is selected.
 	open class MultiSelection: TableContent<ContainerType> {
-		private enum ButtonStatus {
-			case hidden, selectAll, deselectAll
-		}
 		
 		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
 		public convenience init<Collection: RandomAccessCollection>(
@@ -60,6 +57,7 @@ extension Section {
 				}
 			}
 		}
+		
 		
 		/// Creates selectable Rows that mirror the inverted selection status of the given binding. Selected rows will have a checkmark accessory.
 		public init<Collection: RandomAccessCollection, ID: Hashable>(

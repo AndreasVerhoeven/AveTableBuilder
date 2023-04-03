@@ -19,8 +19,13 @@ enum Topping: String, CaseIterable {
 
 enum Extra: String, CaseIterable {
 	case mozarellaSticks
-	case chiliCheeseNuggets
 	case garlicBread
+	case chiliCheeseNuggets
+	case nachos
+}
+
+extension String: Identifiable {
+	public var id: Self { self }
 }
 
 class ViewController: UITableViewController {
@@ -29,7 +34,7 @@ class ViewController: UITableViewController {
 	@TableState var selectedToppings = Set<Topping>()
 	@TableState var numberOfCocaColas = 0
 	@TableState var numberOfBeers = 0
-	@TableState var extra: Extra? = .none
+	@TableState var extra: Extra? = nil
 	
 	enum Category: String, CaseIterable {
 		case toppings
@@ -43,19 +48,18 @@ class ViewController: UITableViewController {
 		GroupedEditItem(subItems: [NameEditItem(), IncludeThingEditItem()])
 	])
 	
-	@TableState var name = ""
+	@TableState var name: String = ""
 	@TableState var showClearButton = false
 	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
-			
 			// Our first section: no title and two rows
 			if self.selectedToppings.count == 0 && !self.hasDrinks {
 				Section {
 					// this is a row that is manually configured
-					Row { `self`, cell, animated in
+					Row(cellClass: UITableViewCell.self) { `self`, cell, animated in
 						cell.textLabel?.text = "Pizza Order"
 						cell.textLabel?.font = .preferredFont(forTextStyle: .title3)
 						cell.textLabel?.textAlignment = .center
@@ -81,7 +85,7 @@ class ViewController: UITableViewController {
 			}
 			
 			Section {
-				Row.SegmentControl(Category.allCases, binding: self.$category, mode: .fullWidth) { $0.rawValue }
+				Row.SegmentControl(Category.allCases, binding: self.$category.noAnimatedUpdates(), mode: .fullWidth) { $0.rawValue }
 			}
 			
 			switch self.category {
@@ -105,7 +109,9 @@ class ViewController: UITableViewController {
 					
 				case .extras:
 					Section("Extras") {
-						Row.OptionPicker(text: "Snack", options: Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
+						Row.Picker(text: "Snacks", options: Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
+							.allowSelectingNilOption()
+							.showSeparated(.chiliCheeseNuggets, .nachos)
 					}
 					
 				case .toppings:
@@ -114,12 +120,14 @@ class ViewController: UITableViewController {
 					// when you select something, the variable is updated and vice-versa.
 					Section.MultiSelection("Toppings", data: Topping.allCases, binding: self.$selectedToppings) { topping in
 						Row(text: topping.rawValue.capitalized, image: UIImage(systemName: "leaf.fill")).imageTintColor(.systemGreen)
-					}.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items").mirrorAccessoryDuringSelection()
+					}
+					.selectionButtonTitles(selectAll: "Select All Items", deselectAll: "Deselect All Items")
+					.mirrorAccessoryDuringSelection()
 			}
-
+			
 			if self.selectedToppings.count > 0 || self.hasDrinks {
-				Section("Order Summary") {
-					Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
+				 Section("Order Summary") {
+					 Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
 
 					// an action show renders as a "button". The callback is triggered when the user selects the row.
 				    // Note that `self` is passed in as a parameter, as to not create retain cycles.
@@ -151,8 +159,8 @@ class ViewController: UITableViewController {
 			}
 		}
 		
-		if let snack = extra {
-			items += ["Free Snack: \(snack.rawValue)"]
+		if let extra {
+			items += ["Free Snack: \(extra.rawValue)"]
 		}
 		
 		return items.map{ "- \($0)" }.joined(separator: "\n")

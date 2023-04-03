@@ -80,17 +80,26 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var editingStyle: UITableViewCell.EditingStyle?
 	public var shouldIndentWhileEditing: Bool?
 	
-	public typealias OnCommitEditingCallback = ( _ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath) -> Void
+	public typealias OnCommitEditingCallback = ( _ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ rowInfo: RowInfo<ContainerType>) -> Void
 	public typealias SimpleOnCommitEditingCallback = ( _ `self`: ContainerType) -> Void
 	public var onCommitInsertHandlers = [OnCommitEditingCallback]()
 	public var onCommitDeleteHandlers = [OnCommitEditingCallback]()
 	
 	public func onCommitInsert(container: ContainerType, tableView: UITableView, indexPath: IndexPath) {
-		onCommitInsertHandlers.forEach { $0(container, tableView, indexPath) }
+		onCommitInsertHandlers.forEach { $0(container, tableView, indexPath, self) }
 	}
 	
 	public func onCommitDelete(container: ContainerType, tableView: UITableView, indexPath: IndexPath) {
-		onCommitDeleteHandlers.forEach { $0(container, tableView, indexPath) }
+		onCommitDeleteHandlers.forEach { $0(container, tableView, indexPath, self) }
+	}
+	
+	
+	/// finalizing
+	public typealias FinalizeRowCallback = ( _ `self`: ContainerType, _ tableView: UITableView, _ rowInfo: RowInfo<ContainerType>) -> Void
+	public var finalizeRowCallbacks = [FinalizeRowCallback]()
+	
+	public func finalize(container: ContainerType, tableView: UITableView) {
+		finalizeRowCallbacks.forEach { $0(container, tableView, self) }
 	}
 	
 	/// highlighting
@@ -249,17 +258,24 @@ extension RowInfo {
 			}
 		}
 		
-		rowInfo.onCommitInsertHandlers = [{ [weak originalContainer] container, tableView, indexPath in
+		rowInfo.onCommitInsertHandlers = [{ [weak originalContainer] container, tableView, indexPath, row in
 			guard let originalContainer else { return }
 			return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 				self.onCommitInsert(container: originalContainer, tableView: tableView, indexPath: indexPath)
 			}
 		}]
 		
-		rowInfo.onCommitDeleteHandlers = [{ [weak originalContainer] container, tableView, indexPath in
+		rowInfo.onCommitDeleteHandlers = [{ [weak originalContainer] container, tableView, indexPath, row in
 			guard let originalContainer else { return }
 			return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
 				self.onCommitDelete(container: originalContainer, tableView: tableView, indexPath: indexPath)
+			}
+		}]
+		
+		rowInfo.finalizeRowCallbacks = [{ [weak originalContainer] container, tableView, row in
+			guard let originalContainer else { return }
+			return TableBuilderStaticStorage.with(rowInfo: self, container:originalContainer) {
+				self.finalize(container: originalContainer, tableView: tableView)
 			}
 		}]
 		

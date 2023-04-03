@@ -57,28 +57,59 @@ extension RowModifyable {
 	/// Shows a single optional selected option (via a binding) and allows the user to change the selection via an inline menu.
 	/// The `nil` option is shown as a custom option in the menu.
 	/// You need to provide a textProvider that turns items into displayable strings.
-	@discardableResult public func inlineOptions<Collection: RandomAccessCollection>(
+	@discardableResult public func inlineOptions<Collection: Sequence>(
 		_ data: Collection,
 		binding: TableBinding<Collection.Element?>,
 		allowsSelectingNone: Bool = true,
 		titleStyle: MenuTitleStyle = .value1,
 		textProvider: @escaping (Collection.Element?) -> String
 	) -> Self where Collection.Element : Equatable {
-		return menu(title: textProvider(binding.wrappedValue), titleStyle: titleStyle) { container in
-			let items = data.map { item in
-				return UIAction(title: textProvider(item),
-								state: binding.wrappedValue == item ? .on : .off, handler: { _ in
-					binding.wrappedValue = item
-				}) }
-			let itemsMenu = UIMenu(title: "", options: .displayInline, children: items)
-			guard allowsSelectingNone == true else { return itemsMenu }
-			
-			let noneItem = UIAction(title: textProvider(nil), state: binding.wrappedValue == nil ? .on: .off, handler: { _ in
-				binding.wrappedValue = nil
-			})
-			let noneMenu = UIMenu(title: "", options: .displayInline, children: [noneItem])
-			return UIMenu(title: "", children: [noneMenu, itemsMenu])
-		}
+		return inlineOptions(data, binding: binding, identifiedBy: { $0 }, allowsSelectingNone: allowsSelectingNone, titleStyle: titleStyle, textProvider: textProvider)
+	}
+	
+	/// Shows a single optional selected option (via a binding) and allows the user to change the selection via an inline menu.
+	/// The `nil` option is shown as a custom option in the menu.
+	/// You need to provide a textProvider that turns items into displayable strings.
+	@discardableResult public func inlineOptions<Collection: Sequence>(
+		_ data: Collection,
+		binding: TableBinding<Collection.Element.ID?>,
+		allowsSelectingNone: Bool = true,
+		titleStyle: MenuTitleStyle = .value1,
+		textProvider: @escaping (Collection.Element?) -> String
+	) -> Self where Collection.Element : Identifiable {
+		let newBinding = TableBinding<Collection.Element?>(get: {
+			data.first { $0.id == binding.wrappedValue }
+		}, set: {
+			binding.wrappedValue = $0?.id
+		})
+		return inlineOptions(data, binding: newBinding, identifiedBy: { $0.id }, allowsSelectingNone: allowsSelectingNone, titleStyle: titleStyle, textProvider: textProvider)
+	}
+	
+	/// Shows a single optional selected option (via a binding) and allows the user to change the selection via an inline menu.
+	/// The `nil` option is shown as a custom option in the menu.
+	/// You need to provide a textProvider that turns items into displayable strings.
+	@discardableResult public func inlineOptions<Collection: Sequence>(
+		_ data: Collection,
+		binding: TableBinding<Collection.Element?>,
+		allowsSelectingNone: Bool = true,
+		titleStyle: MenuTitleStyle = .value1,
+		textProvider: @escaping (Collection.Element?) -> String
+	) -> Self where Collection.Element : Identifiable {
+		return inlineOptions(data, binding: binding, identifiedBy: { $0.id }, allowsSelectingNone: allowsSelectingNone, titleStyle: titleStyle, textProvider: textProvider)
+	}
+	
+	/// Shows a single optional selected option (via a binding) and allows the user to change the selection via an inline menu.
+	/// The `nil` option is shown as a custom option in the menu.
+	/// You need to provide a textProvider that turns items into displayable strings.
+	@discardableResult public func inlineOptions<Collection: Sequence, ID: Equatable>(
+		_ data: Collection,
+		binding: TableBinding<Collection.Element?>,
+		identifiedBy: @escaping (Collection.Element) -> ID,
+		allowsSelectingNone: Bool = true,
+		titleStyle: MenuTitleStyle = .value1,
+		textProvider: @escaping (Collection.Element?) -> String
+	) -> Self {
+		return self
 	}
 	
 	/// Shows an optional menu when this row is selected. The accessoryView of the cell will have a button and the cell will be changed to style == `.value1` with a title to indicate the menu.

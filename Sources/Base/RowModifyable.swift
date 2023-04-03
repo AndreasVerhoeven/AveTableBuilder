@@ -198,12 +198,12 @@ extension RowModifyable {
 						break
 						
 					case .insert:
-						item.onCommitInsertHandlers.append({ container, tableView, indexPath in
+						item.onCommitInsertHandlers.append({ container, tableView, indexPath, row in
 							handler(container)
 						})
 						
 					case .delete:
-						item.onCommitDeleteHandlers.append({ container, tableView, indexPath in
+						item.onCommitDeleteHandlers.append({ container, tableView, indexPath, row in
 							handler(container)
 						})
 						
@@ -216,7 +216,7 @@ extension RowModifyable {
 	
 	@discardableResult public func onCommitInsertion(_ handler: @escaping RowInfo<ContainerType>.SimpleOnCommitEditingCallback) -> Self {
 		modifyRows { item in
-			item.onCommitInsertHandlers.append({ container, tableView, indexPath in
+			item.onCommitInsertHandlers.append({ container, tableView, indexPath, row in
 				handler(container)
 			})
 		}
@@ -224,7 +224,7 @@ extension RowModifyable {
 	
 	@discardableResult public func onCommitDeletion(_ handler: @escaping RowInfo<ContainerType>.SimpleOnCommitEditingCallback) -> Self {
 		modifyRows { item in
-			item.onCommitDeleteHandlers.append({ container, tableView, indexPath in
+			item.onCommitDeleteHandlers.append({ container, tableView, indexPath, row in
 				handler(container)
 			})
 		}
@@ -260,13 +260,13 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func onSelect(toggle binding: TableBinding<Bool>) -> Self {
+	@discardableResult public func onSelectToggle(_ binding: TableBinding<Bool>) -> Self {
 		onSelect { container in
 			binding.wrappedValue.toggle()
 		}
 	}
 	
-	@discardableResult public func onSelect<T>(set binding: TableBinding<T>, to value: T) -> Self {
+	@discardableResult public func onSelectSet<T>(_ binding: TableBinding<T>, to value: T) -> Self {
 		onSelect { container in
 			binding.wrappedValue = value
 		}

@@ -32,7 +32,7 @@ extension Row {
 				collection.preConfigure(modifying: [.accessory]) { container, cell, animated in
 					cell.accessoryType = binding.wrappedValue == identifier ? .checkmark : .none
 				}
-				collection.onSelect(set: binding, to: identifier)
+				collection.onSelectSet(binding, to: identifier)
 				return collection.items
 			}
 			super.init(items: items)

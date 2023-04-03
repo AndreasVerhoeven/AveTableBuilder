@@ -15,7 +15,7 @@ open class Row<ContainerType: AnyObject, Cell: UITableViewCell>: SectionContent<
 	/// Creates a row with a given cell class, cell style and a configuration handler. For reuse purposes, also specify which configurable cell items
 	/// you are modifying.
 	public init(
-		cellClass: Cell.Type = Cell.self,
+		cellClass: Cell.Type = UITableViewCell.self,
 		style: UITableViewCell.CellStyle = .default,
 		modifying: RowConfiguration = [.manual],
 		_ configuration: ConfigurationHandler? = nil
