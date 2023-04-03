@@ -20,8 +20,9 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 	
 	public var hasRows: Bool { items.isEmpty == false }
 	
-	public func store<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>) {
+	@discardableResult public func store<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>) -> Self {
 		items.forEach { $0.storage.store(value, key: key) }
+		return self
 	}
 	
 	override func postInit() {

@@ -29,7 +29,7 @@ extension Row {
 	/// creates a row with a text and image
 	public convenience init(text: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
 		self.init(cellClass: cellClass, modifying: [])
-		_ = self.text(text).image(image)
+		_ = self.text(text).image(image, canBeOverriden: image == nil)
 	}
 	
 	/// creates a row with a text,  value1 value and image
@@ -37,7 +37,7 @@ extension Row {
 		self.init(cellClass: cellClass, style: .value1, modifying: [])
 		_ = self.text(text)
 		_ = self.detailText(value)
-		_ = self.image(image)
+		_ = self.image(image, canBeOverriden: image == nil)
 	}
 	
 	/// creates a row with a text,  subtitle value and image
@@ -45,7 +45,7 @@ extension Row {
 		self.init(cellClass: cellClass, style: .subtitle, modifying: [])
 		_ = self.text(text)
 		_ = self.detailText(subtitle)
-		_ = self.image(image)
+		_ = self.image(image, canBeOverriden: image == nil)
 	}
 	
 	/// provides a context menu for this cell

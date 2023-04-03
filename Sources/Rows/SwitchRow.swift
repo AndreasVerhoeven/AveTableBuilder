@@ -39,7 +39,7 @@ extension Row {
 				}
 			}
 			
-			_ = self.text(text).image(image)
+			_ = self.text(text, canBeOverriden: text == nil).image(image, canBeOverriden: image == nil)
 		}
 		
 		/// Creates a row with a switch with a binding

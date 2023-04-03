@@ -178,8 +178,44 @@ extension RowModifyable {
 	}
 }
 
+extension RowCells {
+	public class OptionPickerCell: UITableViewCell {
+		public let menuButton = MenuAccessoryButton()
+		
+		public typealias MenuProvider = () -> UIMenu?
+		public var menu: UIMenu? {
+			get { menuButton.customMenu }
+			set { menuButton.customMenu = newValue }
+		}
+		public var menuProvider: MenuProvider? {
+			get { menuButton.menuProvider }
+			set { menuButton.menuProvider = newValue }
+		}
+		
+		public func showMenu() {
+			menuButton.showMenu()
+		}
+		
+		public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+			guard let point = touches.first?.location(in: self), hitTest(point, with: event) != nil else { return }
+			showMenu()
+		}
+
+		public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+			super.init(style: style, reuseIdentifier: reuseIdentifier)
+			accessoryView = menuButton
+			editingAccessoryView = menuButton
+		}
+		
+		@available(*, unavailable)
+		required init?(coder: NSCoder) {
+			fatalError("init(coder:) has not been implemented")
+		}
+	}
+}
+
 /// A button to show and launch a menu
-class MenuAccessoryButton: UIButton {
+public class MenuAccessoryButton: UIButton {
 	private let wrapperView = WrapperView()
 	let customTitleLabel = UILabel(font: .ios.body, alignment: .right)
 	let customImageView = UIImageView(image: UIImage(systemName: "chevron.up.chevron.down"), contentMode: .scaleAspectFit).prefersExactSize()
@@ -198,7 +234,7 @@ class MenuAccessoryButton: UIButton {
 		}
 	}
 	
-	func setCustomTitle(_ title: String?, animated: Bool) {
+	public func setCustomTitle(_ title: String?, animated: Bool) {
 		let paragraphStyle = NSMutableParagraphStyle()
 		paragraphStyle.hyphenationFactor = 0.5
 		paragraphStyle.lineBreakMode = .byTruncatingTail
@@ -207,7 +243,7 @@ class MenuAccessoryButton: UIButton {
 		customTitleLabel.isHidden = title?.isEmpty ?? true
 	}
 	
-	var customMenu: UIMenu? {
+	public var customMenu: UIMenu? {
 		didSet {
 			if #available(iOS 14, *) {
 				self.menu = customMenu
@@ -217,10 +253,10 @@ class MenuAccessoryButton: UIButton {
 		}
 	}
 	
-	typealias MenuProvider = () -> UIMenu?
-	var menuProvider: MenuProvider?
+	public typealias MenuProvider = () -> UIMenu?
+	public var menuProvider: MenuProvider?
 	
-	func showMenu() {
+	public func showMenu() {
 		if let menuProvider {
 			customMenu = menuProvider()
 		}
@@ -239,7 +275,7 @@ class MenuAccessoryButton: UIButton {
 		}
 	}
 	
-	override init(frame: CGRect) {
+	public override init(frame: CGRect) {
 		super.init(frame: frame)
 		
 		customTitleLabel.numberOfLines = 2

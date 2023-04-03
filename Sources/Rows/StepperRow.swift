@@ -20,7 +20,7 @@ extension Row {
 				cell.callback = { binding.wrappedValue = Int($0) }
 				cell.setValue(Double(binding.wrappedValue), animated: animated)
 			}
-			_ = self.text(text).image(image)
+			_ = self.text(text, canBeOverriden: text == nil).image(image, canBeOverriden: image == nil)
 		}
 	}
 }

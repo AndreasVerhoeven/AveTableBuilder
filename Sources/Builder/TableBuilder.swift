@@ -214,8 +214,9 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 						reference.wrappedValue = row.id
 						reference.resolver = self
 					}
-					row.creators.forEach { $0.items = [] }
+					
 					row.finalize(container: container, tableView: tableView)
+					row.creators.forEach { $0.items = [] }
 				}
 				
 				if seenSections.contains(item.sectionInfo.id) == false {

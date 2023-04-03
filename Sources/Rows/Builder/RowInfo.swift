@@ -13,6 +13,12 @@ import UIKit
 public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public var id: TableItemIdentifier = .empty
 	
+	public var cellClass: UITableViewCell.Type
+	public var cellStyle: UITableViewCell.CellStyle
+	
+	/// a list of modifications we know are done. Used to build a unique reuseIdentifier. See `ReuseIdentifier`
+	public var knownModifications: RowConfiguration
+	
 	/// provides a cell for this row. Convenience provider for external cells.
 	public typealias CellProviderHandler = (_ `self`: ContainerType, _ tableView: UITableView, _ indexPath: IndexPath, _ rowInfo: RowInfo<ContainerType> ) -> UITableViewCell
 	public var cellProvider: CellProviderHandler
@@ -20,12 +26,6 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	public func provideCell(container: ContainerType, tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
 		return cellProvider(container, tableView, indexPath, self)
 	}
-	
-	public var cellClass: UITableViewCell.Type
-	public var cellStyle: UITableViewCell.CellStyle
-	
-	/// a list of modifications we know are done. Used to build a unique reuseIdentifier. See `ReuseIdentifier`
-	public var knownModifications: RowConfiguration
 	
 	/// configuration handlers, called in-order
 	public typealias SimpleConfigurationHandler = (_ `self`: ContainerType, _ cell: UITableViewCell, _ animated: Bool) -> Void
@@ -100,6 +100,7 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	
 	public func finalize(container: ContainerType, tableView: UITableView) {
 		finalizeRowCallbacks.forEach { $0(container, tableView, self) }
+		finalizeRowCallbacks.removeAll()
 	}
 	
 	/// highlighting

@@ -83,8 +83,8 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func text(_ value: String?) -> Self {
-		addModification(for: .text) { container, cell, animated, rowInfo in
+	@discardableResult public func text(_ value: String?, canBeOverriden: Bool = false) -> Self {
+		addModification(for: .text, mode: canBeOverriden ? .canBeOverriden : .regular) { container, cell, animated, rowInfo in
 			cell.textLabel?.setText(value, animated: animated)
 		}
 	}
@@ -111,8 +111,8 @@ extension RowModifyable {
 		}
 	}
 	
-	@discardableResult public func image(_ value: UIImage?) -> Self {
-		addModification(for: .image) { container, cell, animated, rowInfo in
+	@discardableResult public func image(_ value: UIImage?, canBeOverriden: Bool = false) -> Self {
+		addModification(for: .image, mode: canBeOverriden ? .canBeOverriden : .regular) { container, cell, animated, rowInfo in
 			cell.imageView?.setImage(value, animated: animated)
 		}
 	}

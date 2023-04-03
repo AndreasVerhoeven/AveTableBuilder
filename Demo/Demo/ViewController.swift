@@ -112,6 +112,7 @@ class ViewController: UITableViewController {
 						Row.Picker(text: "Snacks", options: Extra.allCases, binding: self.$extra) { $0?.rawValue ?? "None" }
 							.allowSelectingNilOption()
 							.showSeparated(.chiliCheeseNuggets, .nachos)
+							.image(UIImage(systemName: "carrot.fill"))
 					}
 					
 				case .toppings:

@@ -70,7 +70,7 @@ extension Row {
 		
 		fileprivate init(text: String, image: UIImage? = nil, date: Date?, fallback: String? = nil, callback: DateChangeCallback? = nil) {
 			super.init(cellClass: UITableViewCell.self, style: .value1, modifying: [])
-			_ = self.text(text).image(image).accessory(.disclosureIndicator)
+			_ = self.text(text).image(image, canBeOverriden: image == nil).accessory(.disclosureIndicator)
 			
 			modifyRows { item in
 				item.configurationHandlers.append { `container`, cell, animated, rowInfo in

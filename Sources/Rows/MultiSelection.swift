@@ -20,29 +20,44 @@ extension Row {
 			self.init(data, identifiedBy: { $0 }, binding: binding, builder: builder)
 		}
 		
-		/// Creates selectable Rows that mirror the inverted selection status of the given binding. Selected rows will have a checkmark accessory.
-		public init<Collection: RandomAccessCollection, ID: Hashable>(
+		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
+		public convenience init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
 			identifiedBy: (Collection.Element) -> ID,
 			binding: TableBinding<Set<ID>>,
 			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection
 		) where Collection.Element: Hashable {
+			self.init(data, identifiedBy: identifiedBy, selection: binding.wrappedValue, builder: builder) { container, selection in
+				binding.wrappedValue = selection
+			}
+		}
+		
+		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
+		public init<Collection: RandomAccessCollection, ID: Hashable>(
+			_ data: Collection,
+			identifiedBy: (Collection.Element) -> ID,
+			selection: Set<ID>,
+			@SectionContentBuilder<ContainerType> builder: (Collection.Element) -> SectionContentBuilder<ContainerType>.Collection,
+			onChange: @escaping (_ `self`: ContainerType, _ selection: Set<ID>) -> Void
+		) where Collection.Element: Hashable {
 			let items = data.flatMap { element in
 				let identifier = identifiedBy(element)
 				let collection = RowCollection(builder(element), id: .custom(identifier))
-				collection.checked(binding.wrappedValue.contains(identifier)).onSelect { container in
-					if binding.wrappedValue.contains(identifier) {
-						binding.wrappedValue.remove(identifier)
+				collection.checked(selection.contains(identifier)).onSelect { container in
+					var newSelection = selection
+					if newSelection.contains(identifier) {
+						newSelection.remove(identifier)
 					} else {
-						binding.wrappedValue.insert(identifier)
+						newSelection.insert(identifier)
 					}
+					onChange(container, newSelection)
 				}
 				return collection.items
 			}
 			super.init(items: items)
 		}
 		
-		/// Creates selectable Rows that mirror the selection status of the given binding. Selected rows will have a checkmark accessory.
+		/// Creates selectable Rows that mirror the inverted selection status of the given binding. Selected rows will have a checkmark accessory.
 		public init<Collection: RandomAccessCollection, ID: Hashable>(
 			_ data: Collection,
 			identifiedBy: (Collection.Element) -> ID,

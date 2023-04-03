@@ -10,33 +10,35 @@ import Foundation
 /// Can be used to bind to a value. Used by `TableState`. Nonmutating setter, so can be used
 /// in nonmutating contexts.
 @propertyWrapper public final class TableBinding<Value>: ChangeObservable {
-	private var internalObservers = ChangeObserverList<Value>()
-	public var observers: ChangeObserverList<Value> {
-		state?.observers ?? internalObservers
-	}
-	
 	public let get: () -> Value
 	public let set: (Value) -> Void
 	
+	/// private state
 	private var state: TableState<Value>?
+	private var internalObservers = ChangeObserverList<Value>()
+	public var observers: ChangeObserverList<Value> { state?.observers ?? internalObservers }
 	private var allowAnimatedUpdates = true
 	
+	/// updates to this binding trigger non-animated table updates
 	public func noAnimatedUpdates() -> Self {
 		allowAnimatedUpdates = false
 		return self
 	}
 	
+	/// initializer with a getter and setter.
 	public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
 		self.get = get
 		self.set = set
 	}
 	
+	/// initializer for a state
 	public init(state: TableState<Value>) {
 		self.state = state
 		self.get = { state.wrappedValue }
 		self.set = { state.wrappedValue = $0 }
 	}
 	
+	/// returns the value we wrapped
 	public var wrappedValue: Value {
 		get { get() }
 		set {
@@ -50,10 +52,12 @@ import Foundation
 		}
 	}
 	
+	/// ourselves!
 	public var projectedValue: TableBinding<Value> { self }
 }
 
 extension TableBinding {
+	/// Creates a binding that has a getter and setter called with a specific container. The container is held weakly.
 	public convenience init<ContainerType: AnyObject>(
 		container: ContainerType,
 		get: @escaping (_ `self`: ContainerType) -> Value,
@@ -69,6 +73,7 @@ extension TableBinding {
 		})
 	}
 	
+	/// Creates a binding with a custom getter and setter with a specific container as parameter. The container is held weakly.
 	public static func custom<ContainerType: AnyObject>(
 		container: ContainerType,
 		get: @escaping (_ `self`: ContainerType) -> Value,
@@ -77,10 +82,12 @@ extension TableBinding {
 		return TableBinding(container: container, get: get, set: set)
 	}
 	
+	/// Creates a binding to a key path of a container. The container hs held weakly.
 	public static func keyPath<ContainerType: AnyObject>(_ container: ContainerType, _ keyPath: ReferenceWritableKeyPath<ContainerType, Value>) -> Self {
 		return Self(container: container, keyPath: keyPath)
 	}
 	
+	/// Creates a binding to a key path of a container. The container hs held weakly.
 	public convenience init<ContainerType: AnyObject>(
 		container: ContainerType,
 		keyPath: ReferenceWritableKeyPath<ContainerType, Value>

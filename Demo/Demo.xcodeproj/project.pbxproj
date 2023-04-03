@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -162,16 +162,14 @@
 		497C789B29B1EFD9006EF4A3 /* Sections */ = {
 			isa = PBXGroup;
 			children = (
+				49B4ABF029DB598200328A7C /* Builder */,
 				497C789C29B1EFD9006EF4A3 /* SectionForEach.swift */,
 				497C789D29B1EFD9006EF4A3 /* MultiSelectionSection.swift */,
 				49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */,
-				497C789E29B1EFD9006EF4A3 /* SectionInfo.swift */,
 				497C789F29B1EFD9006EF4A3 /* StylishedSection.swift */,
 				497C78A029B1EFD9006EF4A3 /* TableContent.swift */,
 				497C78A129B1EFD9006EF4A3 /* SectionCollection.swift */,
-				497C78A229B1EFD9006EF4A3 /* SectionInfoWithRows.swift */,
 				497C78A329B1EFD9006EF4A3 /* Section.swift */,
-				497C78A529B1EFD9006EF4A3 /* TableContentBuilder.swift */,
 				497C78A629B1EFD9006EF4A3 /* SectionWrapper.swift */,
 			);
 			path = Sections;
@@ -180,16 +178,13 @@
 		497C78A729B1EFD9006EF4A3 /* Rows */ = {
 			isa = PBXGroup;
 			children = (
+				49B4ABEF29DB597100328A7C /* Builder */,
 				497C78A829B1EFD9006EF4A3 /* RowForEach.swift */,
 				497C78A929B1EFD9006EF4A3 /* MultiSelection.swift */,
 				49A736F429B27F86005A2CE9 /* SingleSelection.swift */,
 				497C78AA29B1EFD9006EF4A3 /* RowCollection.swift */,
 				497C78AB29B1EFD9006EF4A3 /* SectionContent.swift */,
-				497C78AC29B1EFD9006EF4A3 /* RowInfo.swift */,
-				49DD5DA929C9C5A800DA2331 /* TableBuilderStore.swift */,
-				49DD5DAF29C9FD9200DA2331 /* TableBuilderStaticStorage.swift */,
 				497C78AD29B1EFD9006EF4A3 /* ActionRow.swift */,
-				497C78AE29B1EFD9006EF4A3 /* SectionContentBuilder.swift */,
 				497C78AF29B1EFD9006EF4A3 /* StaticRow.swift */,
 				49A7371929B790ED005A2CE9 /* CustomViewRow.swift */,
 				497C78B029B1EFD9006EF4A3 /* Row.swift */,
@@ -264,6 +259,27 @@
 			path = Demo;
 			sourceTree = "<group>";
 		};
+		49B4ABEF29DB597100328A7C /* Builder */ = {
+			isa = PBXGroup;
+			children = (
+				497C78AC29B1EFD9006EF4A3 /* RowInfo.swift */,
+				497C78AE29B1EFD9006EF4A3 /* SectionContentBuilder.swift */,
+				49DD5DA929C9C5A800DA2331 /* TableBuilderStore.swift */,
+				49DD5DAF29C9FD9200DA2331 /* TableBuilderStaticStorage.swift */,
+			);
+			path = Builder;
+			sourceTree = "<group>";
+		};
+		49B4ABF029DB598200328A7C /* Builder */ = {
+			isa = PBXGroup;
+			children = (
+				497C78A229B1EFD9006EF4A3 /* SectionInfoWithRows.swift */,
+				497C789E29B1EFD9006EF4A3 /* SectionInfo.swift */,
+				497C78A529B1EFD9006EF4A3 /* TableContentBuilder.swift */,
+			);
+			path = Builder;
+			sourceTree = "<group>";
+		};
 		49DD5DF429CBB19400DA2331 /* EditItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,8 +325,9 @@
 		49A6F78A26508AAB002EB98D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					49A6F79126508AAB002EB98D = {
 						CreatedOnToolsVersion = 12.5;
