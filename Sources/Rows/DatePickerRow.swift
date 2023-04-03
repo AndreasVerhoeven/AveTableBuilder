@@ -12,7 +12,7 @@ extension Row {
 	open class DatePicker: BaseDatePicker {
 		public init(
 			text: String,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			style: DateFormatter.Style = .medium,
 			date: Date?,
 			fallback: String? = nil,
@@ -25,7 +25,7 @@ extension Row {
 		
 		public convenience init(
 			text: String,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			style: DateFormatter.Style = .medium,
 			binding: TableBinding<Date?>,
 			fallback: String? = nil
@@ -39,7 +39,7 @@ extension Row {
 	open class DateTimePicker: BaseDatePicker {
 		public init(
 			text: String,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			dateStyle: DateFormatter.Style = .medium,
 			timeStyle: DateFormatter.Style = .medium,
 			date: Date?,
@@ -53,7 +53,7 @@ extension Row {
 		
 		public convenience init(
 			text: String,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			dateStyle: DateFormatter.Style = .medium,
 			timeStyle: DateFormatter.Style = .medium,
 			binding: TableBinding<Date?>,
@@ -68,7 +68,7 @@ extension Row {
 	open class BaseDatePicker: Row<ContainerType, UITableViewCell> {
 		public typealias DateChangeCallback = (_ `self`: ContainerType, _ date: Date) -> Void
 		
-		fileprivate init(text: String, image: UIImage? = nil, date: Date?, fallback: String? = nil, callback: DateChangeCallback? = nil) {
+		fileprivate init(text: String, image: UIImage? = .tableBuilderNone, date: Date?, fallback: String? = nil, callback: DateChangeCallback? = nil) {
 			super.init(cellClass: UITableViewCell.self, style: .value1, modifying: [])
 			_ = self.text(text).image(image, canBeOverriden: image == nil).accessory(.disclosureIndicator)
 			

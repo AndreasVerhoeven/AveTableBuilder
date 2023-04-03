@@ -15,11 +15,11 @@ extension Row {
 		public typealias ChangeCallback = (_ `self`: ContainerType, _ isOn: Bool) -> Void
 		
 		/// Creates a row with a switch with a value and a callback
-		public init(text: String?, image: UIImage? = nil, isOn: Bool, change: ChangeCallback? = nil) {
+		public init(text: String?, image: UIImage? = .tableBuilderNone, isOn: Bool, change: ChangeCallback? = nil) {
 			super.init(cellClass: Cell.self)
 			
 			modifyRows { item in
-				item.addingConfigurationHandler(modifying: [.detailTextAlpha]) { container, cell, animated, rowInfo in
+				item.addingConfigurationHandler(modifying: [.textAlpha]) { container, cell, animated, rowInfo in
 					guard let cell = cell as? Cell else { return }
 					
 					if let change = change {
@@ -43,7 +43,7 @@ extension Row {
 		}
 		
 		/// Creates a row with a switch with a binding
-		public convenience init(text: String?, image: UIImage? = nil, binding: TableBinding<Bool>)  {
+		public convenience init(text: String?, image: UIImage? = .tableBuilderNone, binding: TableBinding<Bool>)  {
 			self.init(text: text, image: image, isOn: binding.wrappedValue) { container, isOn in
 				binding.wrappedValue = isOn
 			}

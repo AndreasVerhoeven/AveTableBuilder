@@ -34,7 +34,7 @@ extension Row {
 			mode: Mode = .regular,
 			segment: @escaping (Collection.Element) -> Any
 		) where Collection.Element: Hashable {
-			super.init(cellClass: Cell.self) { container, cell, animated in
+			super.init(cellClass: Cell.self, modifying: []) { container, cell, animated in
 				cell.callback = { binding.wrappedValue = identifiedBy(data[data.index(data.startIndex, offsetBy: $0) ]) }
 				cell.isFullWidth = mode == .fullWidth
 				cell.segmentControl.removeAllSegments()

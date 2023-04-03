@@ -11,7 +11,7 @@ extension Row {
 	open class Picker<Collection: Sequence>: Row<ContainerType, UITableViewCell> {
 		public init<ID: Equatable>(
 			text: String? = nil,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			options: Collection,
 			identifiedBy: @escaping (Collection.Element) -> ID,
 			selection: Collection.Element,
@@ -19,7 +19,7 @@ extension Row {
 			textProvider: @escaping (Collection.Element) -> String,
 			onChange: @escaping ( _ `self`: ContainerType, _ option: Collection.Element) -> Void
 		) {
-			super.init()
+			super.init(modifying: [])
 			_ = self.text(text, canBeOverriden: text == nil).image(image, canBeOverriden: image == nil)
 			
 			items[0].finalizeRowCallbacks.append { container, tableView, rowInfo in
@@ -81,7 +81,7 @@ extension Row {
 		
 		public convenience init(
 			text: String? = nil,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			options: Collection,
 			selection: Collection.Element,
 			titleStyle: MenuTitleStyle = .value1,
@@ -94,7 +94,7 @@ extension Row {
 		
 		public convenience init<ID: Equatable>(
 			text: String? = nil,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			options: Collection,
 			identifiedBy: @escaping (Collection.Element) -> ID,
 			binding: TableBinding<Collection.Element>,
@@ -108,7 +108,7 @@ extension Row {
 		
 		public convenience init(
 			text: String? = nil,
-			image: UIImage? = nil,
+			image: UIImage? = .tableBuilderNone,
 			options: Collection,
 			binding: TableBinding<Collection.Element>,
 			titleStyle: MenuTitleStyle = .value1,
@@ -146,7 +146,7 @@ public struct OptionPickerItem {
 	public var image: UIImage?
 	public var isEnabled = true
 	
-	public init(title: String, subtitle: String? = nil, image: UIImage? = nil, isEnabled: Bool = true) {
+	public init(title: String, subtitle: String? = nil, image: UIImage? = .tableBuilderNone, isEnabled: Bool = true) {
 		self.title = title
 		self.subtitle = subtitle
 		self.image = image

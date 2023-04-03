@@ -56,7 +56,7 @@ class ViewController: UITableViewController {
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
 			// Our first section: no title and two rows
-			if self.selectedToppings.count == 0 && !self.hasDrinks {
+			if self.selectedToppings.count == 0 && self.hasDrinks == false {
 				Section {
 					// this is a row that is manually configured
 					Row(cellClass: UITableViewCell.self) { `self`, cell, animated in
@@ -76,7 +76,10 @@ class ViewController: UITableViewController {
 					// Note that `self` is passed in as an argument, so that we do not create retain cycles.
 					Row(text: "Visit our website").onSelect { `self` in
 						UIApplication.shared.open(URL(string: "https://www.aveapps.com")!)
-					}.textAlignment(.center).textColor(.systemBlue).backgroundColor(.secondarySystemBackground)
+					}
+					.textAlignment(.center)
+					.textColor(.systemBlue)
+					.backgroundColor(.secondarySystemBackground)
 				}
 				.backgroundColor(.systemRed) // we can also apply a background color to all cells at once
 				.textColor(.white) // also text colors!
@@ -113,6 +116,7 @@ class ViewController: UITableViewController {
 							.allowSelectingNilOption()
 							.showSeparated(.chiliCheeseNuggets, .nachos)
 							.image(UIImage(systemName: "carrot.fill"))
+							.imageTintColor(.secondaryLabel)
 					}
 					
 				case .toppings:
@@ -128,17 +132,21 @@ class ViewController: UITableViewController {
 			
 			if self.selectedToppings.count > 0 || self.hasDrinks {
 				 Section("Order Summary") {
-					 Row(text: "Order:", subtitle: self.orderSummary()).numberOfLines(0).noAnimatedContentChanges()
+					 Row(text: "Order:", subtitle: self.orderSummary())
+						 .numberOfLines(0)
+						 .noAnimatedContentChanges()
 
 					// an action show renders as a "button". The callback is triggered when the user selects the row.
 				    // Note that `self` is passed in as a parameter, as to not create retain cycles.
 					Row.Action(text: "Complete Order") { `self` in
 						self.completeOrder()
-					}.textFont(.from(.ios.headline.medium)).numberOfLines(0)
+					}
+					.textFont(.from(.ios.headline.medium))
+					.numberOfLines(0)
 				}
 			}
 		}
-	}
+	}.debugPrintIdentifiersOnUpdate()
 	
 	private var hasDrinks: Bool {
 		return includeDrinks && (numberOfCocaColas > 0 || numberOfBeers > 0)

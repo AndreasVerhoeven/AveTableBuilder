@@ -27,13 +27,13 @@ open class Row<ContainerType: AnyObject, Cell: UITableViewCell>: SectionContent<
 
 extension Row {
 	/// creates a row with a text and image
-	public convenience init(text: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
+	public convenience init(text: String, image: UIImage? = .tableBuilderNone, cellClass: Cell.Type = UITableViewCell.self) {
 		self.init(cellClass: cellClass, modifying: [])
 		_ = self.text(text).image(image, canBeOverriden: image == nil)
 	}
 	
 	/// creates a row with a text,  value1 value and image
-	public convenience init(text: String, value: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
+	public convenience init(text: String, value: String, image: UIImage? = .tableBuilderNone, cellClass: Cell.Type = UITableViewCell.self) {
 		self.init(cellClass: cellClass, style: .value1, modifying: [])
 		_ = self.text(text)
 		_ = self.detailText(value)
@@ -41,7 +41,7 @@ extension Row {
 	}
 	
 	/// creates a row with a text,  subtitle value and image
-	public convenience init(text: String, subtitle: String, image: UIImage? = nil, cellClass: Cell.Type = UITableViewCell.self) {
+	public convenience init(text: String, subtitle: String, image: UIImage? = .tableBuilderNone, cellClass: Cell.Type = UITableViewCell.self) {
 		self.init(cellClass: cellClass, style: .subtitle, modifying: [])
 		_ = self.text(text)
 		_ = self.detailText(subtitle)
@@ -69,4 +69,8 @@ extension Row {
 
 // namespace for custom cell classes
 public enum RowCells {
+}
+
+extension UIImage {
+	public static var tableBuilderNone = UIImage()
 }

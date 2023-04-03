@@ -15,7 +15,7 @@ extension Row {
 		public typealias Cell = RowCells.StepperCell
 		
 		/// Creates a row with a switch with a binding
-		public init(text: String?, image: UIImage? = nil, binding: TableBinding<Int>)  {
+		public init(text: String?, image: UIImage? = .tableBuilderNone, binding: TableBinding<Int>)  {
 			super.init(cellClass: Cell.self) { container, cell, animated in
 				cell.callback = { binding.wrappedValue = Int($0) }
 				cell.setValue(Double(binding.wrappedValue), animated: animated)

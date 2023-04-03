@@ -112,7 +112,9 @@ extension RowModifyable {
 	}
 	
 	@discardableResult public func image(_ value: UIImage?, canBeOverriden: Bool = false) -> Self {
-		addModification(for: .image, mode: canBeOverriden ? .canBeOverriden : .regular) { container, cell, animated, rowInfo in
+		guard value !== UIImage.tableBuilderNone else { return self }
+		
+		return addModification(for: .image, mode: canBeOverriden ? .canBeOverriden : .regular) { container, cell, animated, rowInfo in
 			cell.imageView?.setImage(value, animated: animated)
 		}
 	}
