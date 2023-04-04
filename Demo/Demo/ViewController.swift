@@ -146,7 +146,7 @@ class ViewController: UITableViewController {
 				}
 			}
 		}
-	}.debugPrintIdentifiersOnUpdate()
+	}
 	
 	private var hasDrinks: Bool {
 		return includeDrinks && (numberOfCocaColas > 0 || numberOfBeers > 0)

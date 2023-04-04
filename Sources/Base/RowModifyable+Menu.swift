@@ -8,16 +8,22 @@
 import UIKit
 import AutoLayoutConvenience
 
+/// Determines how menus show their title  in their row when not opened
 public enum MenuTitleStyle {
+	/// the menu title is shown as a `value1` title on the trailing side. Default option.
 	case value1
+	/// the menu  title is shown as a `subtitle` below the text
 	case subtitle
+	/// the menu title  is part of the `accessory`
 	case accessory
+	
+	/// this is the default way to show a menu title
+	public static var `default`: Self { .value1 }
 }
 
 extension RowModifyable {
-	
 	/// Shows a menu when this row is tapped; the accessoryView will have a button with an up-down-chevron and the given title
-	@discardableResult public func menu(title: String? = nil, titleStyle: MenuTitleStyle = .value1, _ menu: UIMenu?) -> Self {
+	@discardableResult public func menu(title: String? = nil, titleStyle: MenuTitleStyle = .default, _ menu: UIMenu?) -> Self {
 		return self.menu(title: title, titleStyle: titleStyle, provider: { container in
 			return menu
 		})
@@ -30,7 +36,7 @@ extension RowModifyable {
 		_ data: Collection,
 		binding: TableBinding<Collection.Element>,
 		showSeparately customOptions: Set<Collection.Element> = [],
-		titleStyle: MenuTitleStyle = .value1,
+		titleStyle: MenuTitleStyle = .default,
 		textProvider: @escaping (Collection.Element) -> String
 	) -> Self where Collection.Element : Hashable {
 		return menu(title: textProvider(binding.wrappedValue), titleStyle: titleStyle) { container in
@@ -61,7 +67,7 @@ extension RowModifyable {
 		_ data: Collection,
 		binding: TableBinding<Collection.Element?>,
 		allowsSelectingNone: Bool = true,
-		titleStyle: MenuTitleStyle = .value1,
+		titleStyle: MenuTitleStyle = .default,
 		textProvider: @escaping (Collection.Element?) -> String
 	) -> Self where Collection.Element : Equatable {
 		return inlineOptions(data, binding: binding, identifiedBy: { $0 }, allowsSelectingNone: allowsSelectingNone, titleStyle: titleStyle, textProvider: textProvider)
@@ -74,7 +80,7 @@ extension RowModifyable {
 		_ data: Collection,
 		binding: TableBinding<Collection.Element.ID?>,
 		allowsSelectingNone: Bool = true,
-		titleStyle: MenuTitleStyle = .value1,
+		titleStyle: MenuTitleStyle = .default,
 		textProvider: @escaping (Collection.Element?) -> String
 	) -> Self where Collection.Element : Identifiable {
 		let newBinding = TableBinding<Collection.Element?>(get: {
@@ -92,7 +98,7 @@ extension RowModifyable {
 		_ data: Collection,
 		binding: TableBinding<Collection.Element?>,
 		allowsSelectingNone: Bool = true,
-		titleStyle: MenuTitleStyle = .value1,
+		titleStyle: MenuTitleStyle = .default,
 		textProvider: @escaping (Collection.Element?) -> String
 	) -> Self where Collection.Element : Identifiable {
 		return inlineOptions(data, binding: binding, identifiedBy: { $0.id }, allowsSelectingNone: allowsSelectingNone, titleStyle: titleStyle, textProvider: textProvider)
@@ -106,7 +112,7 @@ extension RowModifyable {
 		binding: TableBinding<Collection.Element?>,
 		identifiedBy: @escaping (Collection.Element) -> ID,
 		allowsSelectingNone: Bool = true,
-		titleStyle: MenuTitleStyle = .value1,
+		titleStyle: MenuTitleStyle = .default,
 		textProvider: @escaping (Collection.Element?) -> String
 	) -> Self {
 		return self
@@ -115,7 +121,7 @@ extension RowModifyable {
 	/// Shows an optional menu when this row is selected. The accessoryView of the cell will have a button and the cell will be changed to style == `.value1` with a title to indicate the menu.
 	@discardableResult public func menu(
 		title: String? = nil,
-		titleStyle: MenuTitleStyle = .value1,
+		titleStyle: MenuTitleStyle = .default,
 		provider: @escaping (_ `self` : ContainerType) -> UIMenu?
 	) -> Self {
 		if titleStyle != .accessory {
