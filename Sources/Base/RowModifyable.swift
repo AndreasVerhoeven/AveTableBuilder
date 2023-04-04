@@ -354,13 +354,15 @@ extension RowModifyable {
 	}
 	
 	@discardableResult public func activityIndicator(show: Bool) -> Self {
-		preConfigure(modifying: [.accessoryView]) { container, cell, animated in
-			if show == true {
-				let spinner = (cell.accessoryView as? UIActivityIndicatorView) ?? UIActivityIndicatorView(style: .medium)
-				spinner.startAnimating()
-				cell.accessoryView = spinner
-			} else {
-				cell.accessoryView = nil
+		modifyRows { item in
+			item.prependingConfigurationHandler(modifying: [.accessoryView]) { container, cell, animated, row in
+				if show == true {
+					let spinner = (cell.accessoryView as? UIActivityIndicatorView) ?? UIActivityIndicatorView(style: .medium)
+					spinner.startAnimating()
+					cell.accessoryView = spinner
+				} else if row.modificationHandlers[.accessoryView] == nil {
+					cell.accessoryView = nil
+				}
 			}
 		}
 	}
