@@ -85,7 +85,7 @@ extension RowModifyable {
 }
 
 extension RowCells {
-	public class TextViewCell: UITableViewCell, UITextViewDelegate {
+	public class TextViewCell: UITableViewCell, UITextViewDelegate, RowFirstResponderBecomeable {
 		public let textView = AutoSizingTextView()
 		
 		public typealias Callback = (String?) -> Void
@@ -97,6 +97,10 @@ extension RowCells {
 			isInCallback = true
 			defer { isInCallback = false }
 			callback?(textView.text)
+		}
+		
+		public func makeFirstResponder() -> Bool {
+			textView.becomeFirstResponder()
 		}
 		
 		public override func prepareForReuse() {

@@ -275,6 +275,13 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		return dataSource.tableView.cellForRow(at: indexPath)
 	}
 	
+	/// invokes the selection handler tied to this item
+	func invoke(for identifier: TableItemIdentifier?) -> Bool {
+		guard let indexPath = self.indexPath(for: identifier) else { return false }
+		tableView(tableView, didSelectRowAt: indexPath)
+		return true
+	}
+	
 	/// Registers an item that, when changed, should update the tableview
 	public func registerUpdater<T: SimpleChangeObservable>(_ item: T) {
 		item.register(object: self) { [weak self] in

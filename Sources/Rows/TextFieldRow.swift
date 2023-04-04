@@ -56,7 +56,7 @@ extension RowModifyable {
 }
 
 extension RowCells {
-	public class TextFieldCell: UITableViewCell {
+	public class TextFieldCell: UITableViewCell, RowFirstResponderBecomeable {
 		public let textField = UITextField()
 		
 		public typealias Callback = (String?) -> Void
@@ -64,6 +64,10 @@ extension RowCells {
 		
 		@objc private func changed(_ sender: Any) {
 			callback?(textField.text)
+		}
+		
+		public func makeFirstResponder() -> Bool {
+			textField.becomeFirstResponder()
 		}
 		
 		public override func prepareForReuse() {
