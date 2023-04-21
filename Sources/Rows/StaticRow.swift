@@ -18,21 +18,8 @@ extension Row {
 			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 		) {
 			let item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
-			item.reuseIdentifierShouldIncludeId = true
-			item.cellProvider = { container, tableView, indexPath, rowInfo in
-				let identifier = rowInfo.reuseIdentifier.stringValue
-				var lookup = rowInfo.tableStorage.staticCellStorage ?? [:]
-				if let cell = lookup[identifier] {
-					return cell
-				}
-				
-				let cell = Cell.init(style: cellStyle, reuseIdentifier: nil)
-				lookup[identifier] = cell
-				rowInfo.tableStorage.staticCellStorage = lookup
-				initial?(container, cell)
-				return cell
-			}
 			super.init(item: item)
+			makeStatic()
 		}
 		
 		/// Creates a static row that is always the same cell that is not reused using a creation block.
@@ -44,21 +31,11 @@ extension Row {
 				guard let cell = cell as? Cell else { return }
 				updates(container, cell, animated)
 			})
-			item.reuseIdentifierShouldIncludeId = true
-			item.cellProvider = { container, tableView, indexPath, rowInfo in
-				let identifier = rowInfo.reuseIdentifier.stringValue
-				
-				var lookup = rowInfo.tableStorage.staticCellStorage ?? [:]
-				if let cell = lookup[identifier] {
-					return cell
-				}
-
-				let cell = create(container)
-				lookup[identifier] = cell
-				rowInfo.tableStorage.staticCellStorage = lookup
-				return cell
+			item.cellProvider =  { container, tableView, IndexPath, rowInfo in
+				create(container)
 			}
 			super.init(item: item)
+			makeStatic()
 		}
 		
 		/// Creates a static row from a pre existing cell
@@ -86,8 +63,4 @@ extension Row {
 			super.init(item: item)
 		}
 	}
-}
-
-extension TableBuilderStore.Keys {
-	fileprivate var staticCellStorage: Key<[String: UITableViewCell]> { "_staticCellStorage" }
 }

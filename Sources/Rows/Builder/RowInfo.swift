@@ -167,9 +167,10 @@ public class RowInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 	
 	internal var reuseIdentifierShouldIncludeId = false
 	internal var hasExplicitIdForForEach = false
+	internal var forceStaticCell = false
 	
 	internal var reuseIdentifier: ReuseIdentifier {
-		var reuseIdentifier = ReuseIdentifier(cellClass: cellClass, cellStyle: cellStyle, modifications: knownModifications)
+		var reuseIdentifier = ReuseIdentifier(cellClass: cellClass, cellStyle: cellStyle, modifications: knownModifications, isForStaticCell: forceStaticCell)
 		if reuseIdentifierShouldIncludeId == true {
 			reuseIdentifier.fixedId = id
 		}
@@ -287,8 +288,12 @@ extension RowInfo {
 extension RowInfo {
 	/// helper function to create or dequeu a cell
 	public static func createOrDequeue<Cell: UITableViewCell>(tableView: UITableView, cellClass: Cell.Type, style: UITableViewCell.CellStyle = .default, reuseIdentifier: ReuseIdentifier, indexPath: IndexPath) -> Cell {
-		let identifier = reuseIdentifier.stringValue
+		guard reuseIdentifier.isForStaticCell == false else {
+			return cellClass.init(style: style, reuseIdentifier: nil)
+		}
+		
 		//print(identifier)
+		let identifier = reuseIdentifier.stringValue
 		return (tableView.dequeueReusableCell(withIdentifier: identifier) as? Cell) ?? cellClass.init(style: style, reuseIdentifier: identifier)
 	}
 }

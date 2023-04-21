@@ -45,6 +45,7 @@ public struct ReuseIdentifier {
 	internal var cellStyle: UITableViewCell.CellStyle
 	internal var modifications: RowConfiguration
 	internal var fixedId: TableItemIdentifier?
+	internal var isForStaticCell = false
 	
 	public var stringValue: String {
 		var value = "\(NSStringFromClass(cellClass)).style=\(String(cellStyle.rawValue)).modifications=\(modifications.stringValue)"

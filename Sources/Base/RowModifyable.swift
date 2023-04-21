@@ -167,6 +167,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// sets the cells image tint color
 	@discardableResult public func imageTintColor( _ color: UIColor) -> Self {
 		addModification(for: .imageTintColor) { container, cell, animated, rowInfo in
 			UIView.performAnimationsIfNeeded(animated: animated) {
@@ -175,6 +176,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Sets the cells tint color
 	@discardableResult public func tintColor( _ color: UIColor) -> Self {
 		addModification(for: .imageTintColor) { container, cell, animated, rowInfo in
 			UIView.performAnimationsIfNeeded(animated: animated) {
@@ -183,6 +185,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Sets the number of lines for the text and detail text labels
 	@discardableResult public func numberOfLines(_ value: Int) -> Self {
 		preConfigure(modifying: [.numberOfLines]) { container, cell, animated in
 			cell.textLabel?.numberOfLines = value
@@ -190,6 +193,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Will set the editing style for each row and register a callback when a row is commited during editing
 	@discardableResult public func editingStyle(_ style: UITableViewCell.EditingStyle?, handler: RowInfo<ContainerType>.SimpleOnCommitEditingCallback? = nil) -> Self {
 		guard let style else { return self }
 		return modifyRows { item in
@@ -216,6 +220,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Will call a callback when the row is comitted for insertion during editing
 	@discardableResult public func onCommitInsertion(_ handler: @escaping RowInfo<ContainerType>.SimpleOnCommitEditingCallback) -> Self {
 		modifyRows { item in
 			item.onCommitInsertHandlers.append({ container, tableView, indexPath, row in
@@ -224,6 +229,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Will call a callback when the row is comitted for deletion during editing
 	@discardableResult public func onCommitDeletion(_ handler: @escaping RowInfo<ContainerType>.SimpleOnCommitEditingCallback) -> Self {
 		modifyRows { item in
 			item.onCommitDeleteHandlers.append({ container, tableView, indexPath, row in
@@ -232,6 +238,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Sets if the row should be indented when editing
 	@discardableResult public func shouldIndentWhileEditing(_ value: Bool?) -> Self {
 		guard let value else { return self }
 		return modifyRows { item in
@@ -239,6 +246,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Sets if we allow highligting a row, independent of selection callbacks. Also for during editing, if set.
 	@discardableResult public func allowsHighlighting(_ value: Bool, duringEditing: Bool? = nil) -> Self {
 		modifyRows { item in
 			item.allowsHighlighting = value
@@ -246,40 +254,47 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Allows highlighting the row, even if no selection handlers AND during editing
 	@discardableResult public func alwaysAllowsHighlighting() -> Self {
 		allowsHighlighting(true, duringEditing: true)
 	}
 	
+	/// Will call a callback whern the row is selected
 	@discardableResult public func onSelect(_ handler: @escaping (_ `self`: ContainerType) -> Void) -> Self {
 		modifyRows { item in
 			item.addingSelectionHandler(handler)
 		}
 	}
 	
+	/// Will call a callback with the given index path if the row is selected
 	@discardableResult public func onSelectWithIndexPath(_ handler: @escaping (_ `self`: ContainerType, _ indexPath: IndexPath) -> Void) -> Self {
 		modifyRows { item in
 			item.addingSelectionHandler(handler)
 		}
 	}
 	
+	/// Will toggle a boolean binding between true/false if the row is selected
 	@discardableResult public func onSelectToggle(_ binding: TableBinding<Bool>) -> Self {
 		onSelect { container in
 			binding.wrappedValue.toggle()
 		}
 	}
 	
+	/// Will update a binding to a given value when the row is selected
 	@discardableResult public func onSelectSet<T>(_ binding: TableBinding<T>, to value: T) -> Self {
 		onSelect { container in
 			binding.wrappedValue = value
 		}
 	}
 	
+	/// Ensures that `editingAccessoryType == accessoryType` for eac hrow
 	@discardableResult public func mirrorAccessoryDuringSelection() -> Self {
 		configure(modifying: [.editingAccessory]) { container, cell, animated in
 			cell.editingAccessoryType = cell.accessoryType
 		}
 	}
 	
+	/// Checks each row if true, uncheck if false.
 	@discardableResult public func checked(_ isChecked: Bool) -> Self {
 		preConfigure(modifying: [.accessory]) { container, cell, animated in
 			let newAccessoryType: UITableViewCell.AccessoryType = isChecked ? .checkmark : .none
@@ -312,6 +327,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Adds leading swipe actions to each row
 	@discardableResult public func leadingSwipeActions(_ handler: RowInfo<ContainerType>.SimpleSwipeActionsProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
@@ -322,6 +338,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Adds trailing swipe actions to each row
 	@discardableResult public func trailingSwipeActions(_ handler: RowInfo<ContainerType>.SimpleSwipeActionsProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
@@ -332,6 +349,7 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Adds a context menu via a provider to each row
 	@discardableResult public func contextMenuProvider(_ handler: RowInfo<ContainerType>.SimpleContextMenuProvider?) -> Self {
 		guard let handler else { return self }
 		return modifyRows { item in
@@ -342,17 +360,20 @@ extension RowModifyable {
 		}
 	}
 	
+	/// Updates to the cell contents will always be with `animated: false`
 	@discardableResult public func noAnimatedContentChanges() -> Self {
 		return modifyRows { item in
 			item.animatedContentUpdates = false
 		}
 	}
 	
+	/// Called when this item is build. E.g. (directly)
 	@discardableResult public func onBuild(callback: () -> Void) -> Self {
 		callback()
 		return self
 	}
 	
+	/// Replaces the accessoryView with an anmating ActivityIndicatorView if true
 	@discardableResult public func activityIndicator(show: Bool) -> Self {
 		modifyRows { item in
 			item.prependingConfigurationHandler(modifying: [.accessoryView]) { container, cell, animated, row in
@@ -366,4 +387,31 @@ extension RowModifyable {
 			}
 		}
 	}
+	
+	/// Makes all rows be statically instantiated: e.g. not reused.
+	@discardableResult public func makeStatic() -> Self {
+		modifyRows { item in
+			item.forceStaticCell = true
+			item.reuseIdentifierShouldIncludeId = true
+			
+			let originalCellProvider = item.cellProvider
+			item.cellProvider = { container, tableView, indexPath, rowInfo in
+				let identifier = rowInfo.reuseIdentifier.stringValue
+				
+				var lookup = rowInfo.tableStorage.staticCellStorage ?? [:]
+				if let cell = lookup[identifier] {
+					return cell
+				}
+				
+				let cell = originalCellProvider(container, tableView, indexPath, rowInfo)
+				lookup[identifier] = cell
+				rowInfo.storage.staticCellStorage = lookup
+				return cell
+			}
+		}
+	}
+}
+
+extension TableBuilderStore.Keys {
+	fileprivate var staticCellStorage: Key<[String: UITableViewCell]> { "_staticCellStorageAlternative" }
 }
