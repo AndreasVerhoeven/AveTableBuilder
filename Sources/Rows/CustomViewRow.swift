@@ -33,13 +33,12 @@ extension Row {
 		) {
 			self.init(viewClass: viewClass, creation: creation, configure: { container, view, animated in })
 		}
+		
+		@discardableResult public func filling(_ boxLayout: BoxLayout) -> Self {
+			storage.filling = boxLayout
+			return self
+		}
 	}
-	
-	@discardableResult public func filling(_ boxLayout: BoxLayout) -> Self {
-		storage.filling = boxLayout
-		return self
-	}
-	
 }
 
 extension TableBuilderStore.Keys {
