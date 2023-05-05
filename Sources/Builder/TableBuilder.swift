@@ -45,7 +45,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	private(set) weak var container: ContainerType?
 
 	/// our builder closure. Gets passed the container, if it is still alive.
-	public let updater: (ContainerType) -> TableContentBuilder<ContainerType>.Collection
+	public private(set) var updater: (ContainerType) -> TableContentBuilder<ContainerType>.Collection
 	
 	/// We use a TableViewDataSource to do diffing for us and update the table view.
 	public typealias DataSourceType = TableViewDataSource<SectionInfo<ContainerType>, RowInfo<ContainerType>>
@@ -413,6 +413,22 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 		} else {
 			return item.allowsHighlighting ?? true
 		}
+	}
+}
+
+extension TableBuilder {
+	/// Applies a Section.Stylished() to the whole updater block
+	public func stylished() -> Self {
+		let oldUpdater = updater
+		
+		@TableContentBuilder<ContainerType> func newUpdater(_ container: ContainerType) -> TableContentBuilder<ContainerType>.Collection {
+			Section.Stylished {
+				oldUpdater(container)
+			}
+		}
+		
+		updater = newUpdater(_:)
+		return self
 	}
 }
 
