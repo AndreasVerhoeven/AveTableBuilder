@@ -17,7 +17,7 @@ extension Row {
 		) {
 			super.init(cellClass: CustomViewCell.self, initial: { container, cell in
 				let view = creation?(container) ?? View.init(frame: .zero)
-				cell.addCustomViewTo = RowInfo<ContainerType>.current?.tableStorage.filling ?? .superview
+				cell.addCustomViewTo = RowInfo<ContainerType>.current?.storage.filling ?? .superview
 				cell.customView = view
 				configure(container, view, false)
 				
@@ -46,7 +46,14 @@ extension TableBuilderStore.Keys {
 }
 
 fileprivate class CustomViewCell: UITableViewCell {
-	var addCustomViewTo: BoxLayout = .superview
+	var addCustomViewTo: BoxLayout = .superview {
+		didSet {
+			guard addCustomViewTo != oldValue else { return }
+			guard let customView else { return }
+			customView.removeFromSuperview()
+			contentView.addSubview(customView, filling: addCustomViewTo)
+		}
+	}
 	
 	var customView: UIView? {
 		didSet {
