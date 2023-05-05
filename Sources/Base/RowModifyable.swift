@@ -433,7 +433,7 @@ extension RowModifyable {
 					callback(container, cell)
 				}
 				lookup[identifier] = cell
-				rowInfo.storage.staticCellStorage = lookup
+				rowInfo.tableStorage.staticCellStorage = lookup
 				return cell
 			}
 		}
