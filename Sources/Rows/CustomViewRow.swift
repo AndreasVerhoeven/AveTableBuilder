@@ -24,6 +24,13 @@ extension Row {
 				configure(container, view, animated)
 			}
 		}
+		
+		public convenience init<View: UIView>(
+			viewClass: View.Type = UIView.self,
+			creation: ((_ `self`: ContainerType) -> View)? = nil
+		) {
+			self.init(viewClass: viewClass, creation: creation, configure: { container, view, animated in })
+		}
 	}
 	
 }

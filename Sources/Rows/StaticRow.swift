@@ -19,7 +19,14 @@ extension Row {
 		) {
 			let item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
 			super.init(item: item)
-			makeStatic()
+			
+			if let initial {
+				makeStaticWithInitialConfigurationCallback { (container: ContainerType, cell: Cell) in
+					initial(container, cell)
+				}
+			} else {
+				makeStatic()
+			}
 		}
 		
 		/// Creates a static row that is always the same cell that is not reused using a creation block.

@@ -411,6 +411,10 @@ extension RowModifyable {
 	
 	/// Makes all rows be statically instantiated: e.g. not reused.
 	@discardableResult public func makeStatic() -> Self {
+		makeStaticWithInitialConfigurationCallback(nil)
+	}
+	
+	@discardableResult internal func makeStaticWithInitialConfigurationCallback<Cell: UITableViewCell>(_ callback: ((_ container: ContainerType, _ cell: Cell) -> Void)? = nil) -> Self {
 		modifyRows { item in
 			item.forceStaticCell = true
 			item.reuseIdentifierShouldIncludeId = true
@@ -425,6 +429,9 @@ extension RowModifyable {
 				}
 				
 				let cell = originalCellProvider(container, tableView, indexPath, rowInfo)
+				if let callback = callback, let cell = cell as? Cell {
+					callback(container, cell)
+				}
 				lookup[identifier] = cell
 				rowInfo.storage.staticCellStorage = lookup
 				return cell
