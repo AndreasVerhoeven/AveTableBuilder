@@ -139,7 +139,7 @@ extension RowModifyable {
 	
 	@discardableResult public func detailTextFont( _ font: UIFont) -> Self {
 		addModification(for: .detailTextFont) { container, cell, animated, rowInfo in
-			cell.textLabel?.font = font
+			cell.detailTextLabel?.font = font
 		}
 	}
 	
