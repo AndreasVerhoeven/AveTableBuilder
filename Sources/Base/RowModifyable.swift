@@ -7,6 +7,7 @@
 
 import UIKit
 import UIKitAnimations
+import AveFontHelpers
 
 /// Base protocol for modifying rows. By this being a protocol, we can have our modification methods
 /// apply to both sections and rows.
@@ -131,6 +132,10 @@ extension RowModifyable {
 		}
 	}
 	
+	@discardableResult public func textFont(_ font: Font) -> Self {
+		textFont(.from(font))
+	}
+	
 	@discardableResult public func textFont( _ font: UIFont) -> Self {
 		addModification(for: .textFont) { container, cell, animated, rowInfo in
 			cell.textLabel?.font = font
@@ -141,6 +146,10 @@ extension RowModifyable {
 		addModification(for: .detailTextFont) { container, cell, animated, rowInfo in
 			cell.detailTextLabel?.font = font
 		}
+	}
+	
+	@discardableResult public func detailTextFont(_ font: Font) -> Self {
+		detailTextFont(.from(font))
 	}
 	
 	@discardableResult public func textColor( _ color: UIColor) -> Self {

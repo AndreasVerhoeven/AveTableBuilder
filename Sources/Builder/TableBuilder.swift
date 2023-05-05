@@ -427,7 +427,9 @@ extension TableBuilder {
 			}
 		}
 		
+		seenSections.removeAll()
 		updater = newUpdater(_:)
+		update(animated: false)
 		return self
 	}
 }
