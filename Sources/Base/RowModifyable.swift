@@ -126,6 +126,10 @@ extension RowModifyable {
 		}
 	}
 	
+	public var disclosureIndicator: Self {
+		accessory(.disclosureIndicator)
+	}
+	
 	@discardableResult public func editingAccessory( _ accessoryType: UITableViewCell.AccessoryType) -> Self {
 		addModification(for: .editingAccessory) { container, cell, animated, rowInfo in
 			cell.editingAccessoryType = accessoryType
@@ -150,6 +154,14 @@ extension RowModifyable {
 	
 	@discardableResult public func detailTextFont(_ font: Font) -> Self {
 		detailTextFont(.from(font))
+	}
+	
+	@discardableResult public func font(text: UIFont, detail: UIFont) -> Self {
+		textFont(text).detailTextFont(detail)
+	}
+	
+	@discardableResult public func font(text: Font, detail: Font) -> Self {
+		textFont(text).detailTextFont(detail)
 	}
 	
 	@discardableResult public func textColor( _ color: UIColor) -> Self {
