@@ -24,6 +24,7 @@ extension Row {
 			}) { container, cell, animated in
 				guard let view = cell.customView as? View else {return }
 				configure(container, view, animated)
+				cell.layoutIfNeeded()
 			}
 		}
 		
