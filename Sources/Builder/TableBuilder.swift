@@ -210,6 +210,8 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			var snapshot = DataSourceType.SnapshotType()
 			for item in updater(container).items {
 				item.rowInfos.forEach { row in
+					row.id.append(.section(item.id))
+					
 					for reference in row.references {
 						reference.wrappedValue = row.id
 						reference.resolver = self

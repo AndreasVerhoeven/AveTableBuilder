@@ -30,6 +30,7 @@ public struct TableItemIdentifier: Hashable {
 		case limitedAvailability
 		case offset(Int)
 		case custom(AnyHashable)
+		case section(TableItemIdentifier)
 	}
 	
 	/// List of items in this identifier
