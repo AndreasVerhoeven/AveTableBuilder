@@ -11,7 +11,8 @@ import UIKitAnimations
 /// This is a temporary object that is constructed for the sole purpose to get `RowInfo`'s out of it.
 /// We can't use protocols and generics, because the swift compiler sadly crashes a lot when
 /// combining @resultBuilders with nested generics.
-open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, RowInfo<ContainerType>> {
+open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<ContainerType, RowInfo<ContainerType>>, ProxiedTableBuilderStoreDelegate {
+	
 	public func reference(_ reference: TableItemReference) -> Self {
 		modifyRows { item in
 			item.references.append(reference)
@@ -19,10 +20,14 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 	}
 	
 	public var hasRows: Bool { items.isEmpty == false }
+	public private(set) lazy var storage: TableBuilderStore = ProxiedTableBuilderStore(delegate: self)
 	
-	@discardableResult public func store<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>) -> Self {
+	func proxiedStore<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>) {
 		items.forEach { $0.storage.store(value, key: key) }
-		return self
+	}
+	
+	func proxiedRetrieve<T>(key: TableBuilderStore.Keys.Key<T>) -> T? {
+		RowInfo<ContainerType>.current?.storage.retrieve(key: key)
 	}
 	
 	override func postInit() {

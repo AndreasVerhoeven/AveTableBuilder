@@ -158,13 +158,15 @@ extension Row {
 		
 		/// Use this to allow selecting `nil` as an option in the menu if the `selection` is nillable. By default, `nil` options cannot be selected.
 		public func allowSelectingNilOption() -> Self {
-			store(true, key: "Row.Picker.AllowSelectingNilOption")
+			storage.store(true, key: "AllowSelectingNilOption")
+			return self
 		}
 		
 		/// Use this if you want to group the items visually.  The callback will be called for each element to determine in which group they belong.
 		/// Return `0` for the first group, `1` for the second etc.
 		public func grouped(by grouper: @escaping (Collection.Element) -> Int) -> Self {
-			store(grouper, key: "Row.Picker.GroupingKey")
+			storage.store(grouper, key: "Row.Picker.GroupingKey")
+			return self
 		}
 		
 		/// Convenience method for grouping items: the list of items passed to this function will be shown in a separate group.
@@ -181,12 +183,14 @@ extension Row {
 		/// Use this if you want to show more data per item other than a title. You can return `OptionPickerItems` that show
 		/// a title, subtitle (iOS 15+), image and disabled items.
 		public func extended(_ provider: @escaping (Collection.Element) -> OptionPickerItem?) -> Self {
-			store(provider, key: "Row.Picker.ExtendedOptions")
+			storage.store(provider, key: "Row.Picker.ExtendedOptions")
+			return self
 		}
 		
 		/// Use this to change the way the selected item is shown. Defaults to `.value1`
 		public func titleStyle(_ style: MenuTitleStyle) -> Self {
-			store(style, key: "Row.Picker.TitleStyle")
+			storage.store(style, key: "Row.Picker.TitleStyle")
+			return self
 		}
 	}
 }

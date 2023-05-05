@@ -12,13 +12,12 @@ extension Row {
 	open class CustomView: Static {
 		public init<View: UIView>(
 			viewClass: View.Type = UIView.self,
-			fillingContentView: BoxLayout = .superview,
 			creation: ((_ `self`: ContainerType) -> View)? = nil,
 			configure: @escaping (_ `self`: ContainerType, _ view: View, _ animated: Bool) -> Void
 		) {
 			super.init(cellClass: CustomViewCell.self, initial: { container, cell in
 				let view = creation?(container) ?? View.init(frame: .zero)
-				cell.addCustomViewTo = fillingContentView
+				cell.addCustomViewTo = RowInfo<ContainerType>.current?.tableStorage.filling ?? .superview
 				cell.customView = view
 				configure(container, view, false)
 				
@@ -36,6 +35,15 @@ extension Row {
 		}
 	}
 	
+	@discardableResult public func filling(_ boxLayout: BoxLayout) -> Self {
+		storage.filling = boxLayout
+		return self
+	}
+	
+}
+
+extension TableBuilderStore.Keys {
+	fileprivate var filling: Key<BoxLayout> { "_customView.FillingContentView" }
 }
 
 fileprivate class CustomViewCell: UITableViewCell {

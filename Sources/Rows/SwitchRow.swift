@@ -50,7 +50,7 @@ extension Row {
 		}
 		
 		public func isEnabled(_ enabled: Bool) -> Self {
-			store(enabled, key: "switchIsEnabled")
+			storage.isEnabled = enabled
 			return self
 		}
 	}

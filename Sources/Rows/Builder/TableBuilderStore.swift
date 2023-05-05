@@ -34,7 +34,7 @@ import UIKit
 /// print(rowInfo.myField.someProperty)
 /// ```
 ///
-@dynamicMemberLookup public final class TableBuilderStore {
+@dynamicMemberLookup public class TableBuilderStore {
 	fileprivate var values = [String: Any]()
 	fileprivate var parent: TableBuilderStore?
 	
@@ -52,7 +52,7 @@ import UIKit
 	}
 	
 	func retrieve<T>(key: Keys.Key<T>) -> T? {
-		return key.from(values[key.rawValue] ?? parent?.values[key.rawValue])
+		return key.from(values[key.rawValue]) ?? parent?.retrieve(key: key)
 	}
 	
 	func retrieve<T>(key: Keys.Key<T>, default defaultValue: @autoclosure () -> T) -> T {
@@ -75,6 +75,27 @@ import UIKit
 		for (key, value) in other.values where values[key] == nil {
 			values[key] = value
 		}
+	}
+}
+
+internal protocol ProxiedTableBuilderStoreDelegate: AnyObject {
+	func proxiedStore<T>(_ value: T?, key: TableBuilderStore.Keys.Key<T>)
+	func proxiedRetrieve<T>(key: TableBuilderStore.Keys.Key<T>) -> T?
+}
+
+@dynamicMemberLookup internal final class ProxiedTableBuilderStore: TableBuilderStore {
+	weak var delegate: ProxiedTableBuilderStoreDelegate?
+	
+	internal init(delegate: ProxiedTableBuilderStoreDelegate) {
+		self.delegate = delegate
+	}
+	
+	override func store<T>(_ value: T?, key: Keys.Key<T>) {
+		delegate?.proxiedStore(value, key: key)
+	}
+	
+	override func retrieve<T>(key: Keys.Key<T>) -> T? {
+		delegate?.proxiedRetrieve(key: key)
 	}
 }
 
