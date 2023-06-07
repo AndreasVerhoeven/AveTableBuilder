@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4936B97F2A309212002188C1 /* SectionNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4936B97E2A309212002188C1 /* SectionNone.swift */; };
+		4936B9812A3092B0002188C1 /* RowNone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4936B9802A3092B0002188C1 /* RowNone.swift */; };
 		493B7A6A29BC981A0005F42B /* TextFieldRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493B7A6929BC981A0005F42B /* TextFieldRow.swift */; };
 		497C789029B1EF37006EF4A3 /* AveFontHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 497C788F29B1EF37006EF4A3 /* AveFontHelpers */; };
 		497C789329B1EF3F006EF4A3 /* UIKitAnimations in Frameworks */ = {isa = PBXBuildFile; productRef = 497C789229B1EF3F006EF4A3 /* UIKitAnimations */; };
@@ -72,6 +74,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4936B97E2A309212002188C1 /* SectionNone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionNone.swift; sourceTree = "<group>"; };
+		4936B9802A3092B0002188C1 /* RowNone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowNone.swift; sourceTree = "<group>"; };
 		493B7A6929BC981A0005F42B /* TextFieldRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldRow.swift; sourceTree = "<group>"; };
 		497C789C29B1EFD9006EF4A3 /* SectionForEach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionForEach.swift; sourceTree = "<group>"; };
 		497C789D29B1EFD9006EF4A3 /* MultiSelectionSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelectionSection.swift; sourceTree = "<group>"; };
@@ -166,6 +170,7 @@
 			children = (
 				49B4ABF029DB598200328A7C /* Builder */,
 				497C789C29B1EFD9006EF4A3 /* SectionForEach.swift */,
+				4936B97E2A309212002188C1 /* SectionNone.swift */,
 				497C789D29B1EFD9006EF4A3 /* MultiSelectionSection.swift */,
 				49A736F629B28082005A2CE9 /* SingleSelectionSection.swift */,
 				497C789F29B1EFD9006EF4A3 /* StylishedSection.swift */,
@@ -182,6 +187,7 @@
 			children = (
 				49B4ABEF29DB597100328A7C /* Builder */,
 				497C78A829B1EFD9006EF4A3 /* RowForEach.swift */,
+				4936B9802A3092B0002188C1 /* RowNone.swift */,
 				497C78A929B1EFD9006EF4A3 /* MultiSelection.swift */,
 				49A736F429B27F86005A2CE9 /* SingleSelection.swift */,
 				497C78AA29B1EFD9006EF4A3 /* RowCollection.swift */,
@@ -422,6 +428,8 @@
 				49DD5DAA29C9C5A800DA2331 /* TableBuilderStore.swift in Sources */,
 				49DD5DF129CB555D00DA2331 /* ChangeObserver.swift in Sources */,
 				49DD5DFC29CBB2A500DA2331 /* NameEditItem.swift in Sources */,
+				4936B9812A3092B0002188C1 /* RowNone.swift in Sources */,
+				4936B97F2A309212002188C1 /* SectionNone.swift in Sources */,
 				497C78DC29B1F2B3006EF4A3 /* StepperRow.swift in Sources */,
 				497C78CD29B1EFD9006EF4A3 /* ActionRow.swift in Sources */,
 				49A6F79826508AAB002EB98D /* SceneDelegate.swift in Sources */,
