@@ -457,3 +457,51 @@ extension TableBuilder {
 		}
 	}
 }
+
+
+extension UITableView {
+	static fileprivate var containerBuilderDictionaryAssociatedObjectKey = 0
+	static fileprivate var builderAssociatedObjectKey = 0
+	
+	fileprivate struct WeakBox {
+		weak var builder: AnyObject?
+	}
+	
+	/// This creates a tablebuilder that will be retained by the container and updates itself immediately.
+	public func apply<ContainerType: AnyObject>(
+		with container: ContainerType,
+		@TableContentBuilder<ContainerType> updater: @escaping (ContainerType) -> TableContentBuilder<ContainerType>.Collection
+	) -> TableBuilder<ContainerType> {
+		let builder = TableBuilder(tableView: self, container: container, updater: updater)
+		registerBuilder(builder, in: container, for: self)
+		builder.update(animated: false)
+		return builder
+	}
+	/// This creates a tablebuilder that will be retained by the container and updates itself immediately.
+	public func apply<ContainerType: AnyObject>(
+		with container: ContainerType,
+		@SectionContentBuilder<ContainerType> updater: @escaping (ContainerType) -> SectionContentBuilder<ContainerType>.Collection
+	) -> TableBuilder<ContainerType> {
+		let builder = TableBuilder(tableView: self, container: container, updater: updater)
+		registerBuilder(builder, in: container, for: self)
+		builder.update(animated: false)
+		return builder
+	}
+	
+	public func updateBuilder(animated: Bool) {
+		guard let weakBox = objc_getAssociatedObject(self, &UITableView.builderAssociatedObjectKey) as? WeakBox else { return }
+		guard let updatable = weakBox.builder as? TableUpdatable else { return }
+		updatable.update(animated: animated)
+	}
+	
+	fileprivate func registerBuilder(_ builder: AnyObject, in container: AnyObject, for tableView: UITableView) {
+		// add the builder weakly to the tableview, so we can easily look it up
+		objc_setAssociatedObject(tableView, &UITableView.builderAssociatedObjectKey, WeakBox(builder: builder), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+		
+		// add the builder to te container, by a unique key, so it is retained as long as the container is retained
+		let key = ObjectIdentifier(tableView)
+		var dict = (objc_getAssociatedObject(container, &UITableView.containerBuilderDictionaryAssociatedObjectKey) as? [ObjectIdentifier: Any]) ?? [ObjectIdentifier: Any]()
+		dict[key] = builder
+		objc_setAssociatedObject(container, &UITableView.containerBuilderDictionaryAssociatedObjectKey, dict, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+	}
+}
