@@ -43,14 +43,6 @@ class ViewController: UITableViewController {
 	}
 	@TableState var category = Category.toppings
 	
-	var editItemBuilder = EditItemBuilder(items: [
-		NameEditItem(),
-		GroupedEditItem(subItems: [NameEditItem(), IncludeThingEditItem()])
-	])
-	
-	@TableState var name: String = ""
-	@TableState var showClearButton = false
-	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
@@ -189,9 +181,7 @@ class ViewController: UITableViewController {
 		_includeDrinks.onChange { newValue in
 			print("IncludeDrinks changed to: \(newValue)")
 		}
-		
-		tableView.estimatedRowHeight = UITableView.automaticDimension
-		tableView.rowHeight = UITableView.automaticDimension
+
 		builder.update(animated: false) // fire up the builder
 	}
 }

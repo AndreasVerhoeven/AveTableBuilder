@@ -420,13 +420,29 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 
 extension TableBuilder {
 	/// Applies a Section.Stylished() to the whole updater block
-	public func stylished() -> Self {
+	@discardableResult public func stylished() -> Self {
 		let oldUpdater = updater
 		
 		@TableContentBuilder<ContainerType> func newUpdater(_ container: ContainerType) -> TableContentBuilder<ContainerType>.Collection {
 			Section.Stylished {
 				oldUpdater(container)
 			}
+		}
+		
+		seenSections.removeAll()
+		updater = newUpdater(_:)
+		update(animated: false)
+		return self
+	}
+	
+	/// Applies a .stylishedHeader() to the whole updater block
+	@discardableResult public func stylishedHeaders() -> Self {
+		let oldUpdater = updater
+		
+		@TableContentBuilder<ContainerType> func newUpdater(_ container: ContainerType) -> TableContentBuilder<ContainerType>.Collection {
+			Section.Group {
+				oldUpdater(container)
+			}.stylishedHeader()
 		}
 		
 		seenSections.removeAll()
@@ -468,7 +484,7 @@ extension UITableView {
 	}
 	
 	/// This creates a tablebuilder that will be retained by the container and updates itself immediately.
-	public func apply<ContainerType: AnyObject>(
+	@discardableResult public func apply<ContainerType: AnyObject>(
 		with container: ContainerType,
 		@TableContentBuilder<ContainerType> updater: @escaping (ContainerType) -> TableContentBuilder<ContainerType>.Collection
 	) -> TableBuilder<ContainerType> {
@@ -478,7 +494,7 @@ extension UITableView {
 		return builder
 	}
 	/// This creates a tablebuilder that will be retained by the container and updates itself immediately.
-	public func apply<ContainerType: AnyObject>(
+	@discardableResult public func apply<ContainerType: AnyObject>(
 		with container: ContainerType,
 		@SectionContentBuilder<ContainerType> updater: @escaping (ContainerType) -> SectionContentBuilder<ContainerType>.Collection
 	) -> TableBuilder<ContainerType> {
