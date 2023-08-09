@@ -68,6 +68,11 @@ public struct TableItemIdentifier: Hashable {
 		items.append(kind)
 	}
 	
+	public var onlyLastPart: TableItemIdentifier {
+		guard let last = items.last else { return TableItemIdentifier() }
+		return TableItemIdentifier(items: [last])
+	}
+	
 	public var isEmpty: Bool { items.isEmpty }
 	
 	internal var stringValue: String {

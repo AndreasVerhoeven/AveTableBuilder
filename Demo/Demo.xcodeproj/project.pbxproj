@@ -58,6 +58,7 @@
 		49A7371829B762AC005A2CE9 /* TableBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7371729B762AC005A2CE9 /* TableBinding.swift */; };
 		49A7371A29B790ED005A2CE9 /* CustomViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49A7371929B790ED005A2CE9 /* CustomViewRow.swift */; };
 		49B4AC0B29DC42FE00328A7C /* RowFirstResponderBecomeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B4AC0A29DC42FE00328A7C /* RowFirstResponderBecomeable.swift */; };
+		49D62BC32A84086900B19ACE /* TableItemMultiReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D62BC22A84086900B19ACE /* TableItemMultiReference.swift */; };
 		49DD5DAA29C9C5A800DA2331 /* TableBuilderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DA929C9C5A800DA2331 /* TableBuilderStore.swift */; };
 		49DD5DB029C9FD9200DA2331 /* TableBuilderStaticStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DAF29C9FD9200DA2331 /* TableBuilderStaticStorage.swift */; };
 		49DD5DED29CB3EFC00DA2331 /* SegmentControlRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */; };
@@ -123,6 +124,7 @@
 		49A7371729B762AC005A2CE9 /* TableBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBinding.swift; sourceTree = "<group>"; };
 		49A7371929B790ED005A2CE9 /* CustomViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomViewRow.swift; sourceTree = "<group>"; };
 		49B4AC0A29DC42FE00328A7C /* RowFirstResponderBecomeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowFirstResponderBecomeable.swift; sourceTree = "<group>"; };
+		49D62BC22A84086900B19ACE /* TableItemMultiReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableItemMultiReference.swift; sourceTree = "<group>"; };
 		49DD5DA929C9C5A800DA2331 /* TableBuilderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderStore.swift; sourceTree = "<group>"; };
 		49DD5DAF29C9FD9200DA2331 /* TableBuilderStaticStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuilderStaticStorage.swift; sourceTree = "<group>"; };
 		49DD5DEC29CB3EFC00DA2331 /* SegmentControlRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentControlRow.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				497C78B429B1EFD9006EF4A3 /* TableItemReference.swift */,
+				49D62BC22A84086900B19ACE /* TableItemMultiReference.swift */,
 				497C78B529B1EFD9006EF4A3 /* ReuseIdentifier.swift */,
 				497C78B629B1EFD9006EF4A3 /* TableIdentifier.swift */,
 				497C78B729B1EFD9006EF4A3 /* ConfigurationItem.swift */,
@@ -422,6 +425,7 @@
 				49DD5DF629CBB1A200DA2331 /* BaseEditItem.swift in Sources */,
 				497C78D029B1EFD9006EF4A3 /* Row.swift in Sources */,
 				49A7370729B67C9B005A2CE9 /* DatePickerRow.swift in Sources */,
+				49D62BC32A84086900B19ACE /* TableItemMultiReference.swift in Sources */,
 				497C78C329B1EFD9006EF4A3 /* SectionInfoWithRows.swift in Sources */,
 				497C78D529B1EFD9006EF4A3 /* TableIdentifier.swift in Sources */,
 				49A7371829B762AC005A2CE9 /* TableBinding.swift in Sources */,

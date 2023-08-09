@@ -19,6 +19,15 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 		}
 	}
 	
+	public func reference(_ reference: TableItemMultiReference) -> Self {
+		modifyRows { item in
+			let itemReference = TableItemReference()
+			reference.wrappedValue[item.id.onlyLastPart] = itemReference
+			item.references.append(itemReference)
+		}
+		return self
+	}
+	
 	public var hasRows: Bool { items.isEmpty == false }
 	public private(set) lazy var storage: TableBuilderStore = ProxiedTableBuilderStore(delegate: self)
 	

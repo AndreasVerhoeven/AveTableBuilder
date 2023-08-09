@@ -38,7 +38,6 @@ extension Row {
 					
 					let updater = TableBuilderStaticStorage.currentUpdater
 					
-					
 					cell.textView.contentSizeInvalidatedCallback = { [weak storage] _ in
 						guard storage?.isInUpdate == false else { return }
 						storage?.isInUpdate = true

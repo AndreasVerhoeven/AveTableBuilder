@@ -14,6 +14,7 @@ enum TableBuilderStaticStorage {
 	fileprivate static var activeSectionInfos = [Any]()
 	fileprivate static var activeIndexPaths = [IndexPath]()
 	fileprivate static var activeContainers = [Any]()
+	fileprivate static var activeTableItemIdentifiers = [TableItemIdentifier]()
 	
 	fileprivate static var animatedUpdatesSupressedCount = 0
 }
@@ -34,7 +35,11 @@ extension TableBuilderStaticStorage {
 	
 	@discardableResult static internal func with<T, ContainerType: AnyObject>(rowInfo: RowInfo<ContainerType>, container: ContainerType? = nil, callback: () -> T) -> T {
 		activeRowInfos.append(rowInfo)
-		defer { activeRowInfos.removeLast() }
+		activeTableItemIdentifiers.append(rowInfo.id)
+		defer {
+			activeRowInfos.removeLast()
+			activeTableItemIdentifiers.removeLast()
+		}
 		return with(container: container, callback: callback)
 	}
 	
@@ -147,6 +152,15 @@ extension TableBuilderContent {
 	
 	public static var closestViewController: UIViewController? {
 		return currentTableView?.closestViewController
+	}
+}
+
+extension TableItemReference {
+	public static var current: TableItemReference? {
+		guard let identifier = TableBuilderStaticStorage.activeTableItemIdentifiers.last else { return nil }
+		let reference = TableItemReference(wrappedValue: identifier)
+		reference.resolver = TableBuilderStaticStorage.activeBuilders.last as? TableItemReferenceResolver
+		return reference
 	}
 }
 
