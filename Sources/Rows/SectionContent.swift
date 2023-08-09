@@ -20,6 +20,8 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 	}
 	
 	public func reference(_ reference: TableItemMultiReference) -> Self {
+		reference.wrappedValue = [:]
+		
 		modifyRows { item in
 			let itemReference = TableItemReference()
 			reference.wrappedValue[item.id.onlyLastPart] = itemReference
