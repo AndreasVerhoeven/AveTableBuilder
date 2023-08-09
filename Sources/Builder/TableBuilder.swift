@@ -146,7 +146,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 					
 				case .delete:
 					return self.perform(indexPath: indexPath, with: item) {
-						item.onCommitInsert(container: container, tableView: tableView, indexPath: indexPath)
+						item.onCommitDelete(container: container, tableView: tableView, indexPath: indexPath)
 					}
 					
 				@unknown default:
