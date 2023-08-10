@@ -58,6 +58,7 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 	public var hasPendingUpdate = false
 	
 	private var seenSections = Set<TableItemIdentifier>()
+	private var multiReferencesToClear = [ObjectIdentifier: TableItemMultiReference]()
 	private var runLoopObserver: CFRunLoopObserver?
 	private var debugShouldPrintIdentifiersOnUpdate = false
 	
@@ -207,6 +208,10 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 				print("<<<Debug Update Start>>>\n")
 			}
 			
+			for (_, multiReference) in multiReferencesToClear {
+				multiReference.wrappedValue = [:]
+			}
+			
 			var snapshot = DataSourceType.SnapshotType()
 			for item in updater(container).items {
 				item.rowInfos.forEach { row in
@@ -304,6 +309,12 @@ public final class TableBuilder<ContainerType: AnyObject>: NSObject, TableUpdata
 			}
 			mirror = actualMirror.superclassMirror
 		}
+	}
+	
+	internal func registerTableItemMultiReference(_ reference: TableItemMultiReference) {
+		let key = ObjectIdentifier(reference)
+		guard multiReferencesToClear[key] == nil else { return }
+		multiReferencesToClear[key] = reference
 	}
 	
 	/// Callback will be called when any of the registered `TableState`s variables changes.

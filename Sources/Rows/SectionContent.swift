@@ -20,7 +20,7 @@ open class SectionContent<ContainerType: AnyObject>: TableBuilderContent<Contain
 	}
 	
 	public func reference(_ reference: TableItemMultiReference) -> Self {
-		reference.wrappedValue = [:]
+		TableBuilderStaticStorage.registerTableItemMultiReference(reference)
 		
 		modifyRows { item in
 			let itemReference = TableItemReference()

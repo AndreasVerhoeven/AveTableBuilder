@@ -81,12 +81,17 @@ fileprivate protocol TableBuilderProtocol: AnyObject {
 	
 	func  update(animated: Bool)
 	func registerUpdaters<T: AnyObject>(in container: T)
+	func registerTableItemMultiReference(_ reference: TableItemMultiReference)
 	@discardableResult func withAnimatedUpdatesSupressed<T>(callback: () -> T) -> T
 }
 
 extension TableBuilderStaticStorage {
 	internal static func registerUpdaters<T: AnyObject>(in container: T) {
 		(TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol)?.registerUpdaters(in: container)
+	}
+	
+	internal static func registerTableItemMultiReference(_ reference: TableItemMultiReference) {
+		(TableBuilderStaticStorage.activeBuilders.last as? TableBuilderProtocol)?.registerTableItemMultiReference(reference)
 	}
 	
 	internal static var currentContainer: Any? {
