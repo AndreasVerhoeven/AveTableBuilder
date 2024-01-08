@@ -15,7 +15,6 @@ extension Row {
 			public override func tintColorDidChange() {
 				super.tintColorDidChange()
 				textLabel?.textColor = tintColor
-				textLabel?.textAlignment = .center
 			}
 			
 			public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

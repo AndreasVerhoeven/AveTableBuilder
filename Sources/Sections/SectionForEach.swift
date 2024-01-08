@@ -24,8 +24,7 @@ extension Section {
 			identifiedBy: (Collection.Element) -> ID,
 			@TableContentBuilder<ContainerType> builder: (Collection.Element) -> TableContentBuilder<ContainerType>.Collection
 		) {
-			let items = data.flatMap {
-				element in
+			let items = data.flatMap { element in
 				builder(element).items.map { $0.appending(id: .custom(identifiedBy(element))) }
 			}
 			super.init(items: items)
