@@ -11,17 +11,17 @@ extension Row {
 	open class Static: SectionContent<ContainerType> {
 		
 		/// Creates a static row that is always the same cell that is not reused.
-		public init<Cell: UITableViewCell>(
-			cellClass: Cell.Type = Cell.self,
+		public init<StaticCell: UITableViewCell>(
+			cellClass: StaticCell.Type = StaticCell.self,
 			cellStyle: UITableViewCell.CellStyle = .default,
-			initial: ((_ `self`: ContainerType, _ cell: Cell) -> Void)? = nil,
-			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
+			initial: ((_ `self`: ContainerType, _ cell: StaticCell) -> Void)? = nil,
+			updates: @escaping ( _ container: ContainerType, _ cell: StaticCell, _ animated: Bool) -> Void
 		) {
 			let item = RowInfo<ContainerType>(cellClass: cellClass, style: cellStyle, modifying: [], configuration: updates)
 			super.init(item: item)
 			
 			if let initial {
-				makeStaticWithInitialConfigurationCallback { (container: ContainerType, cell: Cell) in
+				makeStaticWithInitialConfigurationCallback { (container: ContainerType, cell: StaticCell) in
 					initial(container, cell)
 				}
 			} else {
@@ -30,12 +30,12 @@ extension Row {
 		}
 		
 		/// Creates a static row that is always the same cell that is not reused using a creation block.
-		public init<Cell: UITableViewCell>(
-			create: @escaping (_ `self`: ContainerType) -> Cell,
-			updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
+		public init<StaticCell: UITableViewCell>(
+			create: @escaping (_ `self`: ContainerType) -> StaticCell,
+			updates: @escaping ( _ container: ContainerType, _ cell: StaticCell, _ animated: Bool) -> Void
 		) {
 			let item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
-				guard let cell = cell as? Cell else { return }
+				guard let cell = cell as? StaticCell else { return }
 				updates(container, cell, animated)
 			})
 			item.cellProvider =  { container, tableView, IndexPath, rowInfo in
@@ -46,9 +46,9 @@ extension Row {
 		}
 		
 		/// Creates a static row from a pre existing cell
-		public init<Cell: UITableViewCell>(cell: Cell, updates: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void) {
+		public init<StaticCell: UITableViewCell>(cell: Cell, updates: @escaping ( _ container: ContainerType, _ cell: StaticCell, _ animated: Bool) -> Void) {
 			let item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
-				guard let cell = cell as? Cell else { return }
+				guard let cell = cell as? StaticCell else { return }
 				updates(container, cell, animated)
 			})
 			item.reuseIdentifierShouldIncludeId = true
@@ -59,7 +59,7 @@ extension Row {
 		}
 		
 		/// Creates a static row from a pre existing cell
-		public init<Cell: UITableViewCell>(cell: Cell) {
+		public init<StaticCell: UITableViewCell>(cell: StaticCell) {
 			let item = RowInfo<ContainerType>(cellClass: UITableViewCell.self, style: .default, modifying: [], configuration: { container, cell, animated in
 				// does nothing
 			})

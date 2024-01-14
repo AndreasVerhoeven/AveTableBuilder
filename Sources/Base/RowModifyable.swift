@@ -44,7 +44,7 @@ extension RowModifyable {
 	
 	/// Configures
 	@discardableResult public func configure<Cell: UITableViewCell>(
-		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,
+		cellOfType cellClass: Cell.Type = UITableViewCell.self,
 		modifying: RowConfiguration,
 		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 	) -> Self {
@@ -57,7 +57,7 @@ extension RowModifyable {
 	}
 	
 	@discardableResult public func preConfigure<Cell: UITableViewCell>(
-		cellOfType cellClass: UITableViewCell.Type = UITableViewCell.self,
+		cellOfType cellClass: Cell.Type = UITableViewCell.self,
 		modifying: RowConfiguration,
 		handler: @escaping ( _ container: ContainerType, _ cell: Cell, _ animated: Bool) -> Void
 	) -> Self {

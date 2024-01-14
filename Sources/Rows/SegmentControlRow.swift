@@ -56,8 +56,8 @@ extension Row {
 				}
 			}
 			
-			if mode == .fullWidth, let color = SegmentControl.currentTableView?.backgroundColor {
-				backgroundColor(color)
+			if mode == .fullWidth {
+				backgroundColor(.clear)
 			}
 		}
 	}
