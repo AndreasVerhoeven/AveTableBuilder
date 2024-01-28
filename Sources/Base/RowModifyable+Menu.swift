@@ -16,6 +16,8 @@ public enum MenuTitleStyle {
 	case subtitle
 	/// the menu title  is part of the `accessory`
 	case accessory
+	/// the menu title is shown as the main text
+	case text
 	
 	/// this is the default way to show a menu title
 	public static var `default`: Self { .value1 }
@@ -124,7 +126,7 @@ extension RowModifyable {
 		titleStyle: MenuTitleStyle = .default,
 		provider: @escaping (_ `self` : ContainerType) -> UIMenu?
 	) -> Self {
-		if titleStyle != .accessory {
+		if titleStyle != .accessory && titleStyle != .text {
 			_ = modifyRows { item in
 				item.cellStyle = titleStyle == .value1 ? .value1 : .subtitle
 			}
@@ -135,18 +137,24 @@ extension RowModifyable {
 			modifying.items.formUnion([.detailText])
 		} else if titleStyle == .subtitle {
 			modifying.items.formUnion([.detailText, .numberOfDetailLines, .detailTextColor])
+		} else if titleStyle == .text {
+			modifying.items.formUnion([.detailText])
 		}
 		
 		_ = preConfigure(modifying: modifying) { container, cell, animated in
 			let wrapperView = (cell.accessoryView as? MenuAccessoryButton.WrapperStackView) ?? MenuAccessoryButton.WrapperStackView()
 			let button = wrapperView.menuButton
 			button.isUserInteractionEnabled = false
+			button.showFromCell = (titleStyle == .text)
+			button.showFromCell = (titleStyle == .text)
 			button.menuProvider = { [weak container] in
 				guard let container else { return nil }
 				return provider(container)
 			}
 			
-			if let value = cell.value(forKeyPath: "style") as? Int,
+			if titleStyle == .text {
+				cell.textLabel?.setText(title, animated: animated)
+			} else if let value = cell.value(forKeyPath: "style") as? Int,
 			   let style = UITableViewCell.CellStyle(rawValue: value),
 			   (style == .value1  || style == .subtitle) {
 				button.customTitleLabel.isHidden = true
@@ -225,6 +233,9 @@ public class MenuAccessoryButton: UIButton {
 	private let wrapperView = WrapperView()
 	let customTitleLabel = UILabel(font: .ios.body, alignment: .right)
 	let customImageView = UIImageView(image: UIImage(systemName: "chevron.up.chevron.down"), contentMode: .scaleAspectFit).prefersExactSize()
+	let customView = UIView()
+	
+	var showFromCell = false
 	
 	class WrapperStackView: UIStackView {
 		var menuButton = MenuAccessoryButton()
@@ -284,6 +295,9 @@ public class MenuAccessoryButton: UIButton {
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
 		
+		customView.isUserInteractionEnabled = false
+		addSubview(customView)
+		
 		customTitleLabel.numberOfLines = 2
 		customTitleLabel.lineBreakMode = .byTruncatingTail
 		customTitleLabel.textColor = .secondaryLabel
@@ -296,6 +310,35 @@ public class MenuAccessoryButton: UIButton {
 		} else {
 			wrapperView.addInteraction(UIContextMenuInteraction(delegate: wrapperView))
 		}
+	}
+	
+	public override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		if showFromCell == true, let view = superview?.superview {
+			customView.frame = view.convert(view.bounds, to: self)
+			customView.frame.size.width = 80
+		} else {
+			customView.frame = .zero
+		}
+	}
+	
+	
+	@available(iOS 14, *)
+	public override func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		if showFromCell == true {
+			return UITargetedPreview(view: customView)
+		} else {
+			return super.contextMenuInteraction(interaction, previewForHighlightingMenuWithConfiguration: configuration)
+		}
+	}
+	
+	@available(iOS 14, *)
+	public override func menuAttachmentPoint(for configuration: UIContextMenuConfiguration) -> CGPoint {
+		guard showFromCell == true, let view = superview?.superview else { return super.menuAttachmentPoint(for: configuration) }
+		
+		let point = view.convert(CGPoint(x: view.bounds.minX + 8, y: view.bounds.maxY - 8), to: self)
+		return point
 	}
 	
 	@available(*, unavailable)

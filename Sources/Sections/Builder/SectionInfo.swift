@@ -73,6 +73,38 @@ public class SectionInfo<ContainerType: AnyObject>: IdentifiableTableItem {
 		self.header = header
 		self.footer = footer
 	}
+	
+	/// Assign a custom header class to this section in this content that do not have a header class configured yes.
+	public func header<HeaderClass: UITableViewHeaderFooterView>(
+		_ headerClass: HeaderClass.Type,
+		updater: @escaping (_ `self`: ContainerType, _ view: HeaderClass, _ text: String?, _ animated: Bool) -> Void
+	) {
+		guard headerViewProvider == nil else { return }
+		headerViewProvider = { container, tableView, section, info in
+			let identifier = "Header.\(NSStringFromClass(headerClass))"
+			return (tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) as? HeaderClass) ?? HeaderClass.init(reuseIdentifier: identifier)
+		}
+		headerUpdaters.insert({ container, view, text, tableView, index, animated, info in
+			guard let view = view as? HeaderClass else { return }
+			updater(container, view, text, animated)
+		}, at: 0)
+	}
+	
+	/// Assign a custom footer class this section in this content that do not have a header class configured yes.
+	public func footer<FooterClass: UITableViewHeaderFooterView>(
+		_ footerClass: FooterClass.Type,
+		updater: @escaping (_ `self`: ContainerType, _ view: FooterClass, _ text: String?, _ animated: Bool) -> Void
+	) {
+		guard footerViewProvider == nil else { return }
+		footerViewProvider = { container, tableView, section, info in
+			let identifier = "Footer.\(NSStringFromClass(footerClass))"
+			return (tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) as? FooterClass) ?? FooterClass.init(reuseIdentifier: identifier)
+		}
+		footerUpdaters.append({ container, view, text, tableView, index, animated, info in
+			guard let view = view as? FooterClass else { return }
+			updater(container, view, text, animated)
+		})
+	}
 }
 
 extension SectionInfo {

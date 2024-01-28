@@ -32,7 +32,7 @@ extension Row {
 			image: UIImage? = .tableBuilderNone,
 			options: Collection,
 			identifiedBy: @escaping (Collection.Element) -> ID,
-			selection: Collection.Element,
+			selection: @escaping @autoclosure () -> Collection.Element?,
 			textProvider: @escaping (Collection.Element) -> String,
 			onChange: @escaping ( _ `self`: ContainerType, _ option: Collection.Element) -> Void
 		) {
@@ -41,12 +41,13 @@ extension Row {
 			
 			items[0].finalizeRowCallbacks.append { container, tableView, rowInfo in
 				let storage = rowInfo.storage
-				let selectedId: ID? = identifiedBy(selection)
+				let selection = selection()
+				let selectedId: ID? = selection.flatMap(identifiedBy)
 				
 				typealias OptionItemProvider = (Collection.Element) -> OptionPickerItem?
 				let extendedProvider: OptionItemProvider? = storage.retrieve(key: "Row.Picker.ExtendedOptions", default: nil)
 				
-				let title = extendedProvider?(selection)?.title ?? textProvider(selection)
+				let title = selection.flatMap { extendedProvider?($0)?.title ?? textProvider($0) } ?? storage.retrieve(key: "Row.Picker.TitleFallback")
 				let titleStyle = storage.retrieve(key: "Row.Picker.TitleStyle", default: MenuTitleStyle.value1)
 				self.menu(title: title, titleStyle: titleStyle) { container in
 					typealias Grouper = (Collection.Element) -> Int
@@ -134,6 +135,34 @@ extension Row {
 			}
 		}
 		
+		/// Convenience init for using a binding.
+		@_disfavoredOverload public convenience init<ID: Equatable>(
+			text: String? = nil,
+			image: UIImage? = .tableBuilderNone,
+			options: Collection,
+			identifiedBy: @escaping (Collection.Element) -> ID,
+			binding: TableBinding<ID>,
+			textProvider: @escaping (Collection.Element) -> String
+		) {
+			self.init(text: text, image: image, options: options, identifiedBy: identifiedBy, selection: options.first { binding.wrappedValue == identifiedBy($0) }, textProvider: textProvider) { container, option in
+				binding.wrappedValue = identifiedBy(option)
+			}
+		}
+		
+		/// Convenience init for using a binding.
+		@_disfavoredOverload public convenience init<ID: Equatable>(
+			text: String? = nil,
+			image: UIImage? = .tableBuilderNone,
+			options: Collection,
+			identifiedBy: @escaping (Collection.Element) -> ID,
+			binding: TableBinding<ID?>,
+			textProvider: @escaping (Collection.Element) -> String
+		) {
+			self.init(text: text, image: image, options: options, identifiedBy: identifiedBy, selection: options.first { binding.wrappedValue == identifiedBy($0) }, textProvider: textProvider) { container, option in
+				binding.wrappedValue = identifiedBy(option)
+			}
+		}
+		
 		/// Convenience init for using a binding when the items are Equatable.
 		public convenience init(
 			text: String? = nil,
@@ -151,6 +180,28 @@ extension Row {
 			image: UIImage? = .tableBuilderNone,
 			options: Collection,
 			binding: TableBinding<Collection.Element>,
+			textProvider: @escaping (Collection.Element) -> String
+		) where Collection.Element: Identifiable {
+			self.init(text: text, image: image, options: options, identifiedBy: { $0.id }, binding: binding, textProvider: textProvider)
+		}
+		
+		/// Convenience init for using a binding when the items are Identifiable..
+		@_disfavoredOverload public convenience init(
+			text: String? = nil,
+			image: UIImage? = .tableBuilderNone,
+			options: Collection,
+			binding: TableBinding<Collection.Element.ID>,
+			textProvider: @escaping (Collection.Element) -> String
+		) where Collection.Element: Identifiable {
+			self.init(text: text, image: image, options: options, identifiedBy: { $0.id }, binding: binding, textProvider: textProvider)
+		}
+		
+		/// Convenience init for using a binding when the items are Identifiable..
+		@_disfavoredOverload public convenience init(
+			text: String? = nil,
+			image: UIImage? = .tableBuilderNone,
+			options: Collection,
+			binding: TableBinding<Collection.Element.ID?>,
 			textProvider: @escaping (Collection.Element) -> String
 		) where Collection.Element: Identifiable {
 			self.init(text: text, image: image, options: options, identifiedBy: { $0.id }, binding: binding, textProvider: textProvider)
@@ -190,6 +241,12 @@ extension Row {
 		/// Use this to change the way the selected item is shown. Defaults to `.value1`
 		public func titleStyle(_ style: MenuTitleStyle) -> Self {
 			storage.store(style, key: "Row.Picker.TitleStyle")
+			return self
+		}
+		
+		/// Use this to set a title fallback for when there's no selection
+		public func titleFallback(_ fallback: String?) -> Self {
+			storage.store(fallback, key: "Row.Picker.TitleFallback")
 			return self
 		}
 	}

@@ -9,12 +9,14 @@ import UIKit
 import UIKitAnimations
 import AveDataSource
 
-enum Topping: String, CaseIterable {
+enum Topping: String, CaseIterable, Identifiable {
 	case olives
 	case cheese
 	case eggplant
 	case mushrooms
 	case chilis
+	
+	var id: String { rawValue }
 }
 
 enum Extra: String, CaseIterable {
@@ -42,9 +44,11 @@ class ViewController: UITableViewController {
 		case extras
 	}
 	@TableState var category = Category.toppings
+	@TableState var xSelection: Topping.ID?
 	
 	// This is our builder that turns out table description into actual cells
 	lazy var builder = TableBuilder(controller: self) { `self` in
+		
 		// this is a special wrapper that makes everything in it use a different cell background color and use custom headers
 		Section.Stylished {
 			// Our first section: no title and two rows

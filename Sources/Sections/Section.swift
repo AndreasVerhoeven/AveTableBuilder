@@ -30,15 +30,7 @@ extension TableContent {
 		updater: @escaping (_ `self`: ContainerType, _ view: HeaderClass, _ text: String?, _ animated: Bool) -> Void
 	) -> Self {
 		items.forEach { item in
-			guard item.sectionInfo.headerViewProvider == nil else { return }
-			item.sectionInfo.headerViewProvider = { container, tableView, section, info in
-				let identifier = "Header.\(NSStringFromClass(headerClass))"
-				return (tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) as? HeaderClass) ?? HeaderClass.init(reuseIdentifier: identifier)
-			}
-			item.sectionInfo.headerUpdaters.insert({ container, view, text, tableView, index, animated, info in
-				guard let view = view as? HeaderClass else { return }
-				updater(container, view, text, animated)
-			}, at: 0)
+			item.sectionInfo.header(headerClass, updater: updater)
 		}
 		return self
 	}
@@ -49,15 +41,7 @@ extension TableContent {
 		updater: @escaping (_ `self`: ContainerType, _ view: FooterClass, _ text: String?, _ animated: Bool) -> Void
 	) -> Self {
 		items.forEach { item in
-			guard item.sectionInfo.footerViewProvider == nil else { return }
-			item.sectionInfo.footerViewProvider = { container, tableView, section, info in
-				let identifier = "Footer.\(NSStringFromClass(footerClass))"
-				return (tableView.dequeueReusableHeaderFooterView(withIdentifier: identifier) as? FooterClass) ?? FooterClass.init(reuseIdentifier: identifier)
-			}
-			item.sectionInfo.footerUpdaters.append({ container, view, text, tableView, index, animated, info in
-				guard let view = view as? FooterClass else { return }
-				updater(container, view, text, animated)
-			})
+			item.sectionInfo.footer(footerClass, updater: updater)
 		}
 		return self
 	}

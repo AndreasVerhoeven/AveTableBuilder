@@ -26,6 +26,27 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 	public let label = UILabel(font: .ios.headline.rounded)
 	public let button = UIButton(font: .ios.headline.rounded, type: .system)
 	
+	private var heighConstraint: NSLayoutConstraint?
+	open var fixedHeight: CGFloat? {
+		didSet {
+			guard fixedHeight != oldValue else { return }
+			
+			if let fixedHeight {
+				if let heighConstraint {
+					heighConstraint.constant = fixedHeight
+					heighConstraint.isActive = true
+				} else {
+					let newHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: fixedHeight)
+					newHeightConstraint.priority = .required
+					heighConstraint = newHeightConstraint
+					NSLayoutConstraint.activate([newHeightConstraint])
+				}
+			} else {
+				heighConstraint?.isActive = false
+			}
+		}
+	}
+	
 	public var buttonCallback: (() -> Void)?
 	
 	@objc private func buttonTapped(_ sender: Any) {
@@ -38,6 +59,11 @@ open class StylishedCustomHeader: UITableViewHeaderFooterView {
 		} else {
 			button.contentHorizontalAlignment = .trailing
 		}
+	}
+	
+	open override func prepareForReuse() {
+		super.prepareForReuse()
+		fixedHeight = nil
 	}
 	
 	open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
