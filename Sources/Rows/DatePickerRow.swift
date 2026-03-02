@@ -190,12 +190,8 @@ fileprivate final class DatePickerViewController: UIViewController {
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		datePicker.datePickerMode = .date
-		if #available(iOS 14, *) {
-			datePicker.preferredDatePickerStyle = .inline
-		} else if #available(iOS 13.4, *) {
-			datePicker.preferredDatePickerStyle = .wheels
-		}
-		
+		datePicker.preferredDatePickerStyle = .inline
+
 		configurationCallback?(datePicker)
 		datePicker.addTarget(self, action: #selector(datePickerChanged(_:)), for: .valueChanged)
 		

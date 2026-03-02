@@ -26,7 +26,7 @@ enum Extra: String, CaseIterable {
 	case nachos
 }
 
-extension String: Identifiable {
+extension String: @retroactive Identifiable {
 	public var id: Self { self }
 }
 
