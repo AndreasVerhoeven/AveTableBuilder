@@ -70,7 +70,7 @@ extension Row {
 								guard let container else { return }
 								onChange(container, option)
 							})
-							if #available(iOS 15, *) {
+							if #available(iOS 16, *) {
 								action.subtitle = item.subtitle
 							}
 							return action
